@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+/*
+ * Sky Shade / סקיי שייד design system (Tailwind v4). Fleet standard: Tailwind v4, tokens in
+ * `@theme` (see ../../Israeli services sites/docs/template-standard.md).
+ * Palette: primary blue #2B5BAD (light #4A7FD4), gold accent #F5C842 (dark #D4A800).
+ * Every utility (bg-primary, text-accent-foreground, rounded-xl, font-heading, ...) keeps working.
+ */
+@theme {
+  /* Primary — Sky Shade blue */
+  --color-primary: #2b5bad;
+  --color-primary-50: #eef3fb;
+  --color-primary-100: #d3e0f3;
+  --color-primary-200: #a7c1e7;
+  --color-primary-300: #7ba1db;
+  --color-primary-400: #4f82cf;
+  --color-primary-500: #3a6ec0;
+  --color-primary-600: #2b5bad;
+  --color-primary-700: #23498b;
+  --color-primary-800: #1b3769;
+  --color-primary-900: #122548;
+  --color-primary-foreground: #ffffff;
+
+  /* Secondary — lighter sky blue */
+  --color-secondary: #4a7fd4;
+  --color-secondary-50: #eef4fc;
+  --color-secondary-100: #d3e2f7;
+  --color-secondary-200: #a9c6ef;
+  --color-secondary-300: #7fabe7;
+  --color-secondary-400: #5f95de;
+  --color-secondary-500: #4a7fd4;
+  --color-secondary-600: #3a66ab;
+  --color-secondary-700: #2f5389;
+  --color-secondary-800: #243f67;
+  --color-secondary-900: #182b46;
+  --color-secondary-foreground: #ffffff;
+
+  /* Accent / CTA — premium gold */
+  --color-accent: #f5c842;
+  --color-accent-50: #fef8e6;
+  --color-accent-100: #fdefbf;
+  --color-accent-200: #fbe291;
+  --color-accent-300: #f9d463;
+  --color-accent-400: #f7ce52;
+  --color-accent-500: #f5c842;
+  --color-accent-600: #d4a800;
+  --color-accent-700: #a88500;
+  --color-accent-800: #7c6200;
+  --color-accent-900: #514000;
+  /* Dark navy text on gold for accessible contrast. */
+  --color-accent-foreground: #14294d;
+
+  /* Border radius — reproduce the v3 overrides (rounded-lg stays v4 default 0.5rem). */
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1.25rem;
+
+  /* Typography — Heebo for both body and headings (CSS var from next/font in app/layout.tsx) */
+  --font-sans: var(--font-heebo), system-ui, Arial, sans-serif;
+  --font-heading: var(--font-heebo), system-ui, sans-serif;
+}
+
+/*
+ * Tailwind v4 compatibility: v4 defaults border-color to currentColor; v3 defaulted to
+ * gray-200. Preserve the v3 look for any bare `border` utilities.
+ */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-gray-900 antialiased;
+    font-family: var(--font-heebo), system-ui, Arial, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heebo), system-ui, sans-serif;
+  }
+
+  /* Respect reduced-motion preference globally (WCAG). */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* Isolate latin/LTR snippets (phone, email, URLs) inside RTL Hebrew text. */
+  .ltr {
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "_comment": "Normalized per-site manifest. SYNCED FROM THE HUB: 'Israeli services sites'/roster/sites/skyshade.json. Edit there (the canonical roster) and sync here. Conforms to @ishub/site-kit SiteManifest.",
+  "domain": "skyshade.co.il",
+  "url": "https://skyshade.co.il",
+  "brandName": "סקיי שייד",
+  "brandNameEn": "Sky Shade",
+  "legalName": "סקיי שייד",
+  "locale": "he-IL",
+  "dir": "rtl",
+  "foundedYear": 2009,
+  "tagline": "סקיי שייד — פרגולות ופתרונות אלומיניום פרימיום",
+  "shortPitch": "מומחים לפרגולות, גדרות ושערי אלומיניום, פתרונות הצללה וגידור מעוצבים בהתאמה אישית. מעצבים לכם את החוץ: אלומיניום ברמת הגימור הגבוהה ביותר, שירות בכל הארץ מאז 2009.",
+  "contact": {
+    "phoneDisplay": "050-5063152",
+    "phoneE164": "+972505063152",
+    "whatsappE164": "+972505063152",
+    "email": "yossi@skyshade.co.il",
+    "phoneOverride": true
+  },
+  "brand": {
+    "themeColor": "#2B5BAD",
+    "primary": "#2B5BAD",
+    "secondary": "#4A7FD4",
+    "accent": "#F5C842",
+    "fontHeading": "Heebo",
+    "fontBody": "Heebo"
+  },
+  "schema": {
+    "type": "HomeAndConstructionBusiness",
+    "priceRange": "₪₪",
+    "areaServed": "שירות בכל הארץ",
+    "openingHours": [
+      { "days": ["Su", "Mo", "Tu", "We", "Th"], "opens": "08:00", "closes": "18:00" },
+      { "days": ["Fr"], "opens": "08:00", "closes": "13:00" }
+    ],
+    "sameAs": []
+  },
+  "analytics": {
+    "gtmId": "GTM-5K3WQN8W",
+    "googleSiteVerification": null
+  }
+}
