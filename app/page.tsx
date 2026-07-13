@@ -1,5 +1,5 @@
 import { manifest } from "@/lib/site-config";
-import { faqs } from "@/lib/content";
+import { faqs, homeGalleryImages, homeGalleryTabs } from "@/lib/content";
 import { localBusinessJsonLd, faqJsonLd, jsonLdScript } from "@ishub/site-kit/seo";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -8,6 +8,7 @@ import { TrustBar } from "@/components/marketing/TrustBar";
 import { ServicesGrid } from "@/components/marketing/ServicesGrid";
 import { WhyUs } from "@/components/marketing/WhyUs";
 import { Process } from "@/components/marketing/Process";
+import { FilterableGallery } from "@/components/marketing/FilterableGallery";
 import { Reviews } from "@/components/marketing/Reviews";
 import { ServiceAreas } from "@/components/marketing/ServiceAreas";
 import { Faq } from "@/components/marketing/Faq";
@@ -34,6 +35,23 @@ export default function HomePage() {
       <ServicesGrid />
       <WhyUs />
       <Process />
+
+      <Section id="gallery" tone="muted">
+        <SectionHeading
+          eyebrow="הפרויקטים שלנו"
+          title="עבודות שביצענו"
+          subtitle="מבחר מפרויקטים אחרונים — לחצו להגדלה"
+        />
+        <div className="mt-10">
+          <FilterableGallery
+            images={homeGalleryImages}
+            tabs={homeGalleryTabs}
+            moreHref="/gallery"
+            moreLabel="לכל הגלריה ←"
+          />
+        </div>
+      </Section>
+
       <Reviews />
       <ServiceAreas />
 
