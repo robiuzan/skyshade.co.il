@@ -7,6 +7,7 @@ import { FinalCta } from "@/components/marketing/FinalCta";
 import { aboutValues } from "@/lib/content";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/about/" },
   title: "אודות סקיי שייד",
   description:
     "סקיי שייד — מומחים לפרגולות ולפתרונות אלומיניום פרימיום מאז 2009. עיצוב בהתאמה אישית, חומרים מהמשובחים בשוק ואחריות מלאה, בכל הארץ.",

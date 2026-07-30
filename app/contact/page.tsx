@@ -6,6 +6,7 @@ import { Section } from "@/components/ui/Section";
 import { LeadForm } from "@/components/forms/LeadForm";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/contact/" },
   title: "צור קשר",
   description:
     "צרו קשר עם סקיי שייד לפרגולות ולפתרונות אלומיניום פרימיום. טלפון, וואטסאפ או טופס — נחזור אליכם עם ייעוץ והצעת מחיר. שירות בכל הארץ.",

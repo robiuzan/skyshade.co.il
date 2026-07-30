@@ -7,6 +7,7 @@ import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/locations/" },
   title: "אזורי שירות",
   description:
     "סקיי שייד — פרגולות ופתרונות אלומיניום פרימיום בכל הארץ. מתל אביב וירושלים ועד חיפה, ראשון לציון ובאר שבע. בחרו את העיר שלכם.",

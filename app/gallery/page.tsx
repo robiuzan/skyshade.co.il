@@ -6,6 +6,7 @@ import { FilterableGallery } from "@/components/marketing/FilterableGallery";
 import { galleryImages, galleryTabs } from "@/lib/content";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/gallery/" },
   title: "גלריית פרויקטים",
   description:
     "גלריית פרויקטים של סקיי שייד — פרגולות, גדרות, שערים, דקים וחיפויי אלומיניום מהשטח. עיצוב בהתאמה אישית ברמת הגימור הגבוהה ביותר.",

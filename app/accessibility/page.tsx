@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/accessibility/" },
   title: "הצהרת נגישות",
   description: "הצהרת הנגישות של אתר סקיי שייד בהתאם לתקן הישראלי.",
 };

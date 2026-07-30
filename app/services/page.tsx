@@ -4,6 +4,7 @@ import { ServicesGrid } from "@/components/marketing/ServicesGrid";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/services/" },
   title: "השירותים שלנו",
   description:
     "פתרונות אלומיניום פרימיום מסקיי שייד: פרגולות ומחסות, גדרות ושערים, חיפוי קירות, דקים, מטבחי חוץ ומוצרים אקורדיאוניים — בהתאמה אישית ובכל הארץ.",

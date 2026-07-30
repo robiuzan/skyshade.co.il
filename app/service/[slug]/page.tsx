@@ -32,6 +32,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const card = serviceCards.find((c) => c.slug === slug);
   if (!card) return {};
   return {
+    alternates: { canonical: `/service/${card.slug}/` },
     title: `${card.name} — אלומיניום פרימיום בהתאמה אישית`,
     description: card.description,
   };

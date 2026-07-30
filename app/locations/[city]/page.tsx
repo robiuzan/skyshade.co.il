@@ -18,6 +18,7 @@ export function generateMetadata({ params }: { params: { city: string } }): Meta
   const city = locations.find((c) => c.slug === slug);
   if (!city) return {};
   return {
+    alternates: { canonical: `/locations/${city.slug}/` },
     title: `פרגולות אלומיניום ב${city.name} — פתרונות אלומיניום פרימיום`,
     description: `סקיי שייד — פרגולות, גדרות, שערים, דקים ומטבחי חוץ מאלומיניום ב${city.name}. עיצוב בהתאמה אישית, חומרים מהמשובחים בשוק ואחריות מלאה. שירות בכל הארץ.`,
   };
