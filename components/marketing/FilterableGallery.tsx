@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
+import { SiteImage } from "@ishub/site-kit/components";
+import { srcFor, type GalleryItem, type SiteImages } from "@ishub/site-kit/media";
 import { cn } from "@/lib/utils";
 
-export interface GalleryItem {
-  src: string;
-  category: string;
-}
-
 interface FilterableGalleryProps {
+  /** Catalog items (lib/gallery.ts) — alt text and dimensions travel with each image. */
   images: readonly GalleryItem[];
+  /** The site's images block, for mediaHost. null => items are served from public/. */
+  siteImages: SiteImages | null;
   tabs: readonly string[];
   /** Extra label for the "show everything" tab (first, selected by default). */
   allLabel?: string;
@@ -20,16 +20,20 @@ interface FilterableGalleryProps {
   moreLabel?: string;
 }
 
+/** Hebrew first — this site is RTL, so altHe is the string that actually ships. */
+const altOf = (it: GalleryItem) => it.altHe || it.alt || "";
+
 /** Category-tabbed project gallery with a click-to-enlarge lightbox. */
 export function FilterableGallery({
   images,
+  siteImages,
   tabs,
   allLabel = "הכל",
   moreHref,
   moreLabel,
 }: FilterableGalleryProps) {
   const [active, setActive] = useState<string>(allLabel);
-  const [lightbox, setLightbox] = useState<string | null>(null);
+  const [lightbox, setLightbox] = useState<GalleryItem | null>(null);
 
   const filtered =
     active === allLabel ? images : images.filter((it) => it.category === active);
@@ -74,19 +78,18 @@ export function FilterableGallery({
 
       {/* Grid */}
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((item, i) => (
+        {filtered.map((item) => (
           <button
-            key={item.src}
+            key={item.key}
             type="button"
-            onClick={() => setLightbox(item.src)}
+            onClick={() => setLightbox(item)}
             className="group overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
             aria-label={`הגדלת תמונת פרויקט — ${item.category}`}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`/${item.src}`}
-              alt={`פרויקט אלומיניום של סקיי שייד — ${item.category} ${i + 1}`}
-              loading="lazy"
+            <SiteImage
+              images={siteImages}
+              image={item}
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
               className="aspect-[4/3] h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </button>
@@ -120,10 +123,12 @@ export function FilterableGallery({
           >
             <X className="h-6 w-6" aria-hidden />
           </button>
+          {/* A plain <img> rather than SiteImage: this box is viewport-sized, so the intrinsic
+              width/height SiteImage always emits would fight the max-h/max-w constraints. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={`/${lightbox}`}
-            alt="תצוגה מוגדלת של פרויקט סקיי שייד"
+            src={srcFor(siteImages, lightbox, { fit: "contain" })}
+            alt={altOf(lightbox)}
             className="max-h-[90vh] max-w-[90vw] rounded-lg object-contain"
             onClick={(e) => e.stopPropagation()}
           />

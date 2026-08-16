@@ -1,6 +1,8 @@
 import { manifest } from "@/lib/site-config";
-import { faqs, homeGalleryImages, homeGalleryTabs } from "@/lib/content";
+import { faqs } from "@/lib/content";
+import { homeGalleryItems, homeGalleryCategories, siteImages } from "@/lib/gallery";
 import { localBusinessJsonLd, faqJsonLd, jsonLdScript } from "@ishub/site-kit/seo";
+import { srcFor } from "@ishub/site-kit/media";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Hero } from "@/components/marketing/Hero";
@@ -15,10 +17,18 @@ import { Faq } from "@/components/marketing/Faq";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
 // Site-wide LocalBusiness (HomeAndConstructionBusiness) JSON-LD — manifest-driven, plus the FAQ graph.
+// Prefer the media catalog so the structured data points at the same canonical objects the page
+// renders. Google rejects SVG for LocalBusiness.image, so `image` is the raster OG card.
+// The public/ paths are the pre-media-pipeline fallback and can go once this site stays wired.
+const jsonLdImages = manifest.images ?? null;
 const jsonLd = [
   localBusinessJsonLd(manifest, {
-    logo: "/skysgade-logo-1-1.png",
-    image: "/project-1.webp",
+    logo: jsonLdImages?.logo
+      ? srcFor(jsonLdImages, jsonLdImages.logo, { fit: "contain" })
+      : "/skysgade-logo-1-1.png",
+    image: jsonLdImages?.og
+      ? srcFor(jsonLdImages, jsonLdImages.og, { fit: "cover" })
+      : "/project-1.webp",
   }),
   faqJsonLd([...faqs]),
 ];
@@ -44,8 +54,9 @@ export default function HomePage() {
         />
         <div className="mt-10">
           <FilterableGallery
-            images={homeGalleryImages}
-            tabs={homeGalleryTabs}
+            images={homeGalleryItems}
+            siteImages={siteImages}
+            tabs={homeGalleryCategories}
             moreHref="/gallery"
             moreLabel="לכל הגלריה ←"
           />

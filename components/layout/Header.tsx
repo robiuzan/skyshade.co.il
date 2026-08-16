@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Menu, Phone, X } from "lucide-react";
-import { siteConfig, telHref } from "@/lib/site-config";
+import { SiteImage } from "@ishub/site-kit/components";
+import { manifest, siteConfig, telHref } from "@/lib/site-config";
 import { navItems } from "@/lib/content";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
@@ -16,14 +17,29 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-gray-100 bg-white/95 backdrop-blur">
       <Container className="flex h-16 items-center justify-between gap-4">
         <Link href="/" className="flex items-center" aria-label={`${siteConfig.name} — דף הבית`}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/skysgade-logo-1-1.png"
-            alt={siteConfig.name}
-            className="h-9 w-auto"
-            width={288}
-            height={45}
-          />
+          {manifest.images?.logo ? (
+            // `priority` because the logo is above the fold on every page and this site's hero is
+            // a CSS gradient, so there is no other LCP candidate to hand it to.
+            <SiteImage
+              images={manifest.images}
+              image={manifest.images.logo}
+              fixed
+              priority
+              fit="contain"
+              className="h-9 w-auto"
+            />
+          ) : (
+            /* Legacy fallback: used only until ops/sync-media.ps1 writes manifest.images.logo,
+               which takes precedence. Safe to delete once this site is on the media pipeline. */
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src="/skysgade-logo-1-1.png"
+              alt={siteConfig.name}
+              className="h-9 w-auto"
+              width={288}
+              height={45}
+            />
+          )}
         </Link>
 
         {/* Desktop nav */}

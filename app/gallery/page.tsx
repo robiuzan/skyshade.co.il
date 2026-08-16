@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
 import { FilterableGallery } from "@/components/marketing/FilterableGallery";
-import { galleryImages, galleryTabs } from "@/lib/content";
+import { galleryItems, galleryCategories, siteImages } from "@/lib/gallery";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/gallery/" },
@@ -21,7 +21,11 @@ export default function GalleryPage() {
         crumbs={[{ label: "בית", href: "/" }, { label: "גלריה" }]}
       />
       <Section tone="white">
-        <FilterableGallery images={galleryImages} tabs={galleryTabs} />
+        <FilterableGallery
+          images={galleryItems}
+          siteImages={siteImages}
+          tabs={galleryCategories}
+        />
       </Section>
       <FinalCta />
     </>
