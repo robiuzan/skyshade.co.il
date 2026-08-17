@@ -5,7 +5,7 @@
  *
  * 🔶 = assumption; confirm with client (esp. stats and testimonials).
  */
-import { services, type ServiceSlug } from "@/lib/site-config";
+import { manifest, services, type ServiceSlug } from "@/lib/site-config";
 
 export type IconName =
   | "Sun"
@@ -122,7 +122,9 @@ export const serviceDetails: Record<ServiceSlug, ServiceDetail> = {
       },
       {
         q: "האם צריך היתר בנייה לפרגולה?",
-        a: "פרגולות עד 50 מ״ר בדרך כלל פטורות מהיתר; אנחנו מסייעים לכם בכל הבירוקרטיה מול הרשויות.",
+        // Legally-reviewed wording (audit 2026-08): the exemption is CONDITIONAL — do not
+        // simplify back to "עד 50 מ״ר פטור". This answer also ships inside FAQPage JSON-LD.
+        a: "לרוב הפרגולות (מצללות) יש פטור מהיתר לפי תקנות התכנון והבנייה (תשע״ד-2014), בתנאים: שטח עד 50 מ״ר או עד רבע מהשטח הפנוי (הגדול מביניהם), בנייה מחומרים קלים, מרווחים של 40% לפחות בין חלקי הקירוי, ועמידה בהנחיות המרחביות של הוועדה המקומית. גם כשיש פטור, חובה לדווח לרשות הרישוי תוך 45 יום מסיום הביצוע. אנחנו מלווים אתכם בכל התהליך מול הרשות המקומית. אין באמור ייעוץ משפטי — הבדיקה המחייבת נעשית מול הוועדה המקומית.",
       },
       {
         q: "מה ההבדל בין פרגולה רגילה לפרגולה חשמלית?",
@@ -294,11 +296,20 @@ export const processSteps = [
 ] as const;
 
 /** Trust stats for the trust bar. */
+/**
+ * Only verifiable or computed values here — this renders on the homepage. The old
+ * "500+ פרויקטים / 200+ לקוחות / 15+ שנות ניסיון" set was unverified and internally
+ * contradictory (founded 2009 ⇒ not "15+"). Restore concrete counts only with the
+ * owner's confirmed numbers. Years are computed at build time; the monthly rebuild
+ * cron in deploy.yml keeps them honest.
+ */
+const yearsActive = new Date().getFullYear() - (manifest.foundedYear ?? 2009);
+
 export const trustStats = [
-  { value: "500+", label: "פרויקטים" },
-  { value: "200+", label: "לקוחות מרוצים" },
-  { value: "15+", label: "שנות ניסיון" },
-  { value: "100%", label: "אחריות מלאה" },
+  { value: `${yearsActive}`, label: "שנות ניסיון" },
+  { value: "כל הארץ", label: "שירות והתקנה" },
+  { value: "חינם", label: "מדידה וייעוץ" },
+  { value: "אחריות", label: "על העבודה ועל המוצר" },
 ] as const;
 
 /** About-page values (6). */
@@ -314,6 +325,14 @@ export const aboutValues = [
 /**
  * Testimonials — real reviews carried over from the live skyshade.co.il site.
  * (Full wording lightly completed from the live excerpts; confirm before launch.)
+ */
+/**
+ * ⚠️ NOT RENDERED and must stay unrendered until each quote has a verbatim source
+ * (screenshot/link) and the named customer's consent — the original wording here was
+ * partially written by us, so publishing it under real names is a misrepresentation
+ * risk. NEVER mark these up as Review/AggregateRating schema (self-serving reviews —
+ * Google ignores them and they invite a manual action). Real review equity is built on
+ * the Google Business Profile instead.
  */
 export const testimonials = [
   {
@@ -356,7 +375,8 @@ export const faqs = [
   },
   {
     q: "האם צריך היתר בנייה?",
-    a: "פרגולות עד 50 מ״ר בדרך כלל פטורות מהיתר. במקרים אחרים נסייע לכם להבין את הדרישות ולהסדיר את הבירוקרטיה מול הרשות.",
+    // Same legally-reviewed wording as the pergola-page FAQ — keep the two in sync.
+    a: "לרוב הפרגולות (מצללות) יש פטור מהיתר לפי תקנות התכנון והבנייה (תשע״ד-2014), בתנאים: שטח עד 50 מ״ר או עד רבע מהשטח הפנוי (הגדול מביניהם), בנייה מחומרים קלים, מרווחים של 40% לפחות בין חלקי הקירוי, ועמידה בהנחיות המרחביות של הוועדה המקומית. גם כשיש פטור, חובה לדווח לרשות הרישוי תוך 45 יום מסיום הביצוע. אנחנו מלווים אתכם בכל התהליך. אין באמור ייעוץ משפטי.",
   },
   {
     q: "האם אתם מספקים אחריות?",

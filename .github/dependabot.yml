@@ -1,0 +1,15 @@
+# Weekly dependency and Actions updates. The @ishub/site-kit vendored tgz is out of
+# Dependabot's reach — it updates via the hub repo's own release process.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: sunday
+    open-pull-requests-limit: 5
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: sunday

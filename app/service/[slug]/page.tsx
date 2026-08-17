@@ -127,12 +127,13 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
                 ייעוץ, מדידה והצעה שקופה — ללא עלות וללא התחייבות.
               </p>
               <div className="mt-5 flex flex-col gap-3">
-                <Button href={telHref} variant="accent" size="lg">
+                <Button href={telHref} data-cta="service-aside-call" variant="accent" size="lg">
                   <Phone className="h-5 w-5" aria-hidden />
                   <span dir="ltr">{siteConfig.phone}</span>
                 </Button>
                 <Button
                   href={whatsappHref(`היי, אני מעוניין/ת בהצעת מחיר ל${card.name}`)}
+                  data-cta="service-aside-whatsapp"
                   variant="whatsapp"
                   size="lg"
                 >

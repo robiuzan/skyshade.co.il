@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    # Monthly rebuild — keeps build-time values honest (footer year, computed
+    # years-in-business) and lets seasonal copy rotate without a manual deploy.
+    - cron: "0 4 1 * *"
 
 # Allow the workflow to publish to GitHub Pages via OIDC.
 permissions:

@@ -11,7 +11,6 @@ import { ServicesGrid } from "@/components/marketing/ServicesGrid";
 import { WhyUs } from "@/components/marketing/WhyUs";
 import { Process } from "@/components/marketing/Process";
 import { FilterableGallery } from "@/components/marketing/FilterableGallery";
-import { Reviews } from "@/components/marketing/Reviews";
 import { ServiceAreas } from "@/components/marketing/ServiceAreas";
 import { Faq } from "@/components/marketing/Faq";
 import { FinalCta } from "@/components/marketing/FinalCta";
@@ -63,7 +62,11 @@ export default function HomePage() {
         </div>
       </Section>
 
-      <Reviews />
+      {/* <Reviews /> is intentionally unrendered: the testimonials' wording was partially
+          written by us, so publishing them under real customers' names is a
+          misrepresentation risk. Restore only with verbatim sources + per-name consent
+          (see lib/content.ts), or better — replace with embedded Google reviews once the
+          Business Profile has real ones. */}
       <ServiceAreas />
 
       <Section id="faq" tone="white">

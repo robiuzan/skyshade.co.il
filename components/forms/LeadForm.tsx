@@ -73,6 +73,17 @@ export function LeadForm({ className }: { className?: string }) {
       return;
     }
 
+    // First-touch attribution, written by the inline snippet in app/layout.tsx and
+    // disclosed in /privacy/. Sent to the business inbox only — never into GA4.
+    let firstTouch: { ref?: string; landing?: string } = {};
+    try {
+      firstTouch = JSON.parse(sessionStorage.getItem("ss_first_touch") ?? "{}");
+    } catch {
+      /* storage unavailable — attribution is best-effort */
+    }
+    const service = (data.get("service") as string) || "לא צוין";
+    const message = (data.get("message") as string) || "";
+
     try {
       const res = await fetch(WEB3FORMS_ENDPOINT, {
         method: "POST",
@@ -83,15 +94,26 @@ export function LeadForm({ className }: { className?: string }) {
           from_name: siteConfig.name,
           name,
           phone,
-          service: (data.get("service") as string) || "לא צוין",
-          message: (data.get("message") as string) || "—",
+          service,
+          message: message || "—",
+          page: window.location.pathname,
+          first_touch_ref: firstTouch.ref ?? "",
+          first_touch_landing: firstTouch.landing ?? "",
+          // Spam-law (סע' 30א) gate: nurture beyond the specific request only when true.
+          marketing_consent: data.get("marketing_consent") === "on" ? "כן" : "לא",
         }),
       });
       const result: { success?: boolean } = await res.json();
       if (!res.ok || !result.success) throw new Error("bad status");
       setStatus("done");
       // GTM conversion hook: fires only on a CONFIRMED send (the dev simulation above does not).
-      trackEvent("lead_submit", { form: "lead" });
+      // No PII in params — GA4 ToS + privacy-law exposure.
+      trackEvent("lead_submit", {
+        form: "lead",
+        service,
+        has_message: !!message,
+        message_length: message.length,
+      });
     } catch {
       // Delivery failed. window.open after an await sits outside the user-gesture window and
       // is routinely popup-blocked, so the RENDERED recovery links below are the real
@@ -182,7 +204,7 @@ export function LeadForm({ className }: { className?: string }) {
           htmlFor="lf-message"
           className="mb-1 block text-sm font-medium text-gray-700"
         >
-          פרטים על הבעיה (אופציונלי)
+          ספרו לנו על הפרויקט (אופציונלי)
         </label>
         <textarea
           id="lf-message"
@@ -192,6 +214,18 @@ export function LeadForm({ className }: { className?: string }) {
           placeholder="לדוגמה: פרגולה חשמלית למרפסת בגודל 4×3 מ׳…"
         />
       </div>
+
+      {/* Marketing consent — unchecked by default (חוק הספאם: opt-in must be an active
+          choice, never pre-ticked). Submitting without it is fully allowed; it gates only
+          future updates/offers, not the reply to this request. */}
+      <label className="flex items-start gap-2 text-xs text-gray-600">
+        <input
+          type="checkbox"
+          name="marketing_consent"
+          className="mt-0.5 h-4 w-4 rounded border-gray-300 text-primary focus:ring-secondary/40"
+        />
+        <span>אני מאשר/ת קבלת עדכונים והצעות מ{siteConfig.name} (לא חובה)</span>
+      </label>
 
       {/* Honeypot */}
       <div className="hidden" aria-hidden>
@@ -238,6 +272,13 @@ export function LeadForm({ className }: { className?: string }) {
         <Send className="h-5 w-5" aria-hidden />
         {status === "sending" ? "שולח…" : "שליחה וקבלת הצעת מחיר"}
       </Button>
+
+      <p className="text-center text-xs text-gray-500">
+        הפרטים משמשים אך ורק לחזרה אליכם ·{" "}
+        <a href="/privacy/" className="underline hover:text-gray-700">
+          מדיניות פרטיות
+        </a>
+      </p>
 
       <p className="text-center text-xs text-gray-500">
         מעדיפים וואטסאפ?{" "}

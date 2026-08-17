@@ -48,6 +48,17 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl" className={heebo.variable}>
       <head>
+        {/* GTM belongs in <head> (was at the top of <body>, which delays tag firing and
+            undercounts fast bounces). */}
+        {gtmHead && <script id="gtm-init" dangerouslySetInnerHTML={{ __html: gtmHead }} />}
+        {/* First-touch attribution for the lead email (disclosed in /privacy/): captures
+            referrer + landing path once per session; LeadForm reads it on submit.
+            sessionStorage only — no cookie, no PII, nothing sent to analytics. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(!sessionStorage.getItem("ss_first_touch"))sessionStorage.setItem("ss_first_touch",JSON.stringify({ref:document.referrer||"(direct)",landing:location.pathname+location.search}))}catch(e){}`,
+          }}
+        />
         {manifest.images?.mediaHost && (
           <link rel="preconnect" href={`https://${manifest.images.mediaHost}`} crossOrigin="" />
         )}
@@ -64,7 +75,6 @@ export default function RootLayout({
             />
           </noscript>
         )}
-        {gtmHead && <script id="gtm-init" dangerouslySetInnerHTML={{ __html: gtmHead }} />}
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

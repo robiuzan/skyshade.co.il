@@ -8,7 +8,8 @@ import { aboutValues } from "@/lib/content";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/about/" },
-  title: "אודות סקיי שייד",
+  // Not "אודות סקיי שייד" — the layout template appends "| סקיי שייד", which doubled the brand.
+  title: "מי אנחנו",
   description:
     "סקיי שייד — מומחים לפרגולות ולפתרונות אלומיניום פרימיום מאז 2009. עיצוב בהתאמה אישית, חומרים מהמשובחים בשוק ואחריות מלאה, בכל הארץ.",
 };
