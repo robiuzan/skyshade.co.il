@@ -19,10 +19,14 @@ const heebo = Heebo({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.domain),
   title: {
-    default: "סקיי שייד — פרגולות ופתרונות אלומיניום פרימיום | שירות בכל הארץ",
+    // ≤60 chars, keyword-first: the old 63-char default truncated in the SERP.
+    default: "פרגולות אלומיניום ופתרונות חוץ בהתאמה אישית | סקיי שייד",
     template: `%s | ${siteConfig.name}`,
   },
-  description: manifest.shortPitch ?? siteConfig.tagline,
+  // Curated here rather than manifest.shortPitch: the pitch runs 163 chars and Google
+  // truncates at ~160. site.config.json is hub-synced, so the trim cannot live there.
+  description:
+    "מומחים לפרגולות, גדרות ושערי אלומיניום, פתרונות הצללה וגידור בהתאמה אישית. אלומיניום ברמת גימור גבוהה, שירות בכל הארץ מאז 2009.",
   alternates: { canonical: "/" },
   openGraph: {
       images: ogImageMeta(manifest.images),

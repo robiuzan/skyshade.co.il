@@ -6,7 +6,8 @@ import { Section } from "@/components/ui/Section";
 export const metadata: Metadata = {
   alternates: { canonical: "/terms/" },
   title: "תקנון ותנאי שימוש",
-  description: "תקנון ותנאי השימוש באתר סקיי שייד.",
+  description:
+    "תקנון ותנאי השימוש באתר סקיי שייד: מעמד המידע והתמונות באתר, קניין רוחני ותנאים לקבלת הצעת מחיר מחייבת.",
 };
 
 export default function TermsPage() {

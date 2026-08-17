@@ -6,7 +6,8 @@ import { Section } from "@/components/ui/Section";
 export const metadata: Metadata = {
   alternates: { canonical: "/privacy/" },
   title: "מדיניות פרטיות",
-  description: "מדיניות הפרטיות של אתר סקיי שייד.",
+  description:
+    "מדיניות הפרטיות של אתר סקיי שייד: איזה מידע נאסף בטופס, בטלפון ובוואטסאפ, כיצד הוא משמש ואיך פונים אלינו בנושא.",
 };
 
 export default function PrivacyPage() {

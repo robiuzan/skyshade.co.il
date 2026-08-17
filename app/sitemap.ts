@@ -3,11 +3,12 @@ import { siteConfig, services, locations } from "@/lib/site-config";
 
 /**
  * Generates /sitemap.xml from the static routes + the service and location matrices.
- * Extend `staticPaths` when new top-level pages are added.
+ * Extend `staticPaths` when new top-level pages are added — forgetting is caught by
+ * scripts/check-sitemap.mjs (postbuild), which fails the build on any drift between
+ * the exported pages and this sitemap.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteConfig.domain;
-  const now = new Date();
 
   /**
    * `trailingSlash: true` in next.config.mjs means the host serves `/about/` and
@@ -28,19 +29,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "terms",
   ];
 
+  // No lastModified: stamping the build time marked every URL "modified" on every deploy,
+  // a freshness signal Google learns to distrust. Add real per-page dates only when the
+  // content actually carries them.
   const staticEntries: MetadataRoute.Sitemap = staticPaths.map((path) => ({
     url: url(path),
-    lastModified: now,
   }));
 
   const serviceEntries: MetadataRoute.Sitemap = services.map((s) => ({
     url: url(`service/${s.slug}`),
-    lastModified: now,
   }));
 
   const locationEntries: MetadataRoute.Sitemap = locations.map((c) => ({
     url: url(`locations/${c.slug}`),
-    lastModified: now,
   }));
 
   return [...staticEntries, ...serviceEntries, ...locationEntries];

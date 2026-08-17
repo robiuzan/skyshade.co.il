@@ -19,7 +19,9 @@ export function generateMetadata({ params }: { params: { city: string } }): Meta
   if (!city) return {};
   return {
     alternates: { canonical: `/locations/${city.slug}/` },
-    title: `פרגולות אלומיניום ב${city.name} — פתרונות אלומיניום פרימיום`,
+    // Head term + city only; the old "— פתרונות אלומיניום פרימיום" qualifier pushed every
+    // city title to 63-70 chars and the brand suffix truncated in the SERP.
+    title: `פרגולות אלומיניום ב${city.name}`,
     description: `סקיי שייד — פרגולות, גדרות, שערים, דקים ומטבחי חוץ מאלומיניום ב${city.name}. עיצוב בהתאמה אישית, חומרים מהמשובחים בשוק ואחריות מלאה. שירות בכל הארץ.`,
   };
 }

@@ -19,41 +19,53 @@ interface ServiceMeta {
   tagline: string;
   description: string;
   icon: IconName;
+  /**
+   * <title> for the service page, WITHOUT the "| סקיי שייד" suffix (the layout template adds
+   * it). Keep ≤48 chars so the full title stays ≤60. Leads with the term buyers search
+   * (e.g. פרגולות אלומיניום, חיפוי קירות חוץ, דק סינטטי) rather than the display name.
+   */
+  seoTitle: string;
 }
 
 /** Per-service card copy, keyed by the slugs in site-config. */
 const serviceMeta: Record<ServiceSlug, ServiceMeta> = {
   pergolas: {
+    seoTitle: "פרגולות אלומיניום — מחסות, הצללה וגגות",
     tagline: "פרגולות ידניות וחשמליות",
     description:
       "פרגולות אלומיניום מעוצבות בהתאמה אישית, עם אפשרות חיפוי פוליקרבונט, זכוכית או גגות עץ — לצל, לנוחות ולערך מוסף לבית.",
     icon: "Sun",
   },
   "fences-gates": {
+    seoTitle: "גדרות ושערים מאלומיניום",
     tagline: "גדרות דקורטיביות ושערים חשמליים",
     description:
       "גדרות אלומיניום דקורטיביות ושערים חשמליים מעוצבים — פתרון גידור עמיד, מאובטח ומדויק לכניסה ולחצר.",
     icon: "Fence",
   },
   "wall-cladding": {
+    seoTitle: "חיפוי קירות חוץ — אלומיניום, קומפוזיט ו-HPL",
     tagline: "אלומיניום · קומפוזיט · HPL",
     description:
       "חיפוי קירות בלוחות אלומיניום, קומפוזיט או HPL — מראה מודרני ונקי לחזית הבית, עם עמידות גבוהה למים ולשמש.",
     icon: "LayoutGrid",
   },
   decks: {
+    seoTitle: "דקים לחצר ולגינה — דק סינטטי ועץ טבעי",
     tagline: "WPC ועץ טבעי",
     description:
       "דקים מ-WPC ומעץ טבעי — משטח חוץ חמים ועמיד למרפסת, לחצר ולסביבת הבריכה, בהתאמה אישית.",
     icon: "Layers",
   },
   "outdoor-kitchen": {
+    seoTitle: "מטבח חוץ — אלומיניום ואבן, גריל וכיור",
     tagline: "אלומיניום ואבן · גריל וכיור",
     description:
       "מטבחי חוץ מאלומיניום ואבן, עם אפשרות לגריל, כיור ומקרר — מרחב אירוח מושלם לחצר, עמיד לכל מזג אוויר.",
     icon: "Utensils",
   },
   "accordion-products": {
+    seoTitle: "תריסי אקורדיון וסגירת מרפסת",
     tagline: "תריסי אקורדיון וקירות הזזה",
     description:
       "תריסי אקורדיון, קירות הזזה ומחסומי רוח מאלומיניום — פתרונות גמישים לסגירת מרפסת ולהגנה מפני רוח וגשם.",
@@ -64,6 +76,7 @@ const serviceMeta: Record<ServiceSlug, ServiceMeta> = {
 export interface ServiceCard {
   slug: ServiceSlug;
   name: string;
+  seoTitle: string;
   tagline: string;
   description: string;
   icon: IconName;

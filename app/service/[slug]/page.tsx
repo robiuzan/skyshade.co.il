@@ -33,7 +33,9 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   if (!card) return {};
   return {
     alternates: { canonical: `/service/${card.slug}/` },
-    title: `${card.name} — אלומיניום פרימיום בהתאמה אישית`,
+    // Per-service query-led title (content.ts seoTitle). The old generic qualifier pushed
+    // pergolas/accordion past 60 chars and truncated the brand in the SERP.
+    title: card.seoTitle,
     description: card.description,
   };
 }

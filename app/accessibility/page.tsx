@@ -6,7 +6,8 @@ import { Section } from "@/components/ui/Section";
 export const metadata: Metadata = {
   alternates: { canonical: "/accessibility/" },
   title: "הצהרת נגישות",
-  description: "הצהרת הנגישות של אתר סקיי שייד בהתאם לתקן הישראלי.",
+  description:
+    "הצהרת הנגישות של אתר סקיי שייד: התאמות הנגישות שבוצעו באתר ודרכי פנייה אלינו בנושאי נגישות.",
 };
 
 export default function AccessibilityPage() {
