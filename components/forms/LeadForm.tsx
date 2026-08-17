@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, MessageCircle, Send } from "lucide-react";
-import { siteConfig, whatsappHref, services } from "@/lib/site-config";
+import { siteConfig, telHref, whatsappHref, services } from "@/lib/site-config";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@ishub/site-kit/analytics";
@@ -23,6 +23,8 @@ const WEB3FORMS_KEY =
 export function LeadForm({ className }: { className?: string }) {
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  /** WhatsApp deep link carrying the typed form data — the visible recovery path on failure. */
+  const [recoveryHref, setRecoveryHref] = useState<string | null>(null);
 
   function buildWhatsapp(form: HTMLFormElement): string {
     const d = new FormData(form);
@@ -46,10 +48,12 @@ export function LeadForm({ className }: { className?: string }) {
     const name = (data.get("name") as string)?.trim();
     const phone = (data.get("phone") as string)?.trim();
     if (!name || !phone) {
+      setRecoveryHref(null);
       setError("נא למלא שם וטלפון");
       return;
     }
     setError(null);
+    setRecoveryHref(null);
     setStatus("sending");
 
     // No access key (local dev only): simulate so `next dev` works. Production builds always
@@ -62,6 +66,9 @@ export function LeadForm({ className }: { className?: string }) {
         return;
       }
       setStatus("error");
+      setRecoveryHref(buildWhatsapp(form));
+      setError("השליחה מהאתר אינה זמינה כרגע — הפנייה לא נשלחה.");
+      trackEvent("lead_submit_failed", { form: "lead", reason: "no_key" });
       window.open(buildWhatsapp(form), "_blank", "noopener");
       return;
     }
@@ -86,8 +93,13 @@ export function LeadForm({ className }: { className?: string }) {
       // GTM conversion hook: fires only on a CONFIRMED send (the dev simulation above does not).
       trackEvent("lead_submit", { form: "lead" });
     } catch {
-      // Fall back to WhatsApp so the lead is never lost.
+      // Delivery failed. window.open after an await sits outside the user-gesture window and
+      // is routinely popup-blocked, so the RENDERED recovery links below are the real
+      // fallback — the open() is a best-effort bonus only.
+      setRecoveryHref(buildWhatsapp(form));
+      setError("השליחה נכשלה והפנייה לא הגיעה אלינו.");
       setStatus("error");
+      trackEvent("lead_submit_failed", { form: "lead", reason: "delivery" });
       window.open(buildWhatsapp(form), "_blank", "noopener");
     }
   }
@@ -194,9 +206,26 @@ export function LeadForm({ className }: { className?: string }) {
       </div>
 
       {error && (
-        <p role="alert" className="text-sm font-medium text-red-600">
-          {error}
-        </p>
+        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm">
+          <p className="font-medium text-red-700">{error}</p>
+          {recoveryHref && (
+            <p className="mt-2 text-gray-700">
+              כדי שהפנייה לא תלך לאיבוד:{" "}
+              <a
+                href={recoveryHref}
+                target="_blank"
+                rel="noopener"
+                className="font-semibold text-[#0E7A34] underline"
+              >
+                שליחת הפרטים בוואטסאפ
+              </a>{" "}
+              או חיוג ישיר:{" "}
+              <a href={telHref} className="font-semibold text-primary underline" dir="ltr">
+                {siteConfig.phone}
+              </a>
+            </p>
+          )}
+        </div>
       )}
 
       <Button
@@ -214,7 +243,7 @@ export function LeadForm({ className }: { className?: string }) {
         מעדיפים וואטסאפ?{" "}
         <a
           href={whatsappHref("היי, אני מעוניין/ת בהצעת מחיר לפרויקט אלומיניום")}
-          className="inline-flex items-center gap-1 font-semibold text-[#1da851] hover:underline"
+          className="inline-flex items-center gap-1 font-semibold text-[#0E7A34] hover:underline"
         >
           <MessageCircle className="h-3.5 w-3.5" aria-hidden />
           שלחו לנו הודעה

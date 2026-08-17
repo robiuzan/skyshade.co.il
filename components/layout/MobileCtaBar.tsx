@@ -17,7 +17,7 @@ export function MobileCtaBar() {
       </a>
       <a
         href={whatsappHref("היי, אני מעוניין/ת בהצעת מחיר לפרויקט אלומיניום")} data-cta="sticky-whatsapp"
-        className="flex items-center justify-center gap-2 bg-[#25D366] py-3.5 font-semibold text-white"
+        className="flex items-center justify-center gap-2 bg-[#0E7A34] py-3.5 font-semibold text-white"
         aria-label={`וואטסאפ ${siteConfig.name}`}
       >
         <MessageCircle className="h-5 w-5" aria-hidden />

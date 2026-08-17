@@ -35,8 +35,7 @@ export default function AccessibilityPage() {
           <p>
             נתקלתם בקושי? נשמח לסייע. ניתן לפנות לרכז הנגישות בטלפון{" "}
             <span dir="ltr">{siteConfig.phone}</span> או בדוא״ל{" "}
-            <span dir="ltr">{siteConfig.email}</span>.{" "}
-            <span className="text-gray-400">🔶 פרטי רכז נגישות ותאריך עדכון לאישור.</span>
+            <span dir="ltr">{siteConfig.email}</span>.
           </p>
         </div>
       </Section>

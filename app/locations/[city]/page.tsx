@@ -62,8 +62,10 @@ export default function LocationPage({ params }: { params: { city: string } }) {
             הגבוהה ביותר, עמידים בחלודה, ב-UV ובכל מזג אוויר.
           </p>
           <p className="mt-4 text-gray-700">
+            {/* {" "} is required: JSX drops newline whitespace adjacent to an expression,
+                which previously rendered "תל אביבוהסביבה" with no space. */}
             מ-2009 אנחנו מעצבים מרחבי חוץ ללקוחות פרטיים ועסקיים בכל הארץ, כולל {city.name}
-            והסביבה. כל פרויקט מלווה בייעוץ ומדידה ללא עלות, הצעת מחיר שקופה ואחריות מלאה
+            {" "}והסביבה. כל פרויקט מלווה בייעוץ ומדידה ללא עלות, הצעת מחיר שקופה ואחריות מלאה
             על העבודה ועל המוצר.
           </p>
 

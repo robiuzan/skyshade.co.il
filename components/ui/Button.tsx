@@ -10,7 +10,9 @@ const base =
 const variants: Record<Variant, string> = {
   accent: "bg-accent text-accent-foreground hover:bg-accent-600",
   primary: "bg-primary text-primary-foreground hover:bg-primary-500",
-  whatsapp: "bg-[#25D366] text-white hover:bg-[#1da851]",
+  // #0E7A34 is the darkest WhatsApp-family green that gives white text ≥4.5:1 (WCAG AA,
+  // binding in Israel via IS 5568). Brand #25D366 stays on icons only, where 3:1 suffices.
+  whatsapp: "bg-[#0E7A34] text-white hover:bg-[#0B6229]",
   outline: "border-2 border-primary text-primary hover:bg-primary hover:text-white",
 };
 

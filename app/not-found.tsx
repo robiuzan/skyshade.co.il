@@ -1,6 +1,18 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
-/** 404 (הדף לא נמצא) — scaffold placeholder. */
+/**
+ * Own title + noindex, and alternates WITHOUT a canonical: inheriting the root layout's
+ * metadata gave the 404 the homepage title and a canonical to "/" — a soft-404 signal.
+ * (alternates here replaces the layout's whole alternates object; Next does not deep-merge.)
+ */
+export const metadata: Metadata = {
+  title: "הדף לא נמצא",
+  robots: { index: false },
+  alternates: { canonical: null },
+};
+
+/** 404 (הדף לא נמצא). */
 export default function NotFound() {
   return (
     <div className="mx-auto flex min-h-[60vh] max-w-6xl flex-col items-center justify-center px-4 py-16 text-center">

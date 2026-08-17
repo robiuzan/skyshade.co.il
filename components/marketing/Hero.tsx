@@ -20,7 +20,7 @@ export function Hero() {
       <Container className="relative grid items-center gap-10 py-14 sm:py-20 lg:grid-cols-2">
         <div>
           <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-accent/15 px-3 py-1 text-sm font-semibold text-accent-200">
-            מספר 1 בישראל · מאז 2009
+            מאז 2009 · שירות בכל הארץ
           </p>
           <h1 className="font-heading text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
             סקיי שייד — פרגולות ופתרונות אלומיניום פרימיום

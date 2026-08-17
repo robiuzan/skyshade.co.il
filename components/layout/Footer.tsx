@@ -61,7 +61,8 @@ export function Footer() {
         <nav aria-label="אזורי שירות">
           <p className="font-semibold text-white">אזורי שירות</p>
           <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-            {locations.slice(0, 12).map((c) => (
+            {/* All cities — a subset here starves the rest of sitewide internal links. */}
+            {locations.map((c) => (
               <li key={c.slug}>
                 <Link href={`/locations/${c.slug}`} className="text-white/70 hover:text-white">
                   {c.name}

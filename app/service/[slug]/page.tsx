@@ -45,7 +45,8 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
   if (!card) notFound();
 
   const detail = serviceDetails[card.slug];
-  const others = serviceCards.filter((c) => c.slug !== card.slug).slice(0, 4);
+  // All 5 siblings — the old .slice(0, 4) silently dropped the last service from every page.
+  const others = serviceCards.filter((c) => c.slug !== card.slug);
 
   const jsonLd = [
     serviceJsonLd(manifest, {
