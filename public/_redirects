@@ -2,10 +2,9 @@
 # Legacy WordPress URLs get appended here (Bulk list) once discovery (Wayback CDX + GSC
 # 404 report) produces the old→new map — never blanket-to-home.
 
-# www → apex. Requires www.skyshade.co.il to be attached to the Pages project as a custom
-# domain (Workers & Pages → skyshade → Custom domains); until then Cloudflare DNS/rules
-# must do it.
-https://www.skyshade.co.il/* https://skyshade.co.il/:splat 301
+# NOTE: www → apex is NOT here. Pages _redirects cannot match on hostname (verified live
+# 2026-08-23 — a domain-level line is silently ignored). It is a zone Redirect Rule:
+# Cloudflare → skyshade.co.il → Rules → Redirect Rules → template "Redirect from WWW to Root".
 
 # Pre-media-pipeline project photos that external pages may still hot-link → the CDN.
 /project-* https://imgquarry.com/cdn-cgi/image/width=1600,quality=85,format=auto/skyshade/gallery/project-:splat 301
