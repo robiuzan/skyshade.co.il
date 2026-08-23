@@ -1,4 +1,15 @@
-name: Deploy to GitHub Pages
+name: Build and deploy to Cloudflare Pages
+
+# The live site (skyshade.co.il ≡ skyshade.pages.dev) is the Cloudflare Pages project
+# "skyshade", created as a Direct Upload project. Direct Upload projects cannot be switched
+# to Git integration, so this workflow IS the integration: build here, then push `out/`
+# to the project with wrangler. Production = the `main` branch deployment.
+#
+# Required repository secrets (Settings → Secrets and variables → Actions):
+#   CLOUDFLARE_API_TOKEN   — custom token with permission  Account › Cloudflare Pages › Edit
+#   CLOUDFLARE_ACCOUNT_ID  — from Workers & Pages overview (right sidebar) or the dashboard URL
+# Until both exist the build still runs (and the sitemap guard still gates it), but the
+# deploy step is skipped with a notice instead of failing.
 
 on:
   push:
@@ -9,20 +20,19 @@ on:
     # years-in-business) and lets seasonal copy rotate without a manual deploy.
     - cron: "0 4 1 * *"
 
-# Allow the workflow to publish to GitHub Pages via OIDC.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
-# Only one concurrent Pages deployment; don't cancel an in-progress one.
+# One deploy at a time; let an in-progress one finish.
 concurrency:
-  group: pages
+  group: cloudflare-pages
   cancel-in-progress: false
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      HAS_CF_SECRETS: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -30,19 +40,21 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+
+      # `postbuild` runs scripts/check-sitemap.mjs and fails the build on sitemap drift.
       - name: Build static export
         run: npm run build
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: out
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Deploy to Cloudflare Pages (project "skyshade", production branch main)
+        if: env.HAS_CF_SECRETS == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy out --project-name=skyshade --branch=main --commit-dirty=true
+
+      - name: Deploy skipped — Cloudflare secrets not configured
+        if: env.HAS_CF_SECRETS != 'true'
+        run: |
+          echo "::warning::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID are not set, so nothing was deployed."
+          echo "::warning::Add both repository secrets, then re-run this workflow (Actions → Run workflow)."
