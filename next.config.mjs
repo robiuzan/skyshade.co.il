@@ -3,9 +3,11 @@ const nextConfig = {
   reactStrictMode: true,
   // Shared hub package (@ishub/site-kit) ships raw TS; Next must transpile it.
   transpilePackages: ["@ishub/site-kit"],
-  // Static HTML export — deployed to GitHub Pages by .github/workflows/deploy.yml and
-  // fronted by Cloudflare. There is NO server config on the host: all redirects and
-  // response headers live in Cloudflare Rules (the old cPanel/.htaccess era is over).
+  // Static HTML export. The LIVE site (skyshade.co.il = skyshade.pages.dev) is a Cloudflare
+  // Pages project; response headers and redirects ship from public/_headers and
+  // public/_redirects inside out/. NOTE: .github/workflows/deploy.yml publishes to GitHub
+  // Pages, which nothing points at — connect the Pages project to this repo (Workers &
+  // Pages → skyshade → Settings → Builds) or deploy with `wrangler pages deploy out`.
   output: "export",
   trailingSlash: true,
   images: {
