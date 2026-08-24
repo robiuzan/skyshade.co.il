@@ -11,12 +11,14 @@ import {
   whatsappHref,
 } from "@/lib/site-config";
 import { serviceCards, serviceDetails, processSteps } from "@/lib/content";
+import { guides } from "@/lib/guides";
 import {
-  serviceJsonLd,
-  breadcrumbJsonLd,
-  faqJsonLd,
-  jsonLdScript,
-} from "@ishub/site-kit/seo";
+  serviceNode,
+  webPageNode,
+  breadcrumbNode,
+  faqNode,
+  graphScript,
+} from "@/lib/seo-graph";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
@@ -49,28 +51,32 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
   const detail = serviceDetails[card.slug];
   // All 5 siblings — the old .slice(0, 4) silently dropped the last service from every page.
   const others = serviceCards.filter((c) => c.slug !== card.slug);
+  // Guides that feed this service. The link runs both ways: the guide sends buying intent here,
+  // this page sends the "before I decide" questions there instead of answering them inline and
+  // diluting a transactional page.
+  const related = guides.filter((g) => g.service.slug === card.slug);
 
-  const jsonLd = [
-    serviceJsonLd(manifest, {
-      name: card.name,
+  const path = `/service/${card.slug}/`;
+  const jsonLd = graphScript([
+    webPageNode({
+      path,
+      name: card.seoTitle,
       description: card.description,
-      slug: card.slug,
-      url: `${manifest.url}/service/${card.slug}/`,
+      hasBreadcrumb: true,
     }),
-    breadcrumbJsonLd(manifest, [
+    serviceNode({ slug: card.slug, name: card.name, description: card.description }),
+    breadcrumbNode(path, [
       { name: "בית", path: "/" },
       { name: "השירותים שלנו", path: "/services/" },
-      { name: card.name, path: `/service/${card.slug}/` },
+      { name: card.name, path },
     ]),
-    faqJsonLd([...detail.faqs]),
-  ];
+    // Every answer below appears verbatim in the rendered <Faq> further down this page.
+    faqNode(path, detail.faqs),
+  ]);
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
 
       <PageHeader
         title={card.name}
@@ -144,6 +150,29 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
             </div>
           </aside>
         </div>
+
+        {/* Guides for this service — placed before the FAQ so a reader still deciding has
+            somewhere to go that isn't the exit. */}
+        {related.length > 0 && (
+          <div className="mt-14 border-t border-gray-100 pt-10">
+            <h2 className="font-heading text-xl font-bold text-primary">
+              לפני שמזמינים — מדריכים
+            </h2>
+            <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+              {related.map((g) => (
+                <li key={g.slug}>
+                  <Link
+                    href={`/guides/${g.slug}`}
+                    className="flex h-full flex-col gap-1 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 hover:border-secondary"
+                  >
+                    <span className="text-sm font-semibold text-primary">{g.title}</span>
+                    <span className="text-sm text-gray-600">{g.summary}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Per-service FAQ */}
         <div className="mt-14">

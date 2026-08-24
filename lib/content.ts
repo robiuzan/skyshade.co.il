@@ -388,8 +388,12 @@ export const faqs = [
 export const navItems = [
   { label: "השירותים שלנו", href: "/services" },
   { label: "אזורי שירות", href: "/locations" },
-  { label: "אודות", href: "/about" },
+  // The guides silo carries the commercial/informational queries the service pages cannot own
+  // without losing their transactional intent. It needs a primary-nav entry or every guide is
+  // three clicks deep and effectively orphaned.
+  { label: "מדריכים", href: "/guides" },
   { label: "גלריה", href: "/gallery" },
+  { label: "אודות", href: "/about" },
   { label: "צור קשר", href: "/contact" },
 ] as const;
 

@@ -62,7 +62,11 @@ export const services = [
   { slug: "wall-cladding", name: "חיפוי קירות" },
   { slug: "decks", name: "דקים" },
   { slug: "outdoor-kitchen", name: "מטבח חוץ" },
-  { slug: "accordion-products", name: "מוצרים אקורדיאוניים" },
+  // Display name is what people search and recognise; "מוצרים אקורדיאוניים" is trade jargon
+  // nobody types. Slug deliberately unchanged — renaming the URL would discard its ranking
+  // signal for no gain. The <title> (content.ts seoTitle) stays frozen until the 90-day title
+  // freeze lifts ~2026-11-21, then becomes "סגירת מרפסות ותריסי אקורדיון".
+  { slug: "accordion-products", name: "סגירת מרפסות ותריסי אקורדיון" },
 ] as const;
 
 export type ServiceSlug = (typeof services)[number]["slug"];

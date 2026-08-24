@@ -5,6 +5,24 @@ import { locations } from "@/lib/site-config";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
+import { webPageNode, breadcrumbNode, itemListNode, graphScript } from "@/lib/seo-graph";
+
+const jsonLd = graphScript([
+  webPageNode({
+    path: "/locations/",
+    name: "אזורי שירות",
+    type: "CollectionPage",
+    hasBreadcrumb: true,
+  }),
+  breadcrumbNode("/locations/", [
+    { name: "בית", path: "/" },
+    { name: "אזורי שירות", path: "/locations/" },
+  ]),
+  itemListNode(
+    "/locations/",
+    locations.map((c) => ({ name: c.name, path: `/locations/${c.slug}/` })),
+  ),
+]);
 
 export const metadata: Metadata = {
   alternates: { canonical: "/locations/" },
@@ -16,6 +34,7 @@ export const metadata: Metadata = {
 export default function LocationsPage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       <PageHeader
         title="אזורי שירות"
         subtitle="שירות בכל הארץ — פרגולות, גדרות, שערים, דקים ומטבחי חוץ מאלומיניום. בחרו את העיר שלכם לפרטים נוספים."

@@ -1,7 +1,7 @@
 import { manifest } from "@/lib/site-config";
 import { faqs } from "@/lib/content";
 import { homeGalleryItems, homeGalleryCategories, siteImages } from "@/lib/gallery";
-import { localBusinessJsonLd, faqJsonLd, jsonLdScript } from "@ishub/site-kit/seo";
+import { webPageNode, faqNode, graphScript } from "@/lib/seo-graph";
 import { srcFor } from "@ishub/site-kit/media";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -15,30 +15,27 @@ import { ServiceAreas } from "@/components/marketing/ServiceAreas";
 import { Faq } from "@/components/marketing/Faq";
 import { FinalCta } from "@/components/marketing/FinalCta";
 
-// Site-wide LocalBusiness (HomeAndConstructionBusiness) JSON-LD — manifest-driven, plus the FAQ graph.
-// Prefer the media catalog so the structured data points at the same canonical objects the page
-// renders. Google rejects SVG for LocalBusiness.image, so `image` is the raster OG card.
-// The public/ paths are the pre-media-pipeline fallback and can go once this site stays wired.
+// The business + WebSite nodes now render site-wide from app/layout.tsx (lib/seo-graph.ts), so
+// this page adds only its own WebPage and FAQPage — both referencing the business by @id rather
+// than restating it. A second business node here would fragment the entity, which is exactly
+// what the old standalone-node output did.
 const jsonLdImages = manifest.images ?? null;
-const jsonLd = [
-  localBusinessJsonLd(manifest, {
-    logo: jsonLdImages?.logo
-      ? srcFor(jsonLdImages, jsonLdImages.logo, { fit: "contain" })
-      : "/skysgade-logo-1-1.png",
-    image: jsonLdImages?.og
+const jsonLd = graphScript([
+  webPageNode({
+    path: "/",
+    name: "פרגולות אלומיניום ופתרונות חוץ בהתאמה אישית",
+    description: manifest.shortPitch ?? undefined,
+    primaryImage: jsonLdImages?.og
       ? srcFor(jsonLdImages, jsonLdImages.og, { fit: "cover" })
-      : "/project-1.webp",
+      : undefined,
   }),
-  faqJsonLd([...faqs]),
-];
+  faqNode("/", faqs),
+]);
 
 export default function HomePage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       <Hero />
       <TrustBar />
       <ServicesGrid />

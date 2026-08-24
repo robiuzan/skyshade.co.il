@@ -2,9 +2,14 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
-import { locations, type LocationSlug, manifest } from "@/lib/site-config";
+import { locations, type LocationSlug } from "@/lib/site-config";
 import { serviceCards } from "@/lib/content";
-import { breadcrumbJsonLd, jsonLdScript } from "@ishub/site-kit/seo";
+import {
+  webPageNode,
+  breadcrumbNode,
+  cityServiceNode,
+  graphScript,
+} from "@/lib/seo-graph";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
@@ -32,18 +37,28 @@ export default function LocationPage({ params }: { params: { city: string } }) {
   const city = locations.find((c) => c.slug === slug);
   if (!city) notFound();
 
-  const jsonLd = breadcrumbJsonLd(manifest, [
-    { name: "בית", path: "/" },
-    { name: "אזורי שירות", path: "/locations/" },
-    { name: city.name, path: `/locations/${city.slug}/` },
+  const path = `/locations/${city.slug}/`;
+  // A Service scoped to this city — deliberately NOT a LocalBusiness node. Per-city business
+  // nodes would claim branches that do not exist (fabricated E-E-A-T, and a Business Profile
+  // verification mismatch later). No FAQPage here either: the city FAQs are not yet unique,
+  // and duplicate FAQ markup across 16 near-identical pages is a doorway signal.
+  const jsonLd = graphScript([
+    webPageNode({
+      path,
+      name: `פרגולות אלומיניום ב${city.name}`,
+      hasBreadcrumb: true,
+    }),
+    cityServiceNode(city),
+    breadcrumbNode(path, [
+      { name: "בית", path: "/" },
+      { name: "אזורי שירות", path: "/locations/" },
+      { name: city.name, path },
+    ]),
   ]);
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
 
       <PageHeader
         title={`פרגולות אלומיניום ב${city.name}`}

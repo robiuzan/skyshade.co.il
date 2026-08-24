@@ -67,7 +67,7 @@ export function Hero() {
             השאירו פרטים ונחזור אליכם עם פתרון מותאם — ללא התחייבות.
           </p>
           <div className="mt-5">
-            <LeadForm />
+            <LeadForm location="home-hero" />
           </div>
         </div>
       </Container>

@@ -20,11 +20,30 @@ const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 const WEB3FORMS_KEY =
   siteConfig.formAccessKey ?? process.env.NEXT_PUBLIC_WEB3FORMS_KEY ?? "";
 
-export function LeadForm({ className }: { className?: string }) {
+export function LeadForm({
+  className,
+  /**
+   * Where this instance sits, sent as `form_location` on every event. Without it the
+   * form_start → generate_lead funnel cannot be read per placement, which is the whole point
+   * of measuring it. Categorical only — never anything derived from user input.
+   */
+  location = "unknown",
+}: {
+  className?: string;
+  location?: string;
+}) {
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   /** WhatsApp deep link carrying the typed form data — the visible recovery path on failure. */
   const [recoveryHref, setRecoveryHref] = useState<string | null>(null);
+  /** form_start fires once per mount, on first interaction — not on render. */
+  const [started, setStarted] = useState(false);
+
+  function handleFirstInteraction() {
+    if (started) return;
+    setStarted(true);
+    trackEvent("form_start", { form_location: location });
+  }
 
   function buildWhatsapp(form: HTMLFormElement): string {
     const d = new FormData(form);
@@ -68,7 +87,7 @@ export function LeadForm({ className }: { className?: string }) {
       setStatus("error");
       setRecoveryHref(buildWhatsapp(form));
       setError("השליחה מהאתר אינה זמינה כרגע — הפנייה לא נשלחה.");
-      trackEvent("lead_submit_failed", { form: "lead", reason: "no_key" });
+      trackEvent("lead_submit_failed", { form_location: location, error_type: "no_key" });
       window.open(buildWhatsapp(form), "_blank", "noopener");
       return;
     }
@@ -107,12 +126,15 @@ export function LeadForm({ className }: { className?: string }) {
       if (!res.ok || !result.success) throw new Error("bad status");
       setStatus("done");
       // GTM conversion hook: fires only on a CONFIRMED send (the dev simulation above does not).
-      // No PII in params — GA4 ToS + privacy-law exposure.
-      trackEvent("lead_submit", {
-        form: "lead",
+      // Named `generate_lead` to match the GA4 recommended event — the tag spec and the KPI set
+      // in docs/measurement-plan.md both key off this name.
+      // No PII in params — GA4 ToS + privacy-law exposure. `service` is the <select> value,
+      // never the free-text message.
+      trackEvent("generate_lead", {
+        form_location: location,
         service,
+        consent: data.get("marketing_consent") === "on",
         has_message: !!message,
-        message_length: message.length,
       });
     } catch {
       // Delivery failed. window.open after an await sits outside the user-gesture window and
@@ -121,7 +143,7 @@ export function LeadForm({ className }: { className?: string }) {
       setRecoveryHref(buildWhatsapp(form));
       setError("השליחה נכשלה והפנייה לא הגיעה אלינו.");
       setStatus("error");
-      trackEvent("lead_submit_failed", { form: "lead", reason: "delivery" });
+      trackEvent("lead_submit_failed", { form_location: location, error_type: "delivery" });
       window.open(buildWhatsapp(form), "_blank", "noopener");
     }
   }
@@ -146,7 +168,14 @@ export function LeadForm({ className }: { className?: string }) {
     "w-full rounded-lg border border-gray-300 px-3 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/40";
 
   return (
-    <form onSubmit={handleSubmit} className={cn("space-y-4", className)} noValidate>
+    <form
+      onSubmit={handleSubmit}
+      // onFocus bubbles in React (unlike the DOM), so one handler on the form covers every
+      // field. Keyboard and pointer both reach it; a render alone does not.
+      onFocus={handleFirstInteraction}
+      className={cn("space-y-4", className)}
+      noValidate
+    >
       <div>
         <label htmlFor="lf-name" className="mb-1 block text-sm font-medium text-gray-700">
           שם מלא
@@ -177,7 +206,7 @@ export function LeadForm({ className }: { className?: string }) {
           autoComplete="tel"
           required
           dir="ltr"
-          className={cn(fieldClass, "text-right")}
+          className={cn(fieldClass, "text-start")}
           placeholder="050-0000000"
         />
       </div>

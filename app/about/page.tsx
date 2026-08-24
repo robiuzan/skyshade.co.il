@@ -5,6 +5,23 @@ import { Section } from "@/components/ui/Section";
 import { TrustBar } from "@/components/marketing/TrustBar";
 import { FinalCta } from "@/components/marketing/FinalCta";
 import { aboutValues } from "@/lib/content";
+import { webPageNode, breadcrumbNode, graphScript } from "@/lib/seo-graph";
+
+// AboutPage → the one business node. A `founder` Person node belongs here too, but only with a
+// real named, consenting human — see docs/owner-intake-checklist.md §3.
+const jsonLd = graphScript([
+  webPageNode({
+    path: "/about/",
+    name: "אודות סקיי שייד",
+    description: "סקיי שייד — אלומיניום לחוץ מאז 2009, בשירות ארצי.",
+    type: "AboutPage",
+    hasBreadcrumb: true,
+  }),
+  breadcrumbNode("/about/", [
+    { name: "בית", path: "/" },
+    { name: "אודות", path: "/about/" },
+  ]),
+]);
 
 export const metadata: Metadata = {
   alternates: { canonical: "/about/" },
@@ -17,6 +34,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       <PageHeader
         title="אודות סקיי שייד"
         subtitle="מעצבים לכם את החוץ — אלומיניום ברמת הגימור הגבוהה ביותר, מאז 2009."
@@ -26,9 +44,12 @@ export default function AboutPage() {
       <Section tone="white">
         <div className="mx-auto max-w-3xl">
           <p className="text-lg leading-relaxed text-gray-700">
-            סקיי שייד פועלת משנת 2009 כחברת אלומיניום פרימיום המתמחה בפרגולות ובפתרונות
-            הצללה וגידור לחוץ. לאורך השנים הפכנו למובילים בתחום, עם מאות פרויקטים בכל רחבי
-            הארץ — פרגולות ידניות וחשמליות, גדרות ושערים, חיפויי קירות, דקים ומטבחי חוץ.
+            {/* Was: "הפכנו למובילים בתחום, עם מאות פרויקטים". Both are unverifiable — a
+                superlative and a project count nobody has confirmed (docs/evidence-register.md).
+                Restore a count only with a real number from the owner. */}
+            סקיי שייד פועלת משנת 2009 כחברת אלומיניום המתמחה בפרגולות ובפתרונות הצללה
+            וגידור לחוץ — פרגולות ידניות וחשמליות, גדרות ושערים, חיפויי קירות, דקים ומטבחי
+            חוץ. אנחנו מתכננים, מייצרים ומתקינים בעצמנו, בשירות ארצי.
           </p>
           <p className="mt-4 text-gray-700">
             האמונה שלנו פשוטה: לחוץ מגיע אותו יחס כמו לפנים. לכן כל פרויקט מתוכנן ומיוצר

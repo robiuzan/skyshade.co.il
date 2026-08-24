@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { MobileCtaBar } from "@/components/layout/MobileCtaBar";
 import { gtmHeadSnippet, gtmNoScriptSrc } from "@ishub/site-kit/analytics";
+import { businessNode, websiteNode, graphScript } from "@/lib/seo-graph";
 import "./globals.css";
 
 // Heebo — clean, legible Hebrew — for both body and headings (brand font).
@@ -42,6 +43,14 @@ export const metadata: Metadata = {
 const gtmHead = gtmHeadSnippet(manifest.analytics?.gtmId);
 const gtmNoScript = gtmNoScriptSrc(manifest.analytics?.gtmId);
 
+/**
+ * The entity anchor, on EVERY page. Page templates emit their own @graph script with the
+ * page-typed nodes, which reference these two by @id. Site-wide placement is deliberate: an
+ * assistant landing on any deep URL must be able to resolve who the business is from that
+ * page alone. See lib/seo-graph.ts.
+ */
+const entityGraph = graphScript([businessNode(), websiteNode()]);
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -62,6 +71,10 @@ export default function RootLayout({
         {manifest.images?.mediaHost && (
           <link rel="preconnect" href={`https://${manifest.images.mediaHost}`} crossOrigin="" />
         )}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: entityGraph }}
+        />
       </head>
       <body className="flex min-h-screen flex-col font-sans">
         {gtmNoScript && (

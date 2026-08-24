@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { siteConfig, services, locations } from "@/lib/site-config";
+import { guidePaths } from "@/lib/guides";
 
 /**
  * Generates /sitemap.xml from the static routes + the service and location matrices.
@@ -21,6 +22,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "services",
     "locations",
+    "guides",
+    ...guidePaths,
     "about",
     "gallery",
     "contact",

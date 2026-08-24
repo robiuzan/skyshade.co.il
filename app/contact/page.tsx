@@ -4,6 +4,23 @@ import { siteConfig, telHref, whatsappHref } from "@/lib/site-config";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { LeadForm } from "@/components/forms/LeadForm";
+import { webPageNode, breadcrumbNode, graphScript, BUSINESS_ID } from "@/lib/seo-graph";
+
+const jsonLd = graphScript([
+  {
+    ...webPageNode({
+      path: "/contact/",
+      name: "צור קשר",
+      type: "ContactPage",
+      hasBreadcrumb: true,
+    }),
+    mainEntity: { "@id": BUSINESS_ID },
+  },
+  breadcrumbNode("/contact/", [
+    { name: "בית", path: "/" },
+    { name: "צור קשר", path: "/contact/" },
+  ]),
+]);
 
 export const metadata: Metadata = {
   alternates: { canonical: "/contact/" },
@@ -15,6 +32,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       <PageHeader
         title="צור קשר"
         subtitle="מענה מהיר, ייעוץ ומדידה ללא עלות והצעת מחיר ללא התחייבות."
@@ -88,7 +106,7 @@ export default function ContactPage() {
             </h2>
             <p className="mt-1 text-sm text-gray-600">השאירו פרטים ונחזור אליכם בהקדם.</p>
             <div className="mt-5">
-              <LeadForm />
+              <LeadForm location="contact-page" />
             </div>
           </div>
         </div>
