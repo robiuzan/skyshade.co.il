@@ -107,6 +107,38 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
               ))}
             </ul>
 
+            {/* Deep-dive sections. Present on pergolas only — the head-term page. Adding a
+                shared section to all six would raise word count and leave the 57% cross-page
+                overlap exactly where it was. */}
+            {detail.sections?.map((s) => (
+              <section key={s.heading}>
+                <h2 className="mt-10 font-heading text-xl font-bold text-primary">
+                  {s.heading}
+                </h2>
+                {s.body && <p className="mt-3 leading-relaxed text-gray-700">{s.body}</p>}
+                {s.items && (
+                  <dl className="mt-4 space-y-3">
+                    {s.items.map((it) => (
+                      <div key={it.term}>
+                        <dt className="font-semibold text-primary">{it.term}</dt>
+                        <dd className="mt-0.5 leading-relaxed text-gray-700">{it.text}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
+                {s.link && (
+                  <p className="mt-3">
+                    <Link
+                      href={s.link.href}
+                      className="text-sm font-medium text-secondary underline"
+                    >
+                      {s.link.label} ←
+                    </Link>
+                  </p>
+                )}
+              </section>
+            ))}
+
             <h2 className="mt-10 font-heading text-xl font-bold text-primary">
               איך אנחנו עובדים
             </h2>

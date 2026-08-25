@@ -47,7 +47,7 @@ to write a plausible number.
 | Named team + photos | none supplied | E-E-A-T, `Person` schema, `/about/` |
 | Response time (e.g. "תוך 24 שעות") | never confirmed | form copy, CTA microcopy |
 | Per-city delivered projects | unknown | which city pages survive the doorway cull |
-| Lead time / installation duration | never confirmed | service pages, guides, AI-citable facts |
+| Lead time / installation duration | never confirmed — ⚠️ **but the pergola FAQ already asserts "1–3 ימי עבודה" live** (`lib/content.ts:227`, and it ships inside FAQPage markup). Pre-existing, not newly added. Confirm it or correct it at the intake; do not extend the pattern to other services meanwhile | service pages, guides, AI-citable facts |
 | Materials / suppliers / finishes | partially known from copy | spec tables, comparison guides |
 | ~~Social profiles (Facebook, Instagram)~~ | ✅ **UNBLOCKED 2026-08-25** — GBP, Facebook and Instagram supplied by the owner and verified live | Done: `schema.sameAs` + `hasMap` + footer links. Still to do — add them to the hub roster, and see the GBP note below |
 
