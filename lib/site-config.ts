@@ -44,12 +44,39 @@ export const siteConfig = {
   },
 
   // ── Social / listings — fill when available ──────────────────────────────
+  /**
+   * Official profiles, confirmed live 2026-08-25. These are the entity-corroboration signals
+   * the audit called the single biggest gap: with nothing to corroborate it, "סקיי שייד" does
+   * not resolve to this business in Google's or an assistant's entity graph.
+   *
+   * They live HERE and not in site.config.json because that file is synced from the hub roster
+   * and local edits to synced fields are overwritten (CLAUDE.md §2 rule 4). lib/seo-graph.ts
+   * merges these into schema.sameAs, so the footer and the structured data cannot drift apart.
+   *
+   * 🔶 TODO: also add these to the hub roster (Israeli services sites/roster/sites/skyshade.json,
+   * schema.sameAs) so every other consumer of the manifest gets them too.
+   *
+   * Facebook is the CANONICAL /people/ URL — the profile.php?id= form 301s to it, and sameAs
+   * should name the destination, not a redirect.
+   */
   social: {
-    facebook: "", // 🔶
-    instagram: "", // 🔶
-    googleBusiness: "", // 🔶
+    facebook:
+      "https://www.facebook.com/people/Sky-Shade-%D7%A1%D7%A7%D7%99%D7%99-%D7%A9%D7%99%D7%99%D7%93/61568329760860/",
+    instagram: "https://www.instagram.com/skyshade2026/",
+    /** GBP share link. Deliberately the short form: the expanded /maps/place/ URL carries
+        session parameters (g_ep, skid, authuser) that are not stable. */
+    googleBusiness: "https://maps.app.goo.gl/1kC9zDxQLW95yZwe6",
   },
 } as const;
+
+/** Footer/schema iteration order — Google first: it is the profile that carries reviews. */
+export const socialLinks = [
+  // Hebrew labels: these become the aria-label/title on icon-only footer links, and a
+  // screen-reader user on a dir="rtl" site should not hit an English string mid-list.
+  { key: "google", label: "הפרופיל העסקי שלנו בגוגל", href: siteConfig.social.googleBusiness },
+  { key: "facebook", label: "פייסבוק", href: siteConfig.social.facebook },
+  { key: "instagram", label: "אינסטגרם", href: siteConfig.social.instagram },
+].filter((l) => l.href.length > 0);
 
 /**
  * Services (6), most important first.

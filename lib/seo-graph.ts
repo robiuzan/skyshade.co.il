@@ -13,7 +13,13 @@
  * (fabricated), Person/hasCredential (no confirmed human or licence), Offer.price (no published
  * prices), SearchAction (no search page), HowTo (dead rich result).
  */
-import { manifest, services, type ServiceSlug } from "@/lib/site-config";
+import {
+  manifest,
+  services,
+  siteConfig,
+  socialLinks,
+  type ServiceSlug,
+} from "@/lib/site-config";
 import { srcFor } from "@ishub/site-kit/media";
 import type { GalleryItem } from "@ishub/site-kit/media";
 
@@ -82,15 +88,25 @@ const AREA_SERVED = [{ "@type": "Country", name: "ישראל" }];
  * The anchor node. Rendered on EVERY page from app/layout.tsx so any URL an assistant lands on
  * resolves the entity.
  *
- * 🔶 BLOCKED ON THE OWNER (docs/evidence-register.md) — add the moment they exist:
- *   address.addressLocality — must match the Business Profile verification city; never invent
- *   sameAs                  — the GBP maps URL + real social/directory profiles
- *   hasMap                  — the GBP share link
- * `sameAs` is the single biggest entity-resolution gap on this site: with nothing to
- * corroborate, assistants answer brand questions with whichever competitor IS resolvable.
+ * ✅ RESOLVED 2026-08-25: `sameAs` + `hasMap` now carry the real Google Business Profile,
+ * Facebook and Instagram (siteConfig.social). This was the single biggest entity-resolution
+ * gap — with nothing to corroborate it, assistants answered brand questions with whichever
+ * competitor WAS resolvable.
+ *
+ * 🔶 STILL BLOCKED ON THE OWNER (docs/evidence-register.md):
+ *   address.addressLocality — must match the Business Profile verification city; never invent.
+ *     The GBP pin implies a locality, but whether the street address may be published (and
+ *     whether the profile is a service-area business with a hidden address) is the owner's
+ *     call, not an inference from a maps link.
+ *   geo — same decision as the address; do not lift coordinates out of the share URL.
  */
 export function businessNode(): JsonLd {
-  const sameAs = manifest.schema?.sameAs ?? [];
+  // Merge: manifest first (hub-synced, currently empty), then the code-level profiles.
+  // De-duped so adding them to the roster later cannot produce a doubled sameAs.
+  const sameAs = [
+    ...(Array.isArray(manifest.schema?.sameAs) ? manifest.schema.sameAs : []),
+    ...socialLinks.map((l) => l.href),
+  ].filter((v, i, a) => a.indexOf(v) === i);
   return prune({
     "@type": manifest.schema?.type ?? "LocalBusiness",
     "@id": BUSINESS_ID,
@@ -125,7 +141,10 @@ export function businessNode(): JsonLd {
       availableLanguage: ["he"],
       areaServed: "IL",
     },
-    sameAs: Array.isArray(sameAs) && sameAs.length > 0 ? sameAs : undefined,
+    sameAs: sameAs.length > 0 ? sameAs : undefined,
+    // The GBP share link. Distinct from sameAs: hasMap tells Google which map entry IS this
+    // business, which is what ties on-site reviews-free content to the profile that has them.
+    hasMap: siteConfig.social.googleBusiness || undefined,
     knowsAbout: [
       "פרגולות אלומיניום",
       "מצללות",

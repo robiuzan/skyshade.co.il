@@ -37,11 +37,11 @@ to write a plausible number.
 
 | Claim | Why it is blocked | What it unblocks |
 |---|---|---|
-| Physical address | none supplied | schema `PostalAddress`, GBP, footer, local trust |
+| Physical address | none supplied. The GBP pin implies a locality, but whether the address may be published — and whether the profile is a service-area business with a deliberately hidden address — is the owner's decision, **not an inference from a maps link**. Do not lift the coordinates out of the share URL | schema `PostalAddress` + `geo`, footer, local trust |
 | ח.פ. / legal entity | none supplied | footer, `/terms/`, legal credibility |
 | Warranty terms (years, what is covered) | never stated | `/warranty/` page, the sitewide "אחריות מלאה" mentions |
 | Licences, insurance, standards (ת״י) | no documents | `/about/`, trust bar, schema |
-| Real review count and rating | no GBP exists | GBP only — **never** on-site `AggregateRating` |
+| Real review count and rating | a GBP now exists (2026-08-25) but its review volume is unread | GBP only — **never** on-site `AggregateRating`, regardless of how many reviews it accrues |
 | Project count | `trustStats` in `lib/content.ts` is developer-written | trust bar, `/about/` |
 | Price bands per product | never stated | the `/guides/…-cost/` cluster — the largest keyword gap |
 | Named team + photos | none supplied | E-E-A-T, `Person` schema, `/about/` |
@@ -49,7 +49,7 @@ to write a plausible number.
 | Per-city delivered projects | unknown | which city pages survive the doorway cull |
 | Lead time / installation duration | never confirmed | service pages, guides, AI-citable facts |
 | Materials / suppliers / finishes | partially known from copy | spec tables, comparison guides |
-| Social profiles (Facebook, Instagram) | `sameAs: []` | entity resolution for AI assistants |
+| ~~Social profiles (Facebook, Instagram)~~ | ✅ **UNBLOCKED 2026-08-25** — GBP, Facebook and Instagram supplied by the owner and verified live | Done: `schema.sameAs` + `hasMap` + footer links. Still to do — add them to the hub roster, and see the GBP note below |
 
 `trustStats` and `testimonials` in `lib/content.ts` are 🔶 **and currently unrendered**. Leave them
 that way. The testimonials additionally carry a source admission that the wording was altered —

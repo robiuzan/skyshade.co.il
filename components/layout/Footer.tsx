@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
-import { siteConfig, telHref, services, locations } from "@/lib/site-config";
+import { Clock, Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
+import { siteConfig, telHref, services, locations, socialLinks } from "@/lib/site-config";
 import { Container } from "@/components/ui/Container";
 
 export function Footer() {
@@ -45,6 +45,35 @@ export function Footer() {
               </span>
             </li>
           </ul>
+
+          {/* Official profiles. Icon-only links, so each carries an aria-label — the icon is
+              aria-hidden and would otherwise leave the link with no accessible name.
+              Same list feeds schema.sameAs (lib/seo-graph.ts), so the two cannot drift. */}
+          {socialLinks.length > 0 && (
+            <nav aria-label="הפרופילים שלנו" className="mt-6">
+              <ul className="flex items-center gap-3">
+                {socialLinks.map((s) => {
+                  const Icon =
+                    s.key === "facebook" ? Facebook : s.key === "instagram" ? Instagram : MapPin;
+                  return (
+                    <li key={s.key}>
+                      <a
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener"
+                        data-cta={`footer-social-${s.key}`}
+                        aria-label={s.label}
+                        title={s.label}
+                        className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white transition-colors hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-400"
+                      >
+                        <Icon className="h-5 w-5" aria-hidden />
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          )}
         </div>
 
         {/* Services */}
