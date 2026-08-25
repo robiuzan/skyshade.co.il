@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Check, MessageCircle, Send } from "lucide-react";
 import { siteConfig, telHref, whatsappHref, services } from "@/lib/site-config";
 import { Button } from "@/components/ui/Button";
@@ -28,10 +28,30 @@ export function LeadForm({
    * of measuring it. Categorical only — never anything derived from user input.
    */
   location = "unknown",
+  /**
+   * Pre-selects the service dropdown. Service pages pass their own `card.name` so the visitor
+   * never re-states what the page they are on already says — the single biggest friction cut
+   * available on those templates. Must be one of the `services[].name` values or the <select>
+   * silently falls back to the empty option.
+   */
+  defaultService,
+  /**
+   * Drops the free-text field. Used where the form is a secondary element on the page (city
+   * pages) and every extra field costs completions; name + phone + service is enough to call
+   * someone back.
+   */
+  compact = false,
 }: {
   className?: string;
   location?: string;
+  defaultService?: string;
+  compact?: boolean;
 }) {
+  // Unique per instance: two forms on one page (hero + section, or an A/B variant) would
+  // otherwise emit duplicate ids and break every <label for> — clicking a label would focus
+  // the wrong form's field. useId is SSR-safe, so the static export and the hydrated DOM agree.
+  const uid = useId();
+  const fid = (name: string) => `lf-${name}-${uid}`;
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   /** WhatsApp deep link carrying the typed form data — the visible recovery path on failure. */
@@ -177,11 +197,11 @@ export function LeadForm({
       noValidate
     >
       <div>
-        <label htmlFor="lf-name" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor={fid("name")} className="mb-1 block text-sm font-medium text-gray-700">
           שם מלא
         </label>
         <input
-          id="lf-name"
+          id={fid("name")}
           name="name"
           type="text"
           autoComplete="name"
@@ -193,13 +213,13 @@ export function LeadForm({
 
       <div>
         <label
-          htmlFor="lf-phone"
+          htmlFor={fid("phone")}
           className="mb-1 block text-sm font-medium text-gray-700"
         >
           טלפון
         </label>
         <input
-          id="lf-phone"
+          id={fid("phone")}
           name="phone"
           type="tel"
           inputMode="tel"
@@ -213,12 +233,17 @@ export function LeadForm({
 
       <div>
         <label
-          htmlFor="lf-service"
+          htmlFor={fid("service")}
           className="mb-1 block text-sm font-medium text-gray-700"
         >
           השירות שמעניין אתכם (אופציונלי)
         </label>
-        <select id="lf-service" name="service" className={fieldClass} defaultValue="">
+        <select
+          id={fid("service")}
+          name="service"
+          className={fieldClass}
+          defaultValue={defaultService ?? ""}
+        >
           <option value="">בחירת שירות…</option>
           {services.map((s) => (
             <option key={s.slug} value={s.name}>
@@ -228,21 +253,23 @@ export function LeadForm({
         </select>
       </div>
 
-      <div>
-        <label
-          htmlFor="lf-message"
-          className="mb-1 block text-sm font-medium text-gray-700"
-        >
-          ספרו לנו על הפרויקט (אופציונלי)
-        </label>
-        <textarea
-          id="lf-message"
-          name="message"
-          rows={3}
-          className={fieldClass}
-          placeholder="לדוגמה: פרגולה חשמלית למרפסת בגודל 4×3 מ׳…"
-        />
-      </div>
+      {!compact && (
+        <div>
+          <label
+            htmlFor={fid("message")}
+            className="mb-1 block text-sm font-medium text-gray-700"
+          >
+            ספרו לנו על הפרויקט (אופציונלי)
+          </label>
+          <textarea
+            id={fid("message")}
+            name="message"
+            rows={3}
+            className={fieldClass}
+            placeholder="לדוגמה: פרגולה חשמלית למרפסת בגודל 4×3 מ׳…"
+          />
+        </div>
+      )}
 
       {/* Marketing consent — unchecked by default (חוק הספאם: opt-in must be an active
           choice, never pre-ticked). Submitting without it is fully allowed; it gates only
@@ -258,9 +285,9 @@ export function LeadForm({
 
       {/* Honeypot */}
       <div className="hidden" aria-hidden>
-        <label htmlFor="lf-company">אל תמלאו שדה זה</label>
+        <label htmlFor={fid("company")}>אל תמלאו שדה זה</label>
         <input
-          id="lf-company"
+          id={fid("company")}
           name="company"
           type="text"
           tabIndex={-1}

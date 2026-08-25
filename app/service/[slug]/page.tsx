@@ -24,6 +24,7 @@ import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { Faq } from "@/components/marketing/Faq";
 import { FinalCta } from "@/components/marketing/FinalCta";
+import { LeadForm } from "@/components/forms/LeadForm";
 
 export function generateStaticParams(): { slug: ServiceSlug }[] {
   return services.map((s) => ({ slug: s.slug }));
@@ -180,6 +181,23 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
             שאלות נפוצות על {card.name}
           </h2>
           <Faq items={detail.faqs} />
+        </div>
+
+        {/* Quote form. Until now the only conversion path on this template was the aside's
+            call/WhatsApp pair, so anyone not ready to talk on the phone had nothing to do.
+            The service is pre-selected — the visitor never re-states what this page says. */}
+        <div className="mt-14 border-t border-gray-100 pt-10">
+          <div className="mx-auto max-w-2xl rounded-2xl border border-gray-100 bg-gray-50 p-6 sm:p-8">
+            <h2 className="font-heading text-xl font-bold text-primary">
+              הצעת מחיר ל{card.name}
+            </h2>
+            <p className="mt-1 text-sm text-gray-600">
+              השאירו שם וטלפון ונחזור אליכם. ייעוץ ומדידה ללא עלות וללא התחייבות.
+            </p>
+            <div className="mt-5">
+              <LeadForm location="service-page" defaultService={card.name} />
+            </div>
+          </div>
         </div>
 
         {/* Related services */}

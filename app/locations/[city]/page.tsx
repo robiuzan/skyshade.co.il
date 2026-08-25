@@ -13,6 +13,7 @@ import {
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { FinalCta } from "@/components/marketing/FinalCta";
+import { LeadForm } from "@/components/forms/LeadForm";
 
 export function generateStaticParams(): { city: LocationSlug }[] {
   return locations.map((c) => ({ city: c.slug }));
@@ -102,6 +103,21 @@ export default function LocationPage({ params }: { params: { city: string } }) {
               </li>
             ))}
           </ul>
+
+          {/* Compact form (no free-text field): on this template the form is a secondary
+              element after the service list, so every extra field costs completions.
+              No defaultService — the visitor arrived by city, not by service. */}
+          <div className="mt-12 rounded-2xl border border-gray-100 bg-gray-50 p-6 sm:p-8">
+            <h2 className="font-heading text-xl font-bold text-primary">
+              הצעת מחיר ב{city.name}
+            </h2>
+            <p className="mt-1 text-sm text-gray-600">
+              השאירו שם וטלפון ונחזור אליכם. ייעוץ ומדידה ללא עלות וללא התחייבות.
+            </p>
+            <div className="mt-5">
+              <LeadForm location="city-page" compact />
+            </div>
+          </div>
         </div>
       </Section>
 
