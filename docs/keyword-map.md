@@ -19,6 +19,7 @@ strengthen the owner — never open a second front. Full table with gates:
 | `/guides/` | מדריכים hub | Silo entry, in the primary nav |
 | `/guides/pergola-permit/` | **היתר בנייה לפרגולה** · מצללה פטור · חוק הפרגולות | Live 2026-08-24. Covers both vocabularies (פרגולה/מצללה) — the regulatory word was previously absent from the whole site |
 | `/guides/aluminum-vs-wood-pergola/` | פרגולת אלומיניום או עץ · השוואה | Live 2026-08-24. No price claims — the cost cluster is a separate owner |
+| `/guides/pergola-sukkah/` | **פרגולה לסוכה** · פרגולה נאספת לסוכה · סכך על פרגולה | Live 2026-08-25, ahead of Sukkot (late Sept). Evergreen URL, no year — refresh yearly, never re-slug. Phrasing is **מותאמת**, never כשרה; halachic questions referred to the reader's rabbi |
 | `/locations/[city]/` ×6–8 keepers | פרגולות אלומיניום ב{עיר} | Only cities passing the evidence gate; rest 301 → `/locations/` |
 | `/gallery/` (+4 category routes, Phase 2) | גלריית פרויקטים · גלריית פרגולות | |
 
@@ -30,7 +31,6 @@ strengthen the owner — never open a second front. Full table with gates:
 | `/guides/balcony-enclosure-permit/` + `-cost/` | סגירת מרפסת היתר · מחיר |
 | `/guides/deck-cost/` | דק סינטטי מחיר · 🔶 blocked on price bands |
 | `/guides/deck-synthetic-vs-wood/` | further comparison queries (X או Y) |
-| `/guides/pergola-sukkah/` | פרגולה לסוכה (seasonal, evergreen URL; "מותאמת", never "כשרה") |
 | `/service/pergolas/electric-pergola/` | פרגולה חשמלית · ביואקלימית · נאספת (spoke gate: 500+ unique words, own photos/FAQs) |
 | `/projects/[slug]/` | long-tail "{מוצר} ב{עיר}" — the anti-doorway substance |
 | `/warranty/` | אחריות — target of the sitewide "אחריות מלאה" mentions |
