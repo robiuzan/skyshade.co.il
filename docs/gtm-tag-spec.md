@@ -1,14 +1,41 @@
 # GTM tag spec — the exact container build
 
-**Container:** `GTM-KWGGH438` · **GA4:** `G-BRZ0S93NFS` · **Written:** 2026-08-24
+**Container:** `GTM-KWGGH438` (⚠️ fleet-shared) · **GA4:** `G-BRZ0S93NFS` · **Written:** 2026-08-24 ·
+**Container inspected live:** 2026-08-25
 
 This is W1 of [phase-2-improvement-plan.md](phase-2-improvement-plan.md), the step everything else
-waits on. The container currently has **one tag**, so every event the site pushes lands in the
-dataLayer and dies there — GA4 has page views and nothing else. Until this is built, no conversion
-number on this site exists.
+waits on. Until it is built, no conversion number on this site exists.
 
 Building it is a dashboard task and cannot be done from the repo. **The site side is done:** the
 events below are already firing into `window.dataLayer`, verified in the build of 2026-08-24.
+
+## ⚠️ Read first — this container is SHARED across the fleet
+
+Inspected live 2026-08-25. `GTM-KWGGH438` is **not a skyshade container**. It serves ten Israeli
+fleet sites and picks the GA4 property with a hostname lookup table:
+
+| | | | |
+|---|---|---|---|
+| betonplus.co.il | 3locksmiths.co.il | netomazganim.co.il | gagoline.co.il |
+| visionsecurity.co.il | galbath.co.il | hambabait.co.il | myhomeplumber.co.il |
+| dangates.co.il | **skyshade.co.il → G-BRZ0S93NFS** | | |
+
+It contains exactly **one** real tag — the GA4 config (`googtag`). Verified absent: `form_start`,
+`lead_submit_failed`, `phone_call_click`, `whatsapp_click`, `email_click`, and any `tel:` / `wa.me`
+click trigger. (`generate_lead` does appear in the file, but only inside GA4's own library
+boilerplate — it is not a configured tag. Do not read its presence as "already wired".)
+
+**Consequence: an unscoped trigger added here fires on nine other clients' sites.** Choose one:
+
+- **Option A — scope to skyshade (recommended first).** Add `Page Hostname equals skyshade.co.il`
+  as a second condition on **every** trigger below, and hardcode `G-BRZ0S93NFS` on the tags. Safe,
+  reversible, affects nobody else. Do this now.
+- **Option B — fleet-wide.** Drop the hostname condition and set the tags' measurement ID from the
+  existing hostname-lookup variable, so all ten sites get lead tracking from one build. Only after
+  confirming every other site pushes these exact event names — they share `@ishub/site-kit`, so it
+  is plausible but unverified. This is a fleet decision, not a skyshade one.
+
+Everything below assumes Option A.
 
 ---
 
@@ -69,14 +96,18 @@ function () {
 
 ### 2. Triggers
 
-| Trigger name | Type | Condition |
+**Every trigger carries `Page Hostname equals skyshade.co.il` as an additional condition** (see the
+shared-container warning above). Name them `SS - …` so they are distinguishable from any fleet-wide
+triggers added later.
+
+| Trigger name | Type | Conditions (all must match) |
 |---|---|---|
-| `CE - form_start` | Custom Event | Event name equals `form_start` |
-| `CE - generate_lead` | Custom Event | Event name equals `generate_lead` |
-| `CE - lead_submit_failed` | Custom Event | Event name equals `lead_submit_failed` |
-| `Click - phone` | Click – Just Links (wait for tags off) | Click URL **starts with** `tel:` |
-| `Click - whatsapp` | Click – Just Links | Click URL **contains** `wa.me` |
-| `Click - email` | Click – Just Links | Click URL **starts with** `mailto:` |
+| `SS - CE - form_start` | Custom Event | Event equals `form_start` · Page Hostname equals `skyshade.co.il` |
+| `SS - CE - generate_lead` | Custom Event | Event equals `generate_lead` · Page Hostname equals `skyshade.co.il` |
+| `SS - CE - lead_submit_failed` | Custom Event | Event equals `lead_submit_failed` · Page Hostname equals `skyshade.co.il` |
+| `SS - Click - phone` | Click – Just Links (wait-for-tags off) | Click URL starts with `tel:` · Page Hostname equals `skyshade.co.il` |
+| `SS - Click - whatsapp` | Click – Just Links | Click URL contains `wa.me` · Page Hostname equals `skyshade.co.il` |
+| `SS - Click - email` | Click – Just Links | Click URL starts with `mailto:` · Page Hostname equals `skyshade.co.il` |
 
 ### 3. Tags
 
@@ -84,12 +115,12 @@ All are **GA4 Event** tags pointing at the existing GA4 Configuration tag (`G-BR
 
 | Tag name | Event name | Parameters | Trigger |
 |---|---|---|---|
-| `GA4 - form_start` | `form_start` | `form_location` = `{{dlv - form_location}}` | `CE - form_start` |
-| `GA4 - generate_lead` | `generate_lead` | `form_location`, `service`, `consent`, `has_message` from their dlv variables | `CE - generate_lead` |
-| `GA4 - lead_submit_failed` | `lead_submit_failed` | `form_location`, `error_type` | `CE - lead_submit_failed` |
-| `GA4 - phone_call_click` | `phone_call_click` | `link_location` = `{{cjs - cta location}}` | `Click - phone` |
-| `GA4 - whatsapp_click` | `whatsapp_click` | `link_location` = `{{cjs - cta location}}` | `Click - whatsapp` |
-| `GA4 - email_click` | `email_click` | `link_location` = `{{cjs - cta location}}` | `Click - email` |
+| `SS - GA4 - form_start` | `form_start` | `form_location` = `{{dlv - form_location}}` | `SS - CE - form_start` |
+| `SS - GA4 - generate_lead` | `generate_lead` | `form_location`, `service`, `consent`, `has_message` from their dlv variables | `SS - CE - generate_lead` |
+| `SS - GA4 - lead_submit_failed` | `lead_submit_failed` | `form_location`, `error_type` | `SS - CE - lead_submit_failed` |
+| `SS - GA4 - phone_call_click` | `phone_call_click` | `link_location` = `{{cjs - cta location}}` | `SS - Click - phone` |
+| `SS - GA4 - whatsapp_click` | `whatsapp_click` | `link_location` = `{{cjs - cta location}}` | `SS - Click - whatsapp` |
+| `SS - GA4 - email_click` | `email_click` | `link_location` = `{{cjs - cta location}}` | `SS - Click - email` |
 
 ### 4. In GA4 itself
 
@@ -109,6 +140,9 @@ A snippet in the HTML proves nothing.
 2. GTM **Preview** on `https://skyshade.co.il/` → perform each real interaction → the trigger fires
 3. …and the matching GA4 tag fires (not just the trigger)
 4. GA4 **DebugView** shows the event with its parameters attached
+5. **Shared-container safety:** open GTM Preview against a second fleet domain (e.g.
+   `https://galbath.co.il/`) and confirm none of the six `SS - …` tags fire there. If one does, its
+   hostname condition is missing and you are writing skyshade events into another client's property.
 
 Then, and only then, record the date in [measurement-plan.md](measurement-plan.md) and start the
 **four clean weeks** of baseline. No other measurement change ships inside that window — that is
