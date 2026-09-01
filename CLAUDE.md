@@ -156,6 +156,7 @@ Invoke the project skill that owns the task rather than improvising — `.claude
 | `local-seo-il` | city pages, GBP, NAP, the doorway rules |
 | `internal-linking-ia` | site architecture, nav, breadcrumbs, orphan detection |
 | `conversion-cro` | forms, CTAs, friction, trust placement |
+| `accessibility-wcag` | WCAG 2.1 AA, ARIA, keyboard, contrast, the `/accessibility/` claim |
 | `performance-web-vitals` | LCP/CLS/INP budgets, images, fonts, JS |
 | `web-security-headers` | `_headers`, CSP, form and dependency posture |
 | `tracking-analytics` | GTM/GA4 event spec, dataLayer, consent |
@@ -171,21 +172,30 @@ Commands in `.claude/commands/`: `/seo-check` (parallel full audit) · `/content
 (gated brief for a proposed page) · `/ship` (pre-flight, deploy, live verify) · `/growth-review`
 (monthly).
 
-Reference docs in `docs/` — the **state** the skills read from, versus the skills' **procedure**:
+Reference docs in `docs/` — the **state** the skills read from, versus the skills' **procedure**.
+[docs/README.md](docs/README.md) is the map: what each file owns, and which file already owns a
+topic somebody is about to create a second file for.
 
 | Doc | Holds |
 |---|---|
+| `README.md` | the documentation map + the single-owner rule |
 | `seo-guardrails.md` | the bright lines — read before writing any page |
 | `keyword-map.md` | one keyword → one owning URL |
 | `evidence-register.md` | which claims may be published (✅ / 🔶 / ⛔) |
 | `information-architecture.md` | the URL map, gates, and link flow |
 | `entity-profile.md` | canonical NAP + the GBP spec |
 | `aeo-question-bank.md` | the real query shapes content must answer |
+| `accessibility-and-i18n.md` | the WCAG 2.1 build target vs the 2.0 claim, RTL rules, the gated he/en decision |
+| `mobile-ux-and-personalization.md` | thumb zones, the sticky CTA spec, what personalization is legal on a static export |
+| `conversion-funnel.md` | the funnel, the friction inventory, the one-change-per-window rule |
+| `performance-budgets.md` | CWV budgets + the last measured values (⚠️ JS budget is at 119.5/120 KB) |
+| `data-tracking-infrastructure.md` | the PII boundary, server-side tagging decision, CRM wiring, consent |
 | `measurement-plan.md` | baseline, KPI set, and the dated change log |
 | `gtm-tag-spec.md` | the exact container build — triggers, tags, variables, verification |
 | `security-posture.md` | the standing security assessment, incl. why the npm advisories don't apply |
 | `owner-intake-checklist.md` | the questions blocking a third of the work |
-| `phase-2-improvement-plan.md` | the current 16-week execution plan |
+| `phase-2-improvement-plan.md` | the current 16-week execution plan — **what** and **why** (W1–W10) |
+| `sprint-roadmap.md` | the same work as eight dated sprints with acceptance criteria — **when** and **done-when** |
 
 ---
 

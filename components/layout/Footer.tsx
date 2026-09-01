@@ -28,7 +28,12 @@ export function Footer() {
             </li>
             <li className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-accent-400" aria-hidden />
-              <a href={`mailto:${siteConfig.email}`} className="hover:text-white" dir="ltr">
+              <a
+                href={`mailto:${siteConfig.email}`}
+                data-cta="footer-email"
+                className="hover:text-white"
+                dir="ltr"
+              >
                 {siteConfig.email}
               </a>
             </li>

@@ -50,19 +50,47 @@ Source: [components/forms/LeadForm.tsx](../components/forms/LeadForm.tsx).
 | `generate_lead` | Web3Forms confirms delivery — **only** on real success | `form_location`, `service`, `consent`, `has_message` |
 | `lead_submit_failed` | delivery failed, or the access key is missing | `form_location`, `error_type` |
 
-`form_location` values: `home-hero`, `contact-page`. Add the value when a third form is placed.
+`form_location` values — **all four, verified against the call sites 2026-09-01**:
+`home-hero` ([Hero.tsx:70](../components/marketing/Hero.tsx)) · `contact-page`
+([contact/page.tsx:109](../app/contact/page.tsx)) · `service-page`
+([service/[slug]/page.tsx:230](../app/service/[slug]/page.tsx)) · `city-page`
+([locations/[city]/page.tsx:118](../app/locations/[city]/page.tsx)).
+
+⚠️ This line previously listed only the first two. The form went from 2 pages to **24** on
+2026-08-25 and the doc was never updated — a funnel dashboard built from the old line would have
+charted 2 of 24 pages and missed the two highest-coverage placements. `unknown` is the component
+default ([LeadForm.tsx:30](../components/forms/LeadForm.tsx)) and is currently unreachable; if it
+ever appears in GA4, a placement is missing the prop.
+
+**Two dimensions are not comparable across `form_location`, and reports must say so:**
+
+- **`has_message` is structurally `false` for `city-page`.** The compact variant renders no
+  textarea, so the field is absent by construction, not by visitor behaviour.
+- **`service` is pre-filled for `service-page`** (`defaultService={card.name}`), so those leads are
+  pre-attributed and not comparable with home/contact, where the visitor actively chose.
 
 **No PII, ever.** `service` is the `<select>` value; `consent` is a boolean; the free-text message
 is reduced to `has_message`. Name, phone and message text never enter the dataLayer.
 
 ## Call and WhatsApp clicks — no code needed
 
-Every call/WhatsApp/email link already carries a `data-cta` attribute. GTM reads it directly, which
-is why these are **not** pushed from code:
+Every call/WhatsApp/email link carries a `data-cta` attribute. GTM reads it directly, which is why
+these are **not** pushed from code:
 
 `hero-call` · `hero-whatsapp` · `header-call` · `sticky-call` · `sticky-whatsapp` ·
 `finalcta-call` · `finalcta-whatsapp` · `service-aside-call` · `service-aside-whatsapp` ·
-`contact-call` · `contact-whatsapp` · `contact-email` · `footer-call`
+`contact-call` · `contact-whatsapp` · `contact-email` · `footer-call` ·
+**`footer-email`** · **`form-whatsapp`** · **`form-recovery-whatsapp`** · **`form-recovery-call`**
+
+⚠️ The last four were added 2026-09-01. Until then this sentence claimed "every link already
+carries one" while `LeadForm` carried **none** and the footer email carried none — so those clicks
+resolved to `link_location = 'unknown'`, and the form's WhatsApp link (rendered on 24 of 36 pages,
+the second-most-shown WhatsApp link on the site after the sticky bar) was indistinguishable from
+the rare failure-recovery clicks. They were added **before** the tags were built precisely so the
+`unknown` bucket does not visibly shrink mid-baseline; GA4 cannot re-attribute retroactively.
+
+`form-recovery-*` render only inside the delivery-failure block, so they will be rare by design —
+a nonzero count there is a signal worth reading alongside the `lead_submit_failed` alarm.
 
 ---
 
@@ -129,6 +157,45 @@ All are **GA4 Event** tags pointing at the existing GA4 Configuration tag (`G-BR
   `link_location`, `error_type`. Without these the parameters are collected but never reportable.
 - **Custom insight / alert:** `lead_submit_failed` count > 0 in a day → email. This is the alarm
   that catches silent lead loss; it is the single most valuable thing in this document.
+
+### 🔴 P0 — Enhanced Measurement settings, do these BEFORE the baseline opens
+
+Both are per-data-stream on `G-BRZ0S93NFS`. They touch **no other fleet site** — only the GTM
+container is shared, not the GA4 property. Neither is fixable retroactively once data lands.
+
+**(a) Redact URL query parameters — this is a live PII exposure, not a hypothetical.**
+
+`Admin → Data streams → skyshade → Enhanced measurement → Redact data → URL query parameters`, add:
+
+```
+text, name, phone, message, service
+```
+
+Why: `buildWhatsapp()` interpolates the visitor's **name, phone and free-text message** into the
+WhatsApp deep link, and it is rendered as a real `<a href>` in the failure-recovery block. GA4
+Enhanced Measurement's **Outbound clicks** is on by default and records the full destination URL as
+`link_url` — which would write a real homeowner's name and mobile number into GA4. That breaks the
+no-PII rule, the GA4 ToS, and what `/privacy/` tells the visitor. `text` is the parameter that
+carries it; the other four are belt-and-braces against a native GET submit after a hydration
+failure putting those same keys into `page_location`.
+
+Verify in DebugView: force a delivery failure, click the recovery link, confirm `link_url` is
+redacted.
+
+**(b) Decide the "Form interactions" toggle, and write the decision down.**
+
+GA4 auto-collects events literally named `form_start` and `form_submit`. If left on, GA4's own
+`form_start` (once per **session**, no `form_location`) merges with the one this site pushes (once
+per **mount**, with `form_location`) under a single event name — different scoping rules, with
+roughly half the rows landing in `(not set)`.
+
+**Check the current toggle state first — nobody has.** Preferred: **turn it off**, since the
+site's own event is strictly richer. The honest trade-off: GA4's auto `form_submit` would fire even
+here (the submit event bubbles before `preventDefault` takes effect), partially covering the
+submit-attempt signal the site does not yet push. `form_location` is separable retroactively; the
+headline `form_start` count is not.
+
+Record whichever way it lands, or the next container builder silently undoes it.
 
 ---
 
