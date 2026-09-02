@@ -157,6 +157,7 @@ Invoke the project skill that owns the task rather than improvising — `.claude
 | `internal-linking-ia` | site architecture, nav, breadcrumbs, orphan detection |
 | `conversion-cro` | forms, CTAs, friction, trust placement |
 | `accessibility-wcag` | WCAG 2.1 AA, ARIA, keyboard, contrast, the `/accessibility/` claim |
+| `page-imagery` | which picture goes in which slot, crops and focal points, alt text, image prompts |
 | `performance-web-vitals` | LCP/CLS/INP budgets, images, fonts, JS |
 | `web-security-headers` | `_headers`, CSP, form and dependency posture |
 | `tracking-analytics` | GTM/GA4 event spec, dataLayer, consent |
@@ -166,7 +167,8 @@ Invoke the project skill that owns the task rather than improvising — `.claude
 Subagents in `.claude/agents/` (read-only auditors unless stated): `seo-auditor`,
 `aeo-geo-strategist`, `eeat-trust-auditor`, `local-seo-strategist`, `keyword-strategist`,
 `schema-auditor`, `cro-analyst`, `perf-a11y-auditor`, `security-auditor`, `link-architect`,
-`hebrew-copywriter` (drafts copy), `content-engineer` (writes code).
+`hebrew-copywriter` (drafts copy), `content-engineer` (writes code),
+`image-art-director` (specifies imagery; writes prompt files in Media Studio only).
 
 Commands in `.claude/commands/`: `/seo-check` (parallel full audit) · `/content-brief <topic>`
 (gated brief for a proposed page) · `/ship` (pre-flight, deploy, live verify) · `/growth-review`
@@ -188,6 +190,7 @@ topic somebody is about to create a second file for.
 | `accessibility-and-i18n.md` | the WCAG 2.1 build target vs the 2.0 claim, RTL rules, the gated he/en decision |
 | `mobile-ux-and-personalization.md` | thumb zones, the sticky CTA spec, what personalization is legal on a static export |
 | `conversion-funnel.md` | the funnel, the friction inventory, the one-change-per-window rule |
+| `image-inventory.md` | the four image slots, the 55-photo catalog as measured, and the pages with no photography |
 | `performance-budgets.md` | CWV budgets + the last measured values (⚠️ JS budget is at 119.5/120 KB) |
 | `data-tracking-infrastructure.md` | the PII boundary, server-side tagging decision, CRM wiring, consent |
 | `measurement-plan.md` | baseline, KPI set, and the dated change log |
