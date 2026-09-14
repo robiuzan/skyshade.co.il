@@ -17,15 +17,20 @@ export function Header() {
   const pathname = usePathname();
   const headerRef = useRef<HTMLElement>(null);
 
-  // trailingSlash: true means the live URL is "/about/" while navItems carry "/about".
-  const path = pathname.replace(/\/$/, "") || "/";
+  // trailingSlash: true means the live URL is "/about/", and since 2026-09-14 navItems carry that
+  // slash too (Next inlines the raw href prop into the RSC payload, so slashless hrefs leaked 34
+  // duplicate URLs to Google). Strip BOTH sides before comparing, or aria-current silently dies
+  // the next time either shape changes.
+  const strip = (href: string) => href.replace(/\/$/, "") || "/";
+  const path = strip(pathname);
 
   /** Exact page match — drives aria-current. */
-  const isCurrent = (href: string) => path === href;
-  /** Section match — drives the active style (e.g. /service/pergolas lights "השירותים שלנו"). */
+  const isCurrent = (href: string) => path === strip(href);
+  /** Section match — drives the active style (e.g. /service/pergolas/ lights "השירותים שלנו"). */
   const isActive = (href: string) => {
-    if (href === "/services") return path === "/services" || path.startsWith("/service/");
-    return path === href || path.startsWith(`${href}/`);
+    const base = strip(href);
+    if (base === "/services") return path === "/services" || path.startsWith("/service/");
+    return path === base || path.startsWith(`${base}/`);
   };
 
   // Close both menus on navigation; Link clicks keep the header mounted.
@@ -99,7 +104,7 @@ export function Header() {
         <nav aria-label="ראשי" className="hidden lg:block">
           <ul className="flex items-center gap-6">
             {navItems.map((item) =>
-              item.href === "/services" ? (
+              item.href === "/services/" ? (
                 /* Money pages in the primary nav: link to the hub + disclosure listing all six
                    services. Hover opens for mouse; the button serves keyboard and touch. */
                 <li
@@ -147,11 +152,11 @@ export function Header() {
                       {services.map((s) => (
                         <li key={s.slug}>
                           <Link
-                            href={`/service/${s.slug}`}
-                            aria-current={isCurrent(`/service/${s.slug}`) ? "page" : undefined}
+                            href={`/service/${s.slug}/`}
+                            aria-current={isCurrent(`/service/${s.slug}/`) ? "page" : undefined}
                             className={cn(
                               "block rounded-lg px-3 py-2 text-sm font-medium hover:bg-gray-50 hover:text-primary",
-                              isCurrent(`/service/${s.slug}`) ? "text-primary" : "text-gray-700",
+                              isCurrent(`/service/${s.slug}/`) ? "text-primary" : "text-gray-700",
                             )}
                           >
                             {s.name}
@@ -214,16 +219,16 @@ export function Header() {
                     {item.label}
                   </Link>
                   {/* The six services, always expanded — these are the money pages. */}
-                  {item.href === "/services" && (
+                  {item.href === "/services/" && (
                     <ul className="mt-0.5 flex flex-col gap-0.5 ps-4">
                       {services.map((s) => (
                         <li key={s.slug}>
                           <Link
-                            href={`/service/${s.slug}`}
-                            aria-current={isCurrent(`/service/${s.slug}`) ? "page" : undefined}
+                            href={`/service/${s.slug}/`}
+                            aria-current={isCurrent(`/service/${s.slug}/`) ? "page" : undefined}
                             className={cn(
                               "block rounded-lg px-2 py-2 text-sm hover:bg-gray-50 hover:text-primary",
-                              isCurrent(`/service/${s.slug}`)
+                              isCurrent(`/service/${s.slug}/`)
                                 ? "font-medium text-primary"
                                 : "text-gray-600",
                             )}

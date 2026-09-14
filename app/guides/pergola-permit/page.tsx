@@ -86,7 +86,7 @@ export default function PergolaPermitGuide() {
         subtitle="מה התקנות באמת דורשות, מה קורה אחרי הבנייה, ואיפה זה משתנה מעיר לעיר."
         crumbs={[
           { label: "בית", href: "/" },
-          { label: "מדריכים", href: "/guides" },
+          { label: "מדריכים", href: "/guides/" },
           { label: "היתר בנייה לפרגולה" },
         ]}
       />
@@ -149,7 +149,7 @@ export default function PergolaPermitGuide() {
                   אם אתם מתכננים לסגור את המרפסת ולא רק להצל עליה, מדובר בעבודה אחרת לגמרי —
                   ראו{" "}
                   <Link
-                    href="/service/accordion-products"
+                    href="/service/accordion-products/"
                     className="text-secondary underline"
                   >
                     סגירת מרפסות ותריסי אקורדיון
@@ -192,7 +192,7 @@ export default function PergolaPermitGuide() {
             </p>
             <p className="mt-3">
               <Link
-                href="/service/pergolas"
+                href="/service/pergolas/"
                 className="font-medium text-secondary underline"
               >
                 לעמוד הפרגולות ←

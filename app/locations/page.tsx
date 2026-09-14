@@ -53,7 +53,7 @@ export default function LocationsPage() {
           {locations.map((c) => (
             <li key={c.slug}>
               <Link
-                href={`/locations/${c.slug}`}
+                href={`/locations/${c.slug}/`}
                 className="flex items-center gap-2 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:border-secondary hover:text-secondary"
               >
                 <MapPin className="h-4 w-4 shrink-0 text-secondary" aria-hidden />

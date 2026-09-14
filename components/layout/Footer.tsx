@@ -87,7 +87,7 @@ export function Footer() {
           <ul className="mt-4 space-y-2 text-sm">
             {services.map((s) => (
               <li key={s.slug}>
-                <Link href={`/service/${s.slug}`} className="text-white/85 hover:text-white">
+                <Link href={`/service/${s.slug}/`} className="text-white/85 hover:text-white">
                   {s.name}
                 </Link>
               </li>
@@ -102,7 +102,7 @@ export function Footer() {
             {/* All cities — a subset here starves the rest of sitewide internal links. */}
             {locations.map((c) => (
               <li key={c.slug}>
-                <Link href={`/locations/${c.slug}`} className="text-white/85 hover:text-white">
+                <Link href={`/locations/${c.slug}/`} className="text-white/85 hover:text-white">
                   {c.name}
                 </Link>
               </li>
@@ -115,37 +115,37 @@ export function Footer() {
           <p className="font-semibold text-white">קישורים</p>
           <ul className="mt-4 space-y-2 text-sm">
             <li>
-              <Link href="/about" className="text-white/85 hover:text-white">
+              <Link href="/about/" className="text-white/85 hover:text-white">
                 אודות
               </Link>
             </li>
             <li>
-              <Link href="/gallery" className="text-white/85 hover:text-white">
+              <Link href="/gallery/" className="text-white/85 hover:text-white">
                 גלריה
               </Link>
             </li>
             <li>
-              <Link href="/locations" className="text-white/85 hover:text-white">
+              <Link href="/locations/" className="text-white/85 hover:text-white">
                 אזורי שירות
               </Link>
             </li>
             <li>
-              <Link href="/contact" className="text-white/85 hover:text-white">
+              <Link href="/contact/" className="text-white/85 hover:text-white">
                 צור קשר
               </Link>
             </li>
             <li>
-              <Link href="/privacy" className="text-white/85 hover:text-white">
+              <Link href="/privacy/" className="text-white/85 hover:text-white">
                 מדיניות פרטיות
               </Link>
             </li>
             <li>
-              <Link href="/accessibility" className="text-white/85 hover:text-white">
+              <Link href="/accessibility/" className="text-white/85 hover:text-white">
                 הצהרת נגישות
               </Link>
             </li>
             <li>
-              <Link href="/terms" className="text-white/85 hover:text-white">
+              <Link href="/terms/" className="text-white/85 hover:text-white">
                 תקנון
               </Link>
             </li>

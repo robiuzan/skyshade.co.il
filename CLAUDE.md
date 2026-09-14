@@ -228,10 +228,28 @@ AI Crawl Control, WAF. Current status is logged in `docs/measurement-plan.md`.
 
 ---
 
-## 9. Known live state (2026-08-23)
+## 9. Known live state (2026-09-14)
 
 - All audit code fixes are **live**. www→apex 301 live. DMARC `p=none` live. Search Console
   **verified**. AI crawlers **unblocked** (13/13 UAs → 200); managed robots.txt **off**.
+- **Googlebot was blocked at the zone for 15 days** (≈2026-08-30 → 2026-09-14) by a Cloudflare
+  Custom rule misnamed `AI Crawl Control - Block AI bots by User Agent`. Removed; a
+  `cf.client.bot` → **Skip** rule now sits at execution order **1**. Full write-up in
+  `docs/measurement-plan.md`. **In recovery until ~mid-October** — do not attribute GSC movement
+  to anything else, and see §6's one-change-per-window discipline before shipping.
+- **Two traps that cost us those 15 days — check both before trusting any crawl diagnosis:**
+  1. GSC "Test live URL", the Rich Results Test and PSI fetch as `Google-InspectionTool`, which
+     that rule never matched. They showed green for the entire outage. Only a real-Googlebot-UA
+     `curl` or **Crawl stats → By response** proves anything about Googlebot.
+  2. Nothing probes production on a clock. `scripts/check-sitemap.mjs` only checks `out/`, so a
+     zone change is invisible to it. A daily live crawlability guard is **specified but unbuilt**
+     (`docs/measurement-plan.md`); if you build it, never test `/robots.txt` alone — that rule
+     deliberately exempted it — and always carry a browser control UA.
+- **The zone can silently invalidate the repo.** Before blaming `_headers`, `_redirects` or
+  `robots.ts` for any access fault, check `skyshade.pages.dev`: it serves the identical build
+  without the Cloudflare zone in front of it, so a difference between the two *is* the diagnosis.
+  **Bot Fight Mode is ON** (free plan) and cannot be skipped by a Skip rule — it is the one
+  crawler-blocking path the order-1 guard does not cover.
 - **Open:** GTM has one tag — GA4 lead/call/WhatsApp events die in the dataLayer
   (`audit-roadmap-full.md` §6.3). No Google Business Profile. No owner intake session yet.
 - CSP is **report-only** on purpose. Whoever edits the GTM container owns that allowlist.

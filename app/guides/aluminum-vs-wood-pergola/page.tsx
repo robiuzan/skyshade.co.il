@@ -122,7 +122,7 @@ export default function AluminumVsWoodGuide() {
         subtitle="שבעה קריטריונים מעשיים, כולל אחד שרוב ההשוואות מפספסות."
         crumbs={[
           { label: "בית", href: "/" },
-          { label: "מדריכים", href: "/guides" },
+          { label: "מדריכים", href: "/guides/" },
           { label: "אלומיניום או עץ" },
         ]}
       />
@@ -187,7 +187,7 @@ export default function AluminumVsWoodGuide() {
                 <p className="mt-3 leading-relaxed text-gray-700">
                   ההבחנה הזו חשובה כי היא מפילה הנחה נפוצה — שפרגולת עץ &quot;פטורה יותר&quot;.
                   הפירוט המלא של תנאי הפטור נמצא במדריך{" "}
-                  <Link href="/guides/pergola-permit" className="text-secondary underline">
+                  <Link href="/guides/pergola-permit/" className="text-secondary underline">
                     היתר בנייה לפרגולה
                   </Link>
                   .
@@ -227,7 +227,7 @@ export default function AluminumVsWoodGuide() {
               לחצר. ייעוץ ומדידה בשטח — ללא עלות וללא התחייבות.
             </p>
             <p className="mt-3">
-              <Link href="/service/pergolas" className="font-medium text-secondary underline">
+              <Link href="/service/pergolas/" className="font-medium text-secondary underline">
                 לעמוד הפרגולות ←
               </Link>
             </p>

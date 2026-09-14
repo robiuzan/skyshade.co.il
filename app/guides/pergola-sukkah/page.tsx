@@ -122,7 +122,7 @@ export default function PergolaSukkahGuide() {
         subtitle="מה שצריך להחליט בשלב התכנון — ומה להביא לרב לפני שמזמינים."
         crumbs={[
           { label: "בית", href: "/" },
-          { label: "מדריכים", href: "/guides" },
+          { label: "מדריכים", href: "/guides/" },
           { label: "פרגולה מותאמת לסוכה" },
         ]}
       />
@@ -158,7 +158,7 @@ export default function PergolaSukkahGuide() {
                 <p className="mt-3 leading-relaxed text-gray-700">
                   הפירוט המלא של תנאי הפטור, כולל מה נחשב &quot;חומרים קלים&quot; ואיך נמדדים
                   40% המרווחים, נמצא במדריך{" "}
-                  <Link href="/guides/pergola-permit" className="text-secondary underline">
+                  <Link href="/guides/pergola-permit/" className="text-secondary underline">
                     היתר בנייה לפרגולה
                   </Link>
                   .
@@ -202,7 +202,7 @@ export default function PergolaSukkahGuide() {
               ואת הכנת המקומות לקורות. ייעוץ ומדידה בשטח, ללא עלות וללא התחייבות.
             </p>
             <p className="mt-3">
-              <Link href="/service/pergolas" className="font-medium text-secondary underline">
+              <Link href="/service/pergolas/" className="font-medium text-secondary underline">
                 לעמוד הפרגולות ←
               </Link>
             </p>

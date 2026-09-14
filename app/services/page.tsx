@@ -66,12 +66,12 @@ export default function ServicesPage() {
             <div>
               <dt className="font-semibold text-primary">רוצים צל בחצר או במרפסת</dt>
               <dd className="mt-1">
-                <Link href="/service/pergolas" className="text-secondary underline">
+                <Link href="/service/pergolas/" className="text-secondary underline">
                   פרגולות, מחסות וגגות
                 </Link>{" "}
                 — ידניות או חשמליות, עם חיפוי פוליקרבונט, זכוכית או גג עץ. זה גם התחום שבו
                 עולה שאלת ההיתר, ולכן יש לו{" "}
-                <Link href="/guides/pergola-permit" className="text-secondary underline">
+                <Link href="/guides/pergola-permit/" className="text-secondary underline">
                   מדריך נפרד על היתר בנייה למצללה
                 </Link>
                 .
@@ -80,7 +80,7 @@ export default function ServicesPage() {
             <div>
               <dt className="font-semibold text-primary">רוצים לסגור מרפסת מרוח ומגשם</dt>
               <dd className="mt-1">
-                <Link href="/service/accordion-products" className="text-secondary underline">
+                <Link href="/service/accordion-products/" className="text-secondary underline">
                   סגירת מרפסות ותריסי אקורדיון
                 </Link>{" "}
                 — פתרון גמיש שנפתח לגמרי בקיץ, להבדיל מסגירה קבועה.
@@ -89,7 +89,7 @@ export default function ServicesPage() {
             <div>
               <dt className="font-semibold text-primary">רוצים לתחום או לאבטח את הכניסה</dt>
               <dd className="mt-1">
-                <Link href="/service/fences-gates" className="text-secondary underline">
+                <Link href="/service/fences-gates/" className="text-secondary underline">
                   גדרות ושערים
                 </Link>{" "}
                 — גדרות דקורטיביות ושערים חשמליים, באותו גימור של שאר האלומיניום בבית.
@@ -98,11 +98,11 @@ export default function ServicesPage() {
             <div>
               <dt className="font-semibold text-primary">רוצים לשנות את מראה החזית או הרצפה</dt>
               <dd className="mt-1">
-                <Link href="/service/wall-cladding" className="text-secondary underline">
+                <Link href="/service/wall-cladding/" className="text-secondary underline">
                   חיפוי קירות חוץ
                 </Link>{" "}
                 באלומיניום, קומפוזיט או HPL, ו
-                <Link href="/service/decks" className="text-secondary underline">
+                <Link href="/service/decks/" className="text-secondary underline">
                   דקים
                 </Link>{" "}
                 מ-WPC או עץ טבעי למרפסת, לחצר ולסביבת הבריכה.
@@ -111,7 +111,7 @@ export default function ServicesPage() {
             <div>
               <dt className="font-semibold text-primary">רוצים לארח בחוץ כל השנה</dt>
               <dd className="mt-1">
-                <Link href="/service/outdoor-kitchen" className="text-secondary underline">
+                <Link href="/service/outdoor-kitchen/" className="text-secondary underline">
                   מטבח חוץ
                 </Link>{" "}
                 מאלומיניום ואבן — לרוב משולב עם פרגולה שמצלה עליו.

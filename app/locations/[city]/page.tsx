@@ -66,7 +66,7 @@ export default function LocationPage({ params }: { params: { city: string } }) {
         subtitle={`פתרונות אלומיניום פרימיום ב${city.name} — פרגולות, גדרות, שערים, דקים ומטבחי חוץ מעוצבים בהתאמה אישית, עם אחריות מלאה. שירות בכל הארץ.`}
         crumbs={[
           { label: "בית", href: "/" },
-          { label: "אזורי שירות", href: "/locations" },
+          { label: "אזורי שירות", href: "/locations/" },
           { label: city.name },
         ]}
       />
@@ -94,7 +94,7 @@ export default function LocationPage({ params }: { params: { city: string } }) {
             {serviceCards.map((s) => (
               <li key={s.slug}>
                 <Link
-                  href={`/service/${s.slug}`}
+                  href={`/service/${s.slug}/`}
                   className="flex items-center justify-between gap-2 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm font-medium text-gray-700 hover:border-secondary hover:text-secondary"
                 >
                   {s.name}

@@ -53,7 +53,7 @@ export default function HomePage() {
             images={homeGalleryItems}
             siteImages={siteImages}
             tabs={homeGalleryCategories}
-            moreHref="/gallery"
+            moreHref="/gallery/"
             moreLabel="לכל הגלריה ←"
           />
         </div>

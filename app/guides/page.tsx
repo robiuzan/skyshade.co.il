@@ -55,7 +55,7 @@ export default function GuidesPage() {
             {guides.map((g) => (
               <li key={g.slug}>
                 <Link
-                  href={`/guides/${g.slug}`}
+                  href={`/guides/${g.slug}/`}
                   className="block rounded-2xl border border-gray-100 bg-gray-50 p-6 transition-colors hover:border-secondary"
                 >
                   <h2 className="font-heading text-lg font-bold text-primary">{g.title}</h2>

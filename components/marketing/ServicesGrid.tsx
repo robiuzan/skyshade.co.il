@@ -29,7 +29,7 @@ export function ServicesGrid() {
           return (
             <Reveal key={card.slug} delay={(i % 3) * 0.05}>
               <Link
-                href={`/service/${card.slug}`}
+                href={`/service/${card.slug}/`}
                 className="group flex h-full flex-col rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
               >
                 <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-secondary-50 text-secondary">

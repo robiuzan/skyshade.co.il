@@ -84,7 +84,7 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
         subtitle={card.tagline}
         crumbs={[
           { label: "בית", href: "/" },
-          { label: "השירותים שלנו", href: "/services" },
+          { label: "השירותים שלנו", href: "/services/" },
           { label: card.name },
         ]}
       />
@@ -195,7 +195,7 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
               {related.map((g) => (
                 <li key={g.slug}>
                   <Link
-                    href={`/guides/${g.slug}`}
+                    href={`/guides/${g.slug}/`}
                     className="flex h-full flex-col gap-1 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 hover:border-secondary"
                   >
                     <span className="text-sm font-semibold text-primary">{g.title}</span>
@@ -239,7 +239,7 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
             {others.map((o) => (
               <li key={o.slug}>
                 <Link
-                  href={`/service/${o.slug}`}
+                  href={`/service/${o.slug}/`}
                   className="flex items-center justify-between gap-2 rounded-xl border border-gray-100 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:border-secondary hover:text-secondary"
                 >
                   {o.name}

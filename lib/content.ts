@@ -157,7 +157,7 @@ export const serviceDetails: Record<ServiceSlug, ServiceDetail> = {
             text: "שילוב נפוץ — האלומיניום נושא את המבנה ואינו דורש טיפול, והעץ נותן את המראה החם. כך התחזוקה מצטמצמת לחלק הגלוי בלבד.",
           },
         ],
-        link: { href: "/guides/pergola-permit", label: "מתי קירוי אטום מוציא אתכם מהפטור" },
+        link: { href: "/guides/pergola-permit/", label: "מתי קירוי אטום מוציא אתכם מהפטור" },
       },
       {
         heading: "מה קובע את התכנון בחצר שלכם",
@@ -213,12 +213,12 @@ export const serviceDetails: Record<ServiceSlug, ServiceDetail> = {
             text: "אם ייתכן שתרצו לסגור את המרפסת בהמשך, כדאי לתכנן את החיבורים מראש.",
           },
         ],
-        link: { href: "/guides/pergola-sukkah", label: "מה לבדוק אם מתכננים סוכה מתחת לפרגולה" },
+        link: { href: "/guides/pergola-sukkah/", label: "מה לבדוק אם מתכננים סוכה מתחת לפרגולה" },
       },
       {
         heading: "תחזוקה",
         body: "פרגולת אלומיניום אינה דורשת צביעה, שימון או איטום. הצבע נצרב בתנור ואינו מתקלף, והפרופיל אינו סופג לחות — שטיפה במים אחת לתקופה שומרת על הגוון. בפרגולה חשמלית כדאי לוודא פעם בשנה שהלהבים והמסילות נקיים מאבק ומעלים. זה כל ההבדל המעשי בין אלומיניום לעץ בחוץ.",
-        link: { href: "/guides/aluminum-vs-wood-pergola", label: "ההשוואה המלאה בין אלומיניום לעץ" },
+        link: { href: "/guides/aluminum-vs-wood-pergola/", label: "ההשוואה המלאה בין אלומיניום לעץ" },
       },
     ],
     faqs: [
@@ -475,7 +475,7 @@ export const serviceDetails: Record<ServiceSlug, ServiceDetail> = {
       {
         heading: "מטבח מתחת לפרגולה",
         body: "השילוב הזה נפוץ ומצוין — אבל הוא משנה דרישה אחת: קירוי אטום מעל אזור בישול צריך אוורור לפינוי חום ועשן. פרגולה עם להבים פתוחים או קירוי מוצלל פותרת את זה מעצמה; גג אטום מלא צריך שהנקודה הזו תיפתר בתכנון ולא אחרי הארוחה הראשונה.",
-        link: { href: "/service/pergolas", label: "לתכנון הפרגולה מעל המטבח" },
+        link: { href: "/service/pergolas/", label: "לתכנון הפרגולה מעל המטבח" },
       },
       {
         heading: "משטחים שנשארים בחוץ כל השנה",
@@ -696,15 +696,15 @@ export const faqs = [
 
 /** Header / footer navigation. */
 export const navItems = [
-  { label: "השירותים שלנו", href: "/services" },
-  { label: "אזורי שירות", href: "/locations" },
+  { label: "השירותים שלנו", href: "/services/" },
+  { label: "אזורי שירות", href: "/locations/" },
   // The guides silo carries the commercial/informational queries the service pages cannot own
   // without losing their transactional intent. It needs a primary-nav entry or every guide is
   // three clicks deep and effectively orphaned.
-  { label: "מדריכים", href: "/guides" },
-  { label: "גלריה", href: "/gallery" },
-  { label: "אודות", href: "/about" },
-  { label: "צור קשר", href: "/contact" },
+  { label: "מדריכים", href: "/guides/" },
+  { label: "גלריה", href: "/gallery/" },
+  { label: "אודות", href: "/about/" },
+  { label: "צור קשר", href: "/contact/" },
 ] as const;
 
 /** Full /gallery page: 4 category tabs (live order), 52 tiles. */
