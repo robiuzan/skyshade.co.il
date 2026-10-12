@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "node scripts/check-sitemap.mjs",
+    "prebuild": "node scripts/live/check-live-copy.mjs && node scripts/live/check-live-register.mjs && node scripts/live/check-live-schedule.mjs",
+    "postbuild": "node scripts/check-sitemap.mjs && node scripts/live/check-live-out.mjs",
+    "live:remind": "node scripts/live/check-reminders.mjs",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",

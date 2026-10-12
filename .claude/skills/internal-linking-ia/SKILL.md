@@ -69,6 +69,13 @@ Diff the two: routes with no inbound href are orphans. Cross-check against `out/
 build. Report findings as `page → missing inbound links from [x, y]`, with the specific sentence
 where each link should go.
 
+The fleet live-kit's announcement bar and seasonal card (CLAUDE.md §10) link to service pages and
+guides from every page, but they are sitewide chrome, not context — never count them as inbound
+links. The grep above never sees them (they render from `content/live/`, not `app/` or
+`components/`); a check that reads `out/` HTML must first strip
+`<div class="live-topbar"…</div></div>` and `<div class="live-dialogs"…</dialog></div>`, as it
+strips `<header>` and `<footer>`.
+
 ## When you add a page
 
 Adding a URL without planning its inbound links is how orphans happen. In the same change: the hub

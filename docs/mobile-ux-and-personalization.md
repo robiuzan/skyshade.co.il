@@ -46,6 +46,13 @@ Consequences that are already shipped and must not be "tidied away":
   view. This is the one rule that outranks visual tidiness.
 - **Never** a modal, interstitial or overlay on entry. Beyond the UX cost, an intrusive mobile
   interstitial is a documented Google demotion.
+  > **Override — owner decision 2026-10-11, fleet live-kit.** The fleet's seasonal card (a
+  > native `<dialog>`, CLAUDE.md §10) ships here with the 3locksmiths pilot's rules, which keep
+  > it off entry: never on a page reached from a search engine, never on the first page before
+  > 20 s **and** a scroll, otherwise only from the 2nd page of a visit (after 4 s); once per 14
+  > days; never on `/contact/`, the legal pages or `/404/`; never over the open mobile menu, the
+  > services dropdown or the gallery lightbox, never while a form field has focus. On a phone it
+  > is a bottom sheet that stops above `MobileCtaBar`. The rule above stands for everything else.
 - **Forms**: the correct `inputMode`/`type` per field so the right keyboard opens (`type="tel"`
   on phone is already right); labels above fields, never placeholder-only; `autocomplete` on
   every field that maps to autofill data (also WCAG 2.1 SC 1.3.5 — see
@@ -105,6 +112,10 @@ conversion element, never in a heading:
 - Storing location in a cookie or `localStorage` without disclosing it in `/privacy/`. The only
   client-side persistence today is the documented first-touch object in `sessionStorage`; adding
   a second one is a privacy-policy edit **in the same commit**.
+  > **2026-10-11, fleet live-kit:** `/assets/live.js` adds `ls-pv` (sessionStorage: page views
+  > this visit), `ls-dlg-<line>` (localStorage: when the seasonal card last showed, for the
+  > 14-day cap) and `ls-status` (localStorage: a non-normal status-switch mode, ≤ 30 min). No
+  > location, nothing personal. Disclosed in `/privacy/` («מידע שנשמר בדפדפן») in the same change.
 
 ## 5. The implementation contract for any personalized element
 
@@ -115,13 +126,30 @@ Any Tier 1 or Tier 2 element ships only if all six hold:
 2. **Height is reserved** before the value resolves — a fixed `min-h` on the slot, or the default
    text occupying the same space. Zero CLS contribution; the budget is in
    [performance-budgets.md](performance-budgets.md).
+   > **2026-10-11, fleet live-kit — a known exception, not yet decided.** The announcement bar's
+   > line is chosen before first paint from the calendar, but the fleet status switch is read
+   > after paint. On a phone during a season, a quiet / off answer or an unreadable switch
+   > (missing CORS, offline, or slower than the 1.5 s timeout, which is not cached) collapses the
+   > 35 px bar after paint: measured CLS ≈0.04 per affected page view (review 2026-10-11, 390 px),
+   > 0 while the switch answers normal. It also breaks §3's "nothing shifts after paint". Whether
+   > that cost is accepted is the owner's call with the wording approval (CLAUDE.md §10).
 3. **It adds no network request** and no third-party script.
+   > **Override — owner decision 2026-10-11, fleet live-kit.** The live surfaces make ONE read
+   > per page view, after first paint: `https://imgquarry.com/status/fleet.json` (the fleet
+   > status switch, the same host as the site's images, no credentials, 1.5 s timeout). Its
+   > answer can only hide or quiet a line — it carries no text into the page — and it is in
+   > `connect-src` and disclosed in `/privacy/`. No third-party script: `/assets/live.js` is
+   > served from this site.
 4. **It touches nothing indexable** — no heading, title, meta, canonical or schema node.
 5. **It is disclosed** in `/privacy/` if it reads or stores anything about the visitor.
 6. **It has a named metric and a baseline** in [measurement-plan.md](measurement-plan.md) before
    it ships, and it ships **alone** within its read window — one substantive conversion change
    per 4 weeks or 200 sessions, whichever is later
    ([phase-2-improvement-plan.md](phase-2-improvement-plan.md) §2).
+   > **2026-10-11 — not decided.** The fleet live-kit (bar + card + updates strip) is one change
+   > that touches the call path; whether it may ship inside the current read window, and its
+   > metric (`surface_view` → `phone_call_click` / `whatsapp_click` by `link_location` `topbar-*`
+   > / `popup-*`), is the owner's call together with the wording approval (CLAUDE.md §10).
 
 ## 6. Measurement
 

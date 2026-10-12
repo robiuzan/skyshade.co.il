@@ -471,5 +471,10 @@ Honesty clause: several of the highest-value workstreams — projects, prices, c
 
 **Explicit do-not-build list:** HowTo schema; SearchAction; a separate Organization node; `/pricing/` alongside the cost guides; a 7th top-level service; city #17+; Hebrew-slug migration; per-city map iframes; exit-intent modals; preemptive CAPTCHA (honeypot + monitoring first; Web3Forms' `botcheck` is just a second honeypot, not protection against direct API posts); server-side tagging now; `priority`/`changefreq` in the sitemap; build-time `lastmod` (stays omitted until real per-page dates exist); third-party review-widget embeds; framer-motion re-introduction; `.htaccess` anything.
 
+> **Owner decision 2026-10-11, fleet live-kit:** the fleet's seasonal card ships on this site
+> (CLAUDE.md §10). It is not an exit-intent modal — it never fires on leaving, never on a search
+> landing, at most once per 14 days — and it follows the 3locksmiths pilot's rules
+> (docs/mobile-ux-and-personalization.md §3 carries the override). Every other item above stands.
+
 ---
 *Sources: 15-track adversarially-verified audit (corrections preserved throughout), completeness critique (all 8 misses and 8 conflict resolutions incorporated), and direct verification of `site.config.json`, `app/layout.tsx`, `lib/site-config.ts`, `lib/content.ts`, and `.github/workflows/deploy.yml` in this repo. Where a claim could not be verified it is marked REQUIRES-CLIENT-INPUT rather than asserted.*

@@ -7,6 +7,8 @@
 # Whoever edits the GTM container owns this allowlist — a new tag (Ads, Meta pixel) will be
 # silently blocked once enforced. 'unsafe-inline' is a deliberate concession to the static
 # export + GTM bootstrap; strict nonces would need a Worker.
+# connect-src https://imgquarry.com: the fleet live-kit's status switch (/assets/live.js reads
+# https://imgquarry.com/status/fleet.json once per page view; CLAUDE.md §10).
 
 /*
   X-Frame-Options: SAMEORIGIN
@@ -15,7 +17,7 @@
   Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
   Cross-Origin-Opener-Policy: same-origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://imgquarry.com https://www.googletagmanager.com https://*.google-analytics.com; font-src 'self'; connect-src 'self' https://api.web3forms.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net; frame-src https://www.googletagmanager.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://api.web3forms.com; upgrade-insecure-requests
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://imgquarry.com https://www.googletagmanager.com https://*.google-analytics.com; font-src 'self'; connect-src 'self' https://api.web3forms.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://imgquarry.com; frame-src https://www.googletagmanager.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://api.web3forms.com; upgrade-insecure-requests
 
 # Content-hashed build assets: cache forever.
 /_next/static/*

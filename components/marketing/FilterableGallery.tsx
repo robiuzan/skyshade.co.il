@@ -107,12 +107,13 @@ export function FilterableGallery({
         </div>
       )}
 
-      {/* Lightbox */}
+      {/* Lightbox. data-live-block: the seasonal card (public/assets/live.js) never opens over it. */}
       {lightbox && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
           role="dialog"
           aria-modal="true"
+          data-live-block=""
           onClick={() => setLightbox(null)}
         >
           <button

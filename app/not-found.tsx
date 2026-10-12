@@ -16,6 +16,10 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <div className="mx-auto flex min-h-[60vh] max-w-6xl flex-col items-center justify-center px-4 py-16 text-center">
+      {/* Fleet live-kit: Cloudflare Pages serves this page AT every missing URL, so no path in
+          live.config.mjs can name it — it marks itself calm: no seasonal line, no card
+          (lib/live/live-core.css, public/assets/live.js). */}
+      <div data-live-calm-page hidden />
       <h1 className="font-heading text-5xl font-extrabold text-primary">404</h1>
       <p className="mt-4 text-gray-600">הדף שחיפשתם לא נמצא.</p>
       <Link

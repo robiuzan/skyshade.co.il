@@ -14,6 +14,7 @@ import { FilterableGallery } from "@/components/marketing/FilterableGallery";
 import { ServiceAreas } from "@/components/marketing/ServiceAreas";
 import { Faq } from "@/components/marketing/Faq";
 import { FinalCta } from "@/components/marketing/FinalCta";
+import { LiveUpdates } from "@/components/live/Live";
 
 // The business + WebSite nodes now render site-wide from app/layout.tsx (lib/seo-graph.ts), so
 // this page adds only its own WebPage and FAQPage — both referencing the business by @id rather
@@ -41,6 +42,10 @@ export default function HomePage() {
       <ServicesGrid />
       <WhyUs />
       <Process />
+
+      {/* The updates strip (fleet live-kit): between the process steps and the gallery. It hides
+          itself 45 days after its newest item, so nothing here is ever old news. */}
+      <LiveUpdates />
 
       <Section id="gallery" tone="muted">
         <SectionHeading

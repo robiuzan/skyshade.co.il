@@ -106,7 +106,16 @@ Scheduled weeks 5–6, **after** the four clean baseline weeks. Sequencing is th
    predicted is a known cost; the same drop discovered afterwards looks like a catastrophe and
    gets "fixed" by reverting something unrelated.
 3. Ship `default` consent state → banner → `update` on interaction. The banner reserves its
-   height (CLS — [performance-budgets.md](performance-budgets.md) §5).
+   height (CLS — [performance-budgets.md](performance-budgets.md) §5). **While it is open it
+   carries `data-live-block`** (2026-10-11, fleet live-kit, CLAUDE.md §10): otherwise the
+   seasonal card (a modal `<dialog>`) can open on top of it and make the consent choice
+   unreachable until the card is closed. A banner injected by GTM instead of rendered by the site
+   needs the same attribute. **From the first paint, not from hydration** (fleet live-kit README
+   step 5, 2026-10-12): a static export cannot know on the server whether this visitor already
+   answered, so an inline `<head>` script placed after `<LiveHead/>` sets `data-live-block` on
+   `<html>` when the consent key is missing from `localStorage`, and the banner removes it once
+   answered — a returning visitor who already answered still gets the card. The reference is
+   hambabait.co.il (`app/layout.tsx`, `components/layout/ConsentBanner.tsx`).
 4. Israeli law does not currently impose GDPR-style prior consent for analytics, but the
    marketing-consent checkbox (חוק הספאם) is a **separate, unbundled, unchecked** control and
    stays that way regardless of what the cookie banner does. Do not merge them.

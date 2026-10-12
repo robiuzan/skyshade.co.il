@@ -82,6 +82,15 @@ these are **not** pushed from code:
 `contact-call` · `contact-whatsapp` · `contact-email` · `footer-call` ·
 **`footer-email`** · **`form-whatsapp`** · **`form-recovery-whatsapp`** · **`form-recovery-call`**
 
+**2026-10-11, fleet live-kit (CLAUDE.md §10; not deployed until the owner approves):** the
+announcement bar adds `topbar-whatsapp` (the evergreen line) and `topbar-call` (only if a line
+ever prints `{phone}`), the seasonal card `popup-call` · `popup-whatsapp`, and three internal links
+that are not conversions — `topbar-link` · `popup-link` · `update-link`. `/assets/live.js` also
+pushes `surface_view` / `surface_dismiss` (`surface`, `variant`, `method` — ids only, no personal
+data). The fleet's tag for those reads the trigger `CE - popup events (3locksmiths)`, whose
+hostname condition must be widened to `skyshade.co.il` before the first deploy, or the events die
+in the dataLayer like every other event here.
+
 ⚠️ The last four were added 2026-09-01. Until then this sentence claimed "every link already
 carries one" while `LeadForm` carried **none** and the footer email carried none — so those clicks
 resolved to `link_location = 'unknown'`, and the form's WhatsApp link (rendered on 24 of 36 pages,

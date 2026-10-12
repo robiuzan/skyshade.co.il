@@ -22,7 +22,7 @@ export default function PrivacyPage() {
           <p>
             אנו ב{siteConfig.name} מכבדים את פרטיותכם. עמוד זה מסביר איזה מידע אנו
             אוספים, כיצד אנו משתמשים בו ומהן זכויותיכם.{" "}
-            <span className="text-gray-500">עודכן לאחרונה: אוגוסט 2026.</span>
+            <span className="text-gray-500">עודכן לאחרונה: אוקטובר 2026.</span>
           </p>
           <h2 className="font-heading text-lg font-bold text-primary">
             איזה מידע אנו אוספים
@@ -45,9 +45,23 @@ export default function PrivacyPage() {
           <p>
             הטופס באתר נשלח באמצעות שירות Web3Forms, המעביר את פנייתכם לתיבת הדוא״ל
             שלנו. האתר משתמש ב-Google Tag Manager וב-Google Analytics לניתוח סטטיסטי של
-            השימוש באתר (עמודים נצפים ומקורות הגעה); פרטי הפנייה שלכם — שם וטלפון —
-            אינם מועברים לשירותי הניתוח. תמונות האתר מוגשות משרת תמונות ייעודי
-            (imgquarry.com).
+            השימוש באתר (עמודים נצפים, מקורות הגעה והצגה או סגירה של הודעות באתר); פרטי
+            הפנייה שלכם — שם וטלפון — אינם מועברים לשירותי הניתוח. תמונות האתר מוגשות משרת
+            תמונות ייעודי (imgquarry.com).
+          </p>
+          {/* Fleet live-kit storage and its one network read (public/assets/live.js) —
+              docs/mobile-ux-and-personalization.md §4: new client storage is disclosed here in
+              the same change. Keys: ls-pv (sessionStorage), ls-dlg-<line>, ls-status (localStorage). */}
+          <h2 className="font-heading text-lg font-bold text-primary">
+            מידע שנשמר בדפדפן
+          </h2>
+          <p>
+            האתר שומר בדפדפן שלכם, באחסון המקומי שלו בלבד, כמה ערכים טכניים: כמה עמודים
+            צפיתם בביקור הנוכחי, מתי הוצגה לכם לאחרונה הודעה עונתית — כדי שלא תוצג שוב
+            בתוך 14 יום — ומצב התצוגה הנוכחי של ההודעות באתר. ערכים אלה אינם כוללים פרטים
+            מזהים, אינם נשלחים אלינו, ונמחקים כשמנקים את נתוני הגלישה. כדי לדעת אם להציג
+            הודעות, הדפדפן קורא קובץ מצב קטן משרת התמונות שצוין למעלה; בקריאה זו לא נשלח
+            מידע שמסרתם.
           </p>
           <h2 className="font-heading text-lg font-bold text-primary">
             שמירת מידע וזכויותיכם

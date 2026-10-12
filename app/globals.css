@@ -110,3 +110,53 @@
     unicode-bidi: isolate;
   }
 }
+
+/*
+ * Fleet live-kit theme (lib/live/live-core.css owns the behaviour; these are the colours only).
+ * Measured 2026-10-11, WCAG 2.1 AA: the bar is primary-800 with white text (11.7:1) — darker
+ * than the bg-primary hero below the white header, so the two never read as one band. The
+ * card's call button is the site's primary button colour (white 6.6:1), WhatsApp the site's own
+ * #0E7A34 (5.5:1, components/ui/Button.tsx); text primary-900 (15.2:1 on white, 13.6:1 on the
+ * strip's primary-50), links primary (6.6:1 on white, 5.9:1 on primary-50).
+ * --live-sticky-offset: MobileCtaBar is 53px tall INCLUDING its 1px top border (py-3.5 + a 24px
+ * line + 1px; measured 53.0px at 390, 1000 and 1023px wide, 2026-10-12) + 16px = 69px, so the
+ * card stops 16px above it. It was 72px until 2026-10-12 — the sum written here, not the value.
+ */
+:root {
+  --live-bar-bg: #1b3769;
+  --live-bar-ink: #ffffff;
+  --live-ink: #122548;
+  --live-accent: #2b5bad;
+  --live-soft-bg: #eef3fb;
+  --live-call-bg: #2b5bad;
+  --live-wa-bg: #0e7a34;
+  --live-max: 72rem;
+  --live-sticky-offset: 69px;
+}
+
+/*
+ * skyshade's mobile layout runs to 1023px (Tailwind lg = 1024px: MobileCtaBar and the hamburger
+ * are lg:hidden), the live-kit's to 991px. Between the two the sticky call bar is still showing,
+ * so the bar follows the phone rule there too (open only while a seasonal, safety or wartime line
+ * is live — never on a calm page, whether its path marks it or, like the 404 page, its own
+ * `[data-live-calm-page]` element does), and the card sits above the sticky bar as it does on a
+ * phone. Unlayered on purpose — live-core.css is unlayered, and a layered rule would lose to it
+ * whatever its specificity; the `html` prefix out-specifies live-core.css's own `.live-dialog`,
+ * which loads after this file.
+ */
+@media (min-width: 992px) and (max-width: 1023.98px) {
+  html:not([data-live]) .live-topbar,
+  html[data-live="evergreen"] .live-topbar,
+  html[data-live-calm]:not([data-live^="safety-"]):not([data-live="reduced"])
+    .live-topbar,
+  html:has([data-live-calm-page]):not([data-live^="safety-"]):not([data-live="reduced"])
+    .live-topbar {
+    display: none;
+  }
+  html .live-dialog {
+    margin: auto auto calc(var(--live-sticky-offset, 69px) + env(safe-area-inset-bottom));
+    max-height: calc(
+      100% - var(--live-sticky-offset, 69px) - env(safe-area-inset-bottom) - 16px
+    );
+  }
+}

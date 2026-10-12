@@ -253,3 +253,61 @@ AI Crawl Control, WAF. Current status is logged in `docs/measurement-plan.md`.
 - **Open:** GTM has one tag — GA4 lead/call/WhatsApp events die in the dataLayer
   (`audit-roadmap-full.md` §6.3). No Google Business Profile. No owner intake session yet.
 - CSP is **report-only** on purpose. Whoever edits the GTM container owns that allowlist.
+
+---
+
+## 10. Live surfaces — the announcement bar, the seasonal card, the updates strip
+
+Fleet live-kit (owner decision 2026-10-11; canonical in
+`../3locksmiths.co.il/fleet/live-kit/`, see its README). Every page carries a thin announcement
+bar above the sticky header (in flow, **not** sticky — it scrolls away) whose line is chosen
+before first paint by the Israeli calendar — memorial days and fasts silence it, Shabbat and chag
+silence the seasonal lines — and then by the fleet status switch
+(`https://imgquarry.com/status/fleet.json`: quiet / reduced / off), which `/assets/live.js` reads
+**after** first paint (a non-normal answer is cached so later pages apply it before paint; a
+1.5 s timeout is not cached). So on a phone during a season the bar can paint and then collapse
+when the switch says quiet / off or cannot be read in time — measured CLS ≈0.04 per affected page
+view, 0 when it answers normal (`docs/mobile-ux-and-personalization.md` §5 rule 2). From 1024px
+the bar always shows (the evergreen line at least); below 1024px only while a seasonal or
+wartime line is live; `off` hides it at every width.
+One seasonal card (a native `<dialog>`, the pilot's rules: 2nd page or 20 s + scroll, never from
+search, once per 14 days, never on calm or no-card pages, never over the open mobile menu, the
+services dropdown or the gallery lightbox — each carries `data-live-block` while open, and so must
+the planned consent banner, `docs/data-tracking-infrastructure.md` §5). The
+homepage shows an updates strip after the process steps; it hides itself 45 days after the newest
+item.
+
+- **Edit here:** `content/live/_campaigns.mjs` (lines, windows, the card) and
+  `content/live/_updates.mjs` — wording only from sentences the site already shows, each quoted
+  in `source`; nothing 🔶 in `docs/evidence-register.md`. Calm / no-card pages and this site's own
+  ⛔ claim stems: `live.config.mjs`. The 404 page marks itself calm with
+  `<div data-live-calm-page hidden />` in `app/not-found.tsx` (Cloudflare serves it at every
+  missing URL, so no path can name it) — it is not dead markup. Both registers need the owner's
+  `approved: "YYYY-MM-DD — who, how"`, or the build fails (`LIVE_DRAFT=1 npm run build` previews
+  a draft locally only).
+- **Never edit:** `lib/live/**`, `scripts/live/**`, `public/assets/live.js`,
+  `content/live/_calendar*.json`, `live-kit.lock.json` — byte-locked kit copies;
+  `scripts/live/check-live-copy.mjs` fails the build if they change. Fix the kit upstream and
+  re-sync.
+- **Gates:** `prebuild` = check-live-copy → check-live-register → check-live-schedule;
+  `postbuild` = check-sitemap → check-live-out (the built pages must carry exactly what the
+  registers say).
+- **Push-to-deploy consequences (rule 7):** the gates run in `deploy.yml` too. An unapproved
+  register fails the CI build, so a draft can never reach production. The **monthly cron build
+  fails** once the last authored window ends within 30 days (runway) or the calendar within 60
+  days — nothing deploys until the next window is written or the calendar re-synced. For an
+  urgent unrelated fix only, `LIVE_GATES=lapsed-ok` (as `env:` on deploy.yml's build step, for
+  that one run) downgrades those two clock rules; every correctness rule still blocks.
+- **Weight (re-measured 2026-10-12, draft build after the second kit re-sync):** `/assets/live.js`
+  (17.1 KB, 6.5 KB gzip, deferred) is not a `_next/static/chunks` file, so the
+  `docs/performance-budgets.md` §9 command does not count it — by that command home JS went
+  119.4 → 119.5 KB; counted, it would be ≈126.0 KB against the 120 KB budget (an owner
+  decision). HTML grows ≈5.7 KB gzip per page (the markup ≈3 KB, repeated in the RSC payload):
+  home 26.4 → 32.2 KB of its 35 KB budget. CSS 8.3 → 9.5 KB of 15 KB.
+- **Popups and network:** `docs/mobile-ux-and-personalization.md` §3 (no modal) and §5 rule 3
+  (no network request) carry the owner's dated override; the storage is disclosed in `/privacy/`.
+- **Before the first deploy** (owner, in order): approve the wording (`approved` in both
+  registers); commit the kit in 3locksmiths and re-sync (the lock must not say `+dirty`); add
+  skyshade's origins to the status switch's CORS list; widen the GTM trigger
+  `CE - popup events (3locksmiths)` to this hostname; `gh secret set NTFY_TOPIC` for
+  `.github/workflows/remind.yml` (it fails red without it). Then merging to `main` IS the deploy.

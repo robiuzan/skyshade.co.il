@@ -8,6 +8,8 @@ import { MobileCtaBar } from "@/components/layout/MobileCtaBar";
 import { gtmHeadSnippet, gtmNoScriptSrc } from "@ishub/site-kit/analytics";
 import { businessNode, websiteNode, graphScript } from "@/lib/seo-graph";
 import "./globals.css";
+import "@/lib/live/live-core.css";
+import { LiveDialogs, LiveHead, LiveTopBar } from "@/components/live/Live";
 
 // Heebo — clean, legible Hebrew — for both body and headings (brand font).
 // Exposed as a CSS variable consumed by app/globals.css (font-sans / font-heading).
@@ -55,8 +57,17 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="he" dir="rtl" className={heebo.variable}>
+    <html
+      lang="he"
+      dir="rtl"
+      className={heebo.variable}
+      // the live head script sets data-live* on <html> before hydration
+      suppressHydrationWarning
+    >
       <head>
+        {/* The live surfaces decide the line before first paint — first in <head>. Two small
+            inline scripts and one deferred file (/assets/live.js); GTM stays in <head> below. */}
+        <LiveHead />
         {/* GTM belongs in <head> (was at the top of <body>, which delays tag firing and
             undercounts fast bounces). */}
         {gtmHead && <script id="gtm-init" dangerouslySetInnerHTML={{ __html: gtmHead }} />}
@@ -88,12 +99,18 @@ export default function RootLayout({
             />
           </noscript>
         )}
+        {/* The announcement bar (fleet live-kit): in flow above the sticky header, NOT sticky —
+            it scrolls away. The calendar picks its line before first paint; the status switch is
+            read after paint, so on a phone a quiet / off / unreadable answer can still collapse
+            it once (CLAUDE.md §10). */}
+        <LiveTopBar />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
         {/* Spacer so the fixed mobile CTA bar never overlaps footer content. */}
         <div className="h-16 lg:hidden" aria-hidden />
         <MobileCtaBar />
+        <LiveDialogs />
       </body>
     </html>
   );

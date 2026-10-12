@@ -138,12 +138,14 @@ export function Header() {
                       />
                     </button>
                   </div>
-                  {/* pt-2 (not mt-2) keeps the hover path to the menu unbroken. */}
+                  {/* pt-2 (not mt-2) keeps the hover path to the menu unbroken. While it is open
+                      the seasonal card (public/assets/live.js) waits — never over a menu. */}
                   <div
                     className={cn(
                       "absolute start-0 top-full z-50 pt-2",
                       servicesOpen ? "block" : "hidden",
                     )}
+                    data-live-block={servicesOpen ? "" : undefined}
                   >
                     <ul
                       id="desktop-services-menu"
@@ -200,8 +202,12 @@ export function Header() {
         </div>
       </Container>
 
-      {/* Mobile menu */}
-      <div id="mobile-menu" className={cn("border-t border-gray-100 lg:hidden", open ? "block" : "hidden")}>
+      {/* Mobile menu. While it is open the seasonal card (public/assets/live.js) never opens over it. */}
+      <div
+        id="mobile-menu"
+        className={cn("border-t border-gray-100 lg:hidden", open ? "block" : "hidden")}
+        data-live-block={open ? "" : undefined}
+      >
         <Container className="py-4">
           <nav aria-label="ראשי נייד">
             <ul className="flex flex-col gap-1">
