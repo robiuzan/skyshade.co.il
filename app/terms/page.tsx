@@ -19,9 +19,7 @@ export default function TermsPage() {
       />
       <Section tone="white">
         <div className="mx-auto max-w-3xl space-y-4 text-gray-700">
-          <p>
-            השימוש באתר {siteConfig.name} ובתכניו כפוף לתנאים המפורטים להלן.
-          </p>
+          <p>השימוש באתר {siteConfig.name} ובתכניו כפוף לתנאים המפורטים להלן.</p>
           <h2 className="font-heading text-lg font-bold text-primary">כללי</h2>
           <p>
             המידע והתמונות באתר מובאים לצורכי התרשמות בלבד ואינם מהווים הצעה מחייבת. הצעת

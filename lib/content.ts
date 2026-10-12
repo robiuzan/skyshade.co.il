@@ -7,13 +7,7 @@
  */
 import { manifest, services, type ServiceSlug } from "@/lib/site-config";
 
-export type IconName =
-  | "Sun"
-  | "Fence"
-  | "LayoutGrid"
-  | "Layers"
-  | "Utensils"
-  | "Blinds";
+export type IconName = "Sun" | "Fence" | "LayoutGrid" | "Layers" | "Utensils" | "Blinds";
 
 interface ServiceMeta {
   tagline: string;
@@ -157,7 +151,10 @@ export const serviceDetails: Record<ServiceSlug, ServiceDetail> = {
             text: "שילוב נפוץ — האלומיניום נושא את המבנה ואינו דורש טיפול, והעץ נותן את המראה החם. כך התחזוקה מצטמצמת לחלק הגלוי בלבד.",
           },
         ],
-        link: { href: "/guides/pergola-permit/", label: "מתי קירוי אטום מוציא אתכם מהפטור" },
+        link: {
+          href: "/guides/pergola-permit/",
+          label: "מתי קירוי אטום מוציא אתכם מהפטור",
+        },
       },
       {
         heading: "מה קובע את התכנון בחצר שלכם",
@@ -213,12 +210,18 @@ export const serviceDetails: Record<ServiceSlug, ServiceDetail> = {
             text: "אם ייתכן שתרצו לסגור את המרפסת בהמשך, כדאי לתכנן את החיבורים מראש.",
           },
         ],
-        link: { href: "/guides/pergola-sukkah/", label: "מה לבדוק אם מתכננים סוכה מתחת לפרגולה" },
+        link: {
+          href: "/guides/pergola-sukkah/",
+          label: "מה לבדוק אם מתכננים סוכה מתחת לפרגולה",
+        },
       },
       {
         heading: "תחזוקה",
         body: "פרגולת אלומיניום אינה דורשת צביעה, שימון או איטום. הצבע נצרב בתנור ואינו מתקלף, והפרופיל אינו סופג לחות — שטיפה במים אחת לתקופה שומרת על הגוון. בפרגולה חשמלית כדאי לוודא פעם בשנה שהלהבים והמסילות נקיים מאבק ומעלים. זה כל ההבדל המעשי בין אלומיניום לעץ בחוץ.",
-        link: { href: "/guides/aluminum-vs-wood-pergola/", label: "ההשוואה המלאה בין אלומיניום לעץ" },
+        link: {
+          href: "/guides/aluminum-vs-wood-pergola/",
+          label: "ההשוואה המלאה בין אלומיניום לעץ",
+        },
       },
     ],
     faqs: [
@@ -595,7 +598,10 @@ export const differentiators = [
 
 /** End-to-end process (5 steps). */
 export const processSteps = [
-  { title: "פנייה ראשונית", body: "מתקשרים או משאירים פרטים, ואנחנו חוזרים אליכם להבנת הצורך." },
+  {
+    title: "פנייה ראשונית",
+    body: "מתקשרים או משאירים פרטים, ואנחנו חוזרים אליכם להבנת הצורך.",
+  },
   {
     title: "ייעוץ ומדידה",
     body: "מגיעים אליכם לייעוץ ומדידה בשטח — ללא עלות וללא התחייבות.",
@@ -708,7 +714,12 @@ export const navItems = [
 ] as const;
 
 /** Full /gallery page: 4 category tabs (live order), 52 tiles. */
-export const galleryTabs = ["דקים", "חיפוי קירות", "גדרות ושערים", "פרגולות, מחסות וגגות"] as const;
+export const galleryTabs = [
+  "דקים",
+  "חיפוי קירות",
+  "גדרות ושערים",
+  "פרגולות, מחסות וגגות",
+] as const;
 
 export const galleryImages: { src: string; category: string }[] = [
   { src: "project-1.webp", category: "דקים" },

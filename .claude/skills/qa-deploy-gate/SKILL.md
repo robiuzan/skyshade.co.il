@@ -18,6 +18,7 @@ an exported page is missing from `app/sitemap.ts`, or a sitemap entry has no exp
 sitemap — do not disable the guard.
 
 Manual passes before pushing:
+
 - [ ] the page at 375px width (Hebrew wraps earlier than English)
 - [ ] keyboard: tab through the header, open/close the mobile menu, Escape, focus visible
 - [ ] the lead form submits **and** its failure path shows the WhatsApp recovery link
@@ -55,6 +56,7 @@ verification; this project spent weeks deploying to a host nothing pointed at.
 ## When live disagrees with the repo
 
 In this order:
+
 1. Did the workflow actually run and reach the wrangler step? (`gh run list`, `gh run view`)
 2. Cloudflare Pages → project `skyshade` → Deployments: is the latest one on branch `main` and
    promoted to production?

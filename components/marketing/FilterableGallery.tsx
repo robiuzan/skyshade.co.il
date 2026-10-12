@@ -83,6 +83,8 @@ export function FilterableGallery({
             key={item.key}
             type="button"
             onClick={() => setLightbox(item)}
+            // Class order kept as shipped: a re-sort changes the built output, not the look.
+            // prettier-ignore
             className="group overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
             aria-label={`הגדלת תמונת פרויקט — ${item.category}`}
           >
@@ -118,6 +120,8 @@ export function FilterableGallery({
         >
           <button
             type="button"
+            // Class order kept as shipped: a re-sort changes the built output, not the look.
+            // prettier-ignore
             className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
             aria-label="סגירה"
             onClick={() => setLightbox(null)}

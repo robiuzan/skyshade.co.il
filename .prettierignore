@@ -13,3 +13,9 @@ scripts/live/
 content/live/_calendar*.json
 public/assets/live.js
 live-kit.lock.json
+
+# written by the hub roster sync (JSON.stringify, 2 spaces) — never edited here (CLAUDE.md rule 4)
+site.config.json
+
+# Search Console verification token, served byte-for-byte from out/ (CLAUDE.md rule 8)
+public/google2bc4e3517c114dd1.html

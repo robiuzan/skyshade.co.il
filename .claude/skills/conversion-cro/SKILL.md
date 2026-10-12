@@ -30,13 +30,13 @@ desktop keeps them in the header and in each section's `FinalCta`.
 
 ## CTA placement by page type
 
-| Page | Above fold | Mid | End |
-|---|---|---|---|
-| Home | call + WhatsApp in hero | after `WhyUs` | `FinalCta` + form |
-| Service | call + "הצעת מחיר" | after the spec/benefits block | form with the service pre-selected |
-| City | call | after the local proof | form |
-| Guide | **no hard CTA** — a soft link to the service page | contextual service link | form after the answer is delivered |
-| Gallery | WhatsApp ("שלחו לנו תמונה של המרפסת") | per-category service links | form |
+| Page    | Above fold                                        | Mid                           | End                                |
+| ------- | ------------------------------------------------- | ----------------------------- | ---------------------------------- |
+| Home    | call + WhatsApp in hero                           | after `WhyUs`                 | `FinalCta` + form                  |
+| Service | call + "הצעת מחיר"                                | after the spec/benefits block | form with the service pre-selected |
+| City    | call                                              | after the local proof         | form                               |
+| Guide   | **no hard CTA** — a soft link to the service page | contextual service link       | form after the answer is delivered |
+| Gallery | WhatsApp ("שלחו לנו תמונה של המרפסת")             | per-category service links    | form                               |
 
 Guides that open with a sales CTA lose the informational query they were built to win.
 

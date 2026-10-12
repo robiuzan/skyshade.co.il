@@ -15,6 +15,7 @@ A `postbuild` failure means sitemap drift — fix `app/sitemap.ts`, never disabl
 `scripts/check-sitemap.mjs`.
 
 Then confirm:
+
 - [ ] no fabricated fact shipped — every new claim ✅ in `docs/evidence-register.md`
 - [ ] titles ≤48 chars, descriptions ≤160, canonicals ending in `/`
 - [ ] FAQ schema matches the visible text verbatim

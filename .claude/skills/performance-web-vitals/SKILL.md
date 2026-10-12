@@ -10,13 +10,13 @@ Static export on Cloudflare's edge — the network is not the problem. The costs
 
 ## Budgets
 
-| Metric | Budget | Notes |
-|---|---|---|
-| LCP (mobile, field) | < 2.5s | almost always the hero image |
-| CLS | < 0.05 | images without dimensions; the sticky CTA bar; font swap |
-| INP | < 200ms | little JS here — regressions come from added third-party tags |
-| JS transferred | ≤ 130KB gzip on the home page, `/assets/live.js` included (120KB until the owner raised it 2026-10-12 — `docs/performance-budgets.md` owns it) | `framer-motion` was removed once; do not reintroduce an animation lib |
-| Hero image | < 150KB | via the CDN resizer at the right width |
+| Metric              | Budget                                                                                                                                         | Notes                                                                 |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| LCP (mobile, field) | < 2.5s                                                                                                                                         | almost always the hero image                                          |
+| CLS                 | < 0.05                                                                                                                                         | images without dimensions; the sticky CTA bar; font swap              |
+| INP                 | < 200ms                                                                                                                                        | little JS here — regressions come from added third-party tags         |
+| JS transferred      | ≤ 130KB gzip on the home page, `/assets/live.js` included (120KB until the owner raised it 2026-10-12 — `docs/performance-budgets.md` owns it) | `framer-motion` was removed once; do not reintroduce an animation lib |
+| Hero image          | < 150KB                                                                                                                                        | via the CDN resizer at the right width                                |
 
 ## Images — the LCP path
 
@@ -45,7 +45,7 @@ from a `<link>` to a third-party host (it also breaks the CSP).
 
 - GTM lives in `<head>` deliberately (it was at the top of `<body>`, which delayed tag firing and
   undercounted fast bounces). Do not move it back "for performance" without reading
-  `docs/measurement-plan.md` — a defer experiment is scheduled for week 7+, *after* the event
+  `docs/measurement-plan.md` — a defer experiment is scheduled for week 7+, _after_ the event
   baseline exists.
 - Every new tag in GTM is a performance change **and** a CSP change (`public/_headers`).
 - `"use client"` only where interactivity demands it. `LeadForm`, `FilterableGallery` and the mobile

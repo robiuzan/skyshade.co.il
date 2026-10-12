@@ -35,7 +35,7 @@ that contradict the guardrails are not findings — the guardrails were decided 
 ## Known context — do not re-report as new
 
 - The 16 city pages are byte-identical doorways. The decision is differentiate-or-301, never more
-  pages. Report *which* cities have evidence, not "you have duplicate pages".
+  pages. Report _which_ cities have evidence, not "you have duplicate pages".
 - No `Review`/`AggregateRating` markup, deliberately.
 - Sitemap has no `lastModified`, deliberately.
 - `/*.txt` is `X-Robots-Tag: noindex` with `robots.txt` excluded, deliberately.

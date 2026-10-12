@@ -22,10 +22,10 @@ the code is the failure mode this site has already had once.
 
 ## 2. Target vs. claim — they are different, on purpose
 
-| | Value | Status |
-|---|---|---|
-| **Build target** | WCAG **2.1 level AA** | what all new code is written to, from 2026-09-01 |
-| **Published claim** on `/accessibility/` | WCAG **2.0 AA** + ת״י 5568 | unchanged until §3 is verified |
+|                                          | Value                      | Status                                           |
+| ---------------------------------------- | -------------------------- | ------------------------------------------------ |
+| **Build target**                         | WCAG **2.1 level AA**      | what all new code is written to, from 2026-09-01 |
+| **Published claim** on `/accessibility/` | WCAG **2.0 AA** + ת״י 5568 | unchanged until §3 is verified                   |
 
 Israel's ת״י 5568 is built on WCAG 2.0 AA. WCAG 2.1 adds twelve AA success criteria on top —
 mostly mobile, low-vision and input-mechanism criteria that did not exist in 2008, and that this
@@ -41,20 +41,20 @@ register.
 The AA criteria added between 2.0 and 2.1. Status is **unverified** unless marked otherwise;
 nothing here has been formally tested.
 
-| SC | Requirement | Exposure on this site |
-|---|---|---|
-| 1.3.4 Orientation | works in both orientations | 🔶 verify the sticky bar + hero in landscape on a phone |
-| **1.3.5 Identify Input Purpose** | `autocomplete` on fields collecting user data | ✅ **already met, verified 2026-09-01** — `autoComplete="name"` at [LeadForm.tsx:207](../components/forms/LeadForm.tsx#L207), `autoComplete="tel"` at [:226](../components/forms/LeadForm.tsx#L226), `autoComplete="off"` on the honeypot at [:294](../components/forms/LeadForm.tsx#L294). Those are the only fields carrying user data. ⚠️ An earlier draft of this file asserted this was missing **without running the check** — do not re-open it without reading the file |
-| 1.4.10 Reflow | 320px / 400% zoom, no two-dimensional scrolling | 🔶 highest-risk item: `MobileCtaBar` is `fixed` and the layout spacer is a hard `h-16` |
-| **1.4.11 Non-text Contrast** | UI components and graphics ≥3:1 | 🔶 accent buttons, input borders (`border-gray-*`), focus rings, the lucide icons |
-| 1.4.12 Text Spacing | survives forced spacing overrides | 🔶 check Hebrew headings for clipping in fixed-height containers |
-| 1.4.13 Content on Hover/Focus | dismissible, hoverable, persistent | 🔶 the services dropdown in [components/layout/Header.tsx](../components/layout/Header.tsx) |
-| 2.1.4 Character Key Shortcuts | — none exist | ✅ by absence |
-| 2.5.1 Pointer Gestures | no path- or multipoint-only actions | ✅ by absence — `FilterableGallery` is click-only |
-| 2.5.2 Pointer Cancellation | no down-event activation | ✅ native links and buttons throughout |
-| **2.5.3 Label in Name** | the accessible name contains the visible label | ⚠️ **check** — `MobileCtaBar` sets `aria-label="וואטסאפ סקיי שייד"` while the visible text is `וואטסאפ`; it *contains* the label, so it passes. Any future `aria-label` that **replaces** rather than extends the visible Hebrew text fails |
-| 2.5.4 Motion Actuation | no motion-only operation | ✅ by absence |
-| 4.1.3 Status Messages | announced programmatically without moving focus | ✅ **fixed 2026-09-01** — the error state was already announced (`role="alert"`); the success container now carries `role="status"` + `tabIndex={-1}` and receives focus via a `useEffect`. Focus restoration is required, not optional: the submit button is `disabled` during the fetch, so focus is already on `<body>` before the success div mounts. The form also carries `aria-busy` while sending |
+| SC                               | Requirement                                     | Exposure on this site                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| -------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.3.4 Orientation                | works in both orientations                      | 🔶 verify the sticky bar + hero in landscape on a phone                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| **1.3.5 Identify Input Purpose** | `autocomplete` on fields collecting user data   | ✅ **already met, verified 2026-09-01** — `autoComplete="name"` at [LeadForm.tsx:207](../components/forms/LeadForm.tsx#L207), `autoComplete="tel"` at [:226](../components/forms/LeadForm.tsx#L226), `autoComplete="off"` on the honeypot at [:294](../components/forms/LeadForm.tsx#L294). Those are the only fields carrying user data. ⚠️ An earlier draft of this file asserted this was missing **without running the check** — do not re-open it without reading the file |
+| 1.4.10 Reflow                    | 320px / 400% zoom, no two-dimensional scrolling | 🔶 highest-risk item: `MobileCtaBar` is `fixed` and the layout spacer is a hard `h-16`                                                                                                                                                                                                                                                                                                                                                                                          |
+| **1.4.11 Non-text Contrast**     | UI components and graphics ≥3:1                 | 🔶 accent buttons, input borders (`border-gray-*`), focus rings, the lucide icons                                                                                                                                                                                                                                                                                                                                                                                               |
+| 1.4.12 Text Spacing              | survives forced spacing overrides               | 🔶 check Hebrew headings for clipping in fixed-height containers                                                                                                                                                                                                                                                                                                                                                                                                                |
+| 1.4.13 Content on Hover/Focus    | dismissible, hoverable, persistent              | 🔶 the services dropdown in [components/layout/Header.tsx](../components/layout/Header.tsx)                                                                                                                                                                                                                                                                                                                                                                                     |
+| 2.1.4 Character Key Shortcuts    | — none exist                                    | ✅ by absence                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| 2.5.1 Pointer Gestures           | no path- or multipoint-only actions             | ✅ by absence — `FilterableGallery` is click-only                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| 2.5.2 Pointer Cancellation       | no down-event activation                        | ✅ native links and buttons throughout                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| **2.5.3 Label in Name**          | the accessible name contains the visible label  | ⚠️ **check** — `MobileCtaBar` sets `aria-label="וואטסאפ סקיי שייד"` while the visible text is `וואטסאפ`; it _contains_ the label, so it passes. Any future `aria-label` that **replaces** rather than extends the visible Hebrew text fails                                                                                                                                                                                                                                     |
+| 2.5.4 Motion Actuation           | no motion-only operation                        | ✅ by absence                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| 4.1.3 Status Messages            | announced programmatically without moving focus | ✅ **fixed 2026-09-01** — the error state was already announced (`role="alert"`); the success container now carries `role="status"` + `tabIndex={-1}` and receives focus via a `useEffect`. Focus restoration is required, not optional: the submit button is `disabled` during the fetch, so focus is already on `<body>` before the success div mounts. The form also carries `aria-busy` while sending                                                                       |
 
 **A standing method note, from a real failure.** The 2026-09-01 draft of this table marked 1.3.5 a
 "known gap" on the strength of a grep that was written into §7 as a verification command and then
@@ -143,17 +143,17 @@ is a cost with no upside.
 
 ### If it ever ships, this is the architecture — no other shape is acceptable
 
-| Decision | Value | Why |
-|---|---|---|
-| URL shape | subdirectory `/en/…` | subdomains split the entity; ccTLDs are worse. Works under `output: "export"` |
-| Default locale | `he` at the root, **not** `/he/` | never break or redirect the already-indexed URLs |
-| Routing | `generateStaticParams` over a `[locale]` segment | a static export cannot negotiate `Accept-Language` — there is no server |
-| `hreflang` | reciprocal `he-IL` ↔ `en` pairs **plus `x-default` → the Hebrew root** | non-reciprocal annotations are ignored wholesale |
-| `<html>` | `lang` and `dir` per locale (`en` → `dir="ltr"`) | the layout currently hardcodes both; they become props |
-| Sitemap | every locale URL listed with its alternates | the `postbuild` guard fails the build otherwise |
-| Schema | **one** business entity, `@id` shared across locales; only `name`/`description` localized | two entities is the exact failure this site already has |
-| Coverage | 100% of a page, or that page does not exist in `en` | partial translation is thin content |
-| Never | auto-redirect by IP or `Accept-Language`; machine translation; an English tree with Hebrew fallbacks | cloaking risk, and it traps users and crawlers alike |
+| Decision       | Value                                                                                                | Why                                                                           |
+| -------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| URL shape      | subdirectory `/en/…`                                                                                 | subdomains split the entity; ccTLDs are worse. Works under `output: "export"` |
+| Default locale | `he` at the root, **not** `/he/`                                                                     | never break or redirect the already-indexed URLs                              |
+| Routing        | `generateStaticParams` over a `[locale]` segment                                                     | a static export cannot negotiate `Accept-Language` — there is no server       |
+| `hreflang`     | reciprocal `he-IL` ↔ `en` pairs **plus `x-default` → the Hebrew root**                               | non-reciprocal annotations are ignored wholesale                              |
+| `<html>`       | `lang` and `dir` per locale (`en` → `dir="ltr"`)                                                     | the layout currently hardcodes both; they become props                        |
+| Sitemap        | every locale URL listed with its alternates                                                          | the `postbuild` guard fails the build otherwise                               |
+| Schema         | **one** business entity, `@id` shared across locales; only `name`/`description` localized            | two entities is the exact failure this site already has                       |
+| Coverage       | 100% of a page, or that page does not exist in `en`                                                  | partial translation is thin content                                           |
+| Never          | auto-redirect by IP or `Accept-Language`; machine translation; an English tree with Hebrew fallbacks | cloaking risk, and it traps users and crawlers alike                          |
 
 Until the gate is passed, the correct answer to "should we add English?" is **no**, and this
 section is the reason.

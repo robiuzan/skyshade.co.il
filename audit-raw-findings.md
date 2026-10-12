@@ -1,12 +1,11 @@
 # Sky Shade — raw audit findings (7 of 15 tracks, UNVERIFIED)
 
-
 # Local SEO — Israeli market (GBP, citations, city pages, local schema, reviews, tracking)
 
 **Current state:** The local footprint is close to zero and the one asset built for it — 16 city pages — is currently a liability. I masked the city name out of the shipped `<main>` of /locations/tel-aviv/, /modiin/, /haifa/ and /beer-sheva/ and all four are byte-identical: a 146-word template where the only variable is the city name, substituted five times. Those 16 pages emit only BreadcrumbList JSON-LD; the HomeAndConstructionBusiness node ships on exactly 7 pages (out/index.html plus the 6 service pages) and never on a location page, so the pages that exist to win local queries carry no local entity data at all. The one geographic property that does ship, `"areaServed":{"@type":"AdministrativeArea","name":"שירות בכל הארץ"}`, is an untranslatable free-text phrase ("service throughout the country") rather than a resolvable place, so it conveys nothing machine-readable; there is no `address`, no `geo`, no `sameAs` (site.config.json:53 `"sameAs": []`), and no `hasMap`. Off-site there is nothing to corroborate the entity: a Hebrew search for "סקיי שייד" returns Skyroof, Skyve and other Sky-prefixed pergola competitors, not this business. `analytics.googleSiteVerification` is null, so there is no Search Console property and therefore no way to measure any of this. The one genuinely good decision already in place is the absence of any map iframe — the only `<iframe>` in the codebase is the GTM noscript tag at app/layout.tsx:54.
 
-
 ## 1. Rewrite the 16 city pages — they are currently byte-identical doorway pages
+
 `critical` · impact `transformational` · effort `XL` · **NEEDS CLIENT INPUT**
 
 **Evidence:** I stripped tags from the shipped `<main>` of out/locations/{tel-aviv,modiin,haifa,beer-sheva}/index.html, replaced each city's Hebrew name with a placeholder token, and compared: all four normalise to the SAME 146-word string. Total `<main>` text is 152 words for tel-aviv and 146 for modiin — and that count already includes the breadcrumb trail, the six service-link labels, the FinalCta heading and the phone number. Unique prose is two paragraphs (~110 words) in app/locations/[city]/page.tsx:58-68. The city name is interpolated exactly 5 times (title, subtitle, para 1, para 2, the h2). Heading outline is h1 + a single h2 ('השירותים שלנו ב{city}').
@@ -46,9 +45,10 @@ export const locationData: Record<LocationSlug, CityData> = {
 **Risk:** Google's spam policy on doorway pages targets exactly this pattern (multiple pages generated for cities that funnel users to the same content). Publishing 16 of them risks the whole /locations/ directory being demoted or ignored. Interim mitigation if real content is weeks away: keep only 4-6 cities indexable and add `robots: { index: false, follow: true }` to `generateMetadata` for the rest until they have unique content — a smaller genuinely-useful set beats 16 empty ones.
 
 ## 2. Emit LocalBusiness + Service schema on every city page — today they carry only BreadcrumbList
+
 `critical` · impact `high` · effort `M`
 
-**Evidence:** `grep -rl "HomeAndConstructionBusiness" out/ --include="*.html"` returns exactly 7 files: out/index.html and the six out/service/*/index.html pages. No /locations/ page appears. Extracting the JSON-LD from out/locations/tel-aviv/index.html yields a single block: `{"@type":"BreadcrumbList",...}`. app/locations/[city]/page.tsx:33-44 builds only `breadcrumbJsonLd`. There is no FAQPage, no Service, no areaServed and no reference to the `https://skyshade.co.il/#business` node on any of the 16 pages.
+**Evidence:** `grep -rl "HomeAndConstructionBusiness" out/ --include="*.html"` returns exactly 7 files: out/index.html and the six out/service/\*/index.html pages. No /locations/ page appears. Extracting the JSON-LD from out/locations/tel-aviv/index.html yields a single block: `{"@type":"BreadcrumbList",...}`. app/locations/[city]/page.tsx:33-44 builds only `breadcrumbJsonLd`. There is no FAQPage, no Service, no areaServed and no reference to the `https://skyshade.co.il/#business` node on any of the 16 pages.
 
 **Recommendation:** In app/locations/[city]/page.tsx, emit an array containing the existing BreadcrumbList plus a `Service` node whose `provider` is an `@id` reference to the business node already minted on the homepage (`https://skyshade.co.il/#business`), and whose `areaServed` is a real `City` with `containedInPlace` Israel. Referencing by `@id` rather than re-inlining the whole business avoids 16 conflicting copies of the entity. Add the per-city FAQs from finding #1 as a `FAQPage` on the same page once the copy is real.
 
@@ -79,6 +79,7 @@ const cityJsonLd = {
 ```
 
 ## 3. Replace the meaningless areaServed string with a resolvable Country + City list
+
 `high` · impact `high` · effort `S`
 
 **Evidence:** The shipped business node in out/index.html contains `"areaServed":{"@type":"AdministrativeArea","name":"שירות בכל הארץ"}`. "שירות בכל הארץ" is a marketing phrase ('service throughout the country'), not a place name — no geocoder resolves it. It originates at site.config.json:32 (`"areaServed": "שירות בכל הארץ"`) and is reused as display copy via lib/site-config.ts:37, so the same string is doing double duty as UI text and as a schema place value. It ships on 7 pages.
@@ -104,6 +105,7 @@ const cityJsonLd = {
 ```
 
 ## 4. Hide the address on GBP but pick one canonical city for citations — and never publish the street address on-site
+
 `high` · impact `high` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** The site publishes no street address anywhere: components/layout/Footer.tsx renders `{siteConfig.serviceArea}` next to the MapPin icon, and app/contact/page.tsx does the same — both output 'שירות בכל הארץ'. The emitted LocalBusiness node has no `address` and no `geo` property at all. Google's current guidance for service-area businesses is explicit: 'If you're a service-area business, you should hide your business address from customers… If you hide your business address, your Business Profile will only show your service area.' It also forbids PO boxes and virtual offices for the verification address.
@@ -113,6 +115,7 @@ const cityJsonLd = {
 **Risk:** The GBP pin still governs map-pack proximity even when hidden. If the base is in, say, גוש דן, the Haifa and Be'er Sheva map packs are effectively unwinnable — plan those cities as organic-only plays (finding #1) and concentrate GBP effort on the ~1-hour radius. Also: do NOT create additional GBP listings at customers' or relatives' addresses to reach other cities — that is the fastest route to a hard suspension.
 
 ## 5. Create and fully configure the Google Business Profile — categories are the single highest-leverage lever
+
 `critical` · impact `transformational` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** site.config.json:53 `"sameAs": []` and lib/site-config.ts:50 `googleBusiness: ""` (marked 🔶) mean no GBP URL is known to the codebase. A Hebrew web search for "סקיי שייד" surfaces skyroof.co.il, skyve-pergolas.com and other competitors — no Sky Shade profile or brand result appeared. GBP now exposes ~4,046 categories; the primary category carries more ranking weight than any other single profile field.
@@ -122,6 +125,7 @@ const cityJsonLd = {
 **Risk:** Category availability differs between the English and Hebrew GBP interfaces. Confirm in the live Hebrew picker rather than assuming; a category that does not exist in IL cannot be forced.
 
 ## 6. Populate schema.sameAs — the business has zero entity corroboration and a live name-collision problem
+
 `high` · impact `high` · effort `S` · **NEEDS CLIENT INPUT**
 
 **Evidence:** site.config.json:53 `"sameAs": []`; lib/site-config.ts:47-51 has facebook/instagram/googleBusiness all as empty strings marked 🔶. Searching "סקיי שייד" in Hebrew returns Skyroof (סקיי רופ), Skyve Pergolas (סקיי לייט) and Skyroof's testimonials page — three separate Sky-prefixed Israeli pergola companies. Nothing in the results was skyshade.co.il.
@@ -144,6 +148,7 @@ const cityJsonLd = {
 ```
 
 ## 7. Configure GBP service areas as Israeli regions, not 16 individual cities
+
 `high` · impact `high` · effort `S`
 
 **Evidence:** lib/site-config.ts:74-91 lists 16 cities. GBP caps service areas at 20 distinct entries and Google advises the area should not extend much beyond a two-hour drive from the business's physical base. In Israel a two-hour drive from a Gush Dan base already reaches Haifa (~1h), Jerusalem (~1h) and Be'er Sheva (~1.5h) — so 'nationwide' is defensible for most of the country, but 16 individual city pins consume 80% of the slot budget for no gain.
@@ -153,6 +158,7 @@ const cityJsonLd = {
 **Risk:** Setting an implausibly wide service area on a hidden-address profile is a known trigger for reinstatement scrutiny. Match the declared area to what the client will genuinely travel for — confirm the real limit.
 
 ## 8. GBP chat is dead — wire the profile to WhatsApp instead, which is the dominant Israeli channel
+
 `high` · impact `high` · effort `S`
 
 **Evidence:** Google discontinued Business Profile chat entirely: new conversations stopped 15 July 2024 and the feature ended 31 July 2024, alongside call history. Google has since been rolling out a 'chat' section that accepts a text-messaging number and/or a WhatsApp number for Maps and Search. Meanwhile this site already treats WhatsApp as a first-class channel — components/layout/MobileCtaBar.tsx and FinalCta ship `https://wa.me/972505063152?text=…` with a pre-filled Hebrew message, and site.config.json:16 sets `whatsappE164` to the same number as the phone line.
@@ -162,6 +168,7 @@ const cityJsonLd = {
 **Risk:** Google has not shipped the WhatsApp field to every locale. Check the Hebrew GBP interface; if absent, the wa.me link on the site plus the phone number on the profile is sufficient.
 
 ## 9. Build a review acquisition and response system — currently there is no review surface at all
+
 `critical` · impact `transformational` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** No GBP is referenced anywhere in the repo (lib/site-config.ts:50 `googleBusiness: ""`). The business node in out/index.html contains no `aggregateRating` and no `review`. The only social proof on the site is three testimonials in lib/content.ts:305-324 with no source URL, no date and no verifiable origin.
@@ -171,6 +178,7 @@ const cityJsonLd = {
 **Risk:** Review gating (screening for positives before asking) is against Google's policy. So is any incentive. Both are common practice among Israeli SEO vendors — instruct the client explicitly not to accept such an offer.
 
 ## 10. Do NOT add Review/AggregateRating schema for the existing testimonials — they were partially written by us
+
 `high` · impact `medium` · effort `S` · **NEEDS CLIENT INPUT**
 
 **Evidence:** lib/content.ts:301-304 states verbatim: 'Testimonials — real reviews carried over from the live skyshade.co.il site. (Full wording lightly completed from the live excerpts; confirm before launch.)' The three entries at lines 305-324 each carry `rating: 5` and `source: "בעל בית"` with no date, no URL and no verification path. lib/content.ts:6 flags the file's stats and testimonials with 🔶 = unconfirmed assumption.
@@ -180,6 +188,7 @@ const cityJsonLd = {
 **Risk:** This finding is a do-not-do. If another workstream proposes adding Review schema to boost rich results, this is the blocker.
 
 ## 11. Build the Israeli citation set — B144 first, because it syndicates into Yad2's professionals board
+
 `high` · impact `high` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** No citations are referenced anywhere in the repo (`sameAs: []`). Yad2's professionals search runs at `https://www.yad2.co.il/b144/search?category=871` — the `/b144/` path segment shows the board is B144-powered, so a single B144 listing earns distribution on Israel's largest classifieds portal. That category currently holds 87+ pergola listings and 51+ aluminium professionals, i.e. the competitive set is already there and Sky Shade is not.
@@ -189,6 +198,7 @@ const cityJsonLd = {
 **Risk:** Israeli directories aggressively upsell paid placement. The SEO value is in the consistent citation, not the paid tier — start with every free listing and only pay where the directory itself sends measurable leads (track with a UTM per directory).
 
 ## 12. Give the 16 cities depth instead of multiplying into 96 service×city pages
+
 `high` · impact `high` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** 6 services × 16 cities = 96 unrealised combinations. But the existing 16 city pages already fail the uniqueness test (finding #1) with a 146-word template, and app/locations/[city]/page.tsx:73-85 links out to the six generic service pages rather than saying anything city-specific about each service. Generating 96 pages from the same generator would produce 96 near-duplicates.
@@ -198,6 +208,7 @@ const cityJsonLd = {
 **Risk:** Scaling the matrix without unique per-combination substance is the textbook doorway pattern and would compound the exposure from finding #1 sixfold.
 
 ## 13. Use the pergola permit exemption as the legitimate per-city differentiator
+
 `high` · impact `high` · effort `L`
 
 **Evidence:** The national framework is verifiable and stable: תקנות התכנון והבנייה (עבודות ומבנים הפטורים מהיתר), תשע"ד-2014, following תיקון 101, in force since 1 August 2014 — exemption up to 50 m² or a quarter of the free plot/roof area, whichever is greater; light materials (aluminium qualifies); gaps evenly distributed and at least 40% of the shading surface; and a report to the licensing authority within 45 days of completion. Municipal application then diverges — Tel Aviv-Yafo has roughly 75 conservation districts where municipal approval is required even for an otherwise-exempt pergola, and permit processing in Tel Aviv can run 4-6 months. The site currently compresses all of this into one 30-word homepage FAQ (lib/content.ts:345-347: 'פרגולות עד 50 מ״ר בדרך כלל פטורות מהיתר').
@@ -207,6 +218,7 @@ const cityJsonLd = {
 **Risk:** Municipal rules change and vary. Verify each city's specifics against that municipality's own engineering/licensing pages before publishing, date-stamp the section, and add a line stating this is general information rather than a legal opinion. Do not publish a per-city permit claim you have not checked at source.
 
 ## 14. Turn the 55 gallery photos into city-tagged, indexable project pages
+
 `high` · impact `high` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** site.config.json ships a 55-item gallery catalog, but every item's metadata is generic — `"altHe": "פרויקט אלומיניום של סקיי שייד — גדרות ושערים 30"` — carrying only a category and a sequence number. There is no city field, no `ImageObject` schema anywhere in out/, and zero per-project pages. Meanwhile the 16 city pages contain no images at all: the shipped `<main>` of out/locations/tel-aviv/index.html is pure text plus two CTA buttons.
@@ -234,6 +246,7 @@ const cityJsonLd = {
 ```
 
 ## 15. Four of the sixteen cities are orphaned from the sitewide footer
+
 `medium` · impact `medium` · effort `S`
 
 **Evidence:** components/layout/Footer.tsx:64 renders `locations.slice(0, 12).map(...)`. Against the 16-entry array at lib/site-config.ts:74-91, that silently drops הרצליה, כפר סבא, רעננה and מודיעין — the last four. I confirmed the truncation in the shipped output: the footer nav in out/locations/tel-aviv/index.html ends at רחובות. Those four pages therefore receive internal links only from /locations/ and the sitemap, giving them the weakest internal signal of the set — and Herzliya, Kfar Saba and Raanana are among the highest-value affluent markets for premium aluminium work.
@@ -252,6 +265,7 @@ const cityJsonLd = {
 ```
 
 ## 16. Keep the site map-embed-free — link to the GBP place instead, and add hasMap to schema
+
 `low` · impact `low` · effort `S`
 
 **Evidence:** `grep -rn "iframe|maps.google|google.com/maps|hasMap" app/ components/ lib/` returns exactly one hit: app/layout.tsx:54, the GTM noscript iframe. There is no Google Maps embed anywhere, and app/contact/page.tsx renders the location as plain text next to a MapPin icon.
@@ -270,6 +284,7 @@ const cityJsonLd = {
 ```
 
 ## 17. Verify Search Console and stand up local rank tracking — nothing is measurable today
+
 `high` · impact `high` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** site.config.json:57 `"googleSiteVerification": null`, so no meta verification tag ships and the property is almost certainly unverified. GTM-KWGGH438 is installed (confirmed in out/index.html) but GTM measures on-site behaviour only — it cannot report impressions, queries or the map-pack. There is no GBP, therefore no GBP Performance data either. Every other finding here is currently unfalsifiable.
@@ -278,13 +293,12 @@ const cityJsonLd = {
 
 **Risk:** GBP Performance data is retained for a limited window and is not backfilled — create the profile before the content work lands so you have a baseline to measure the rest against.
 
-
 # Keyword universe and information architecture expansion
 
 **Current state:** The site is a 36-page static export whose entire keyword surface is six service hubs, sixteen city pages, and a gallery. I measured what actually ships: a city page (`out/locations/tel-aviv/index.html`) carries 266 total visible words of which roughly 100 are unique body copy, and after normalising the city name all sixteen city pages are byte-for-byte identical at 55,792 bytes each (`diff` returns zero across tel-aviv/jerusalem/haifa/modiin). Every one of the sixteen is titled `פרגולות אלומיניום ב{city}` (app/locations/[city]/page.tsx:22), so they all chase one head term with a geo modifier while the other five services get no geo targeting at all. Grepping all 36 shipped pages for the terms Israelis actually type returns zero hits for מצללה/מצללות, רפפות, פרגולה מרחפת, ביוקלימטית, מחירון, "כמה עולה", וילון זכוכית, נאספת, מתקפלת, סוכה and "תיקון 101" — the entire product-variant, pricing and regulation vocabulary is absent, and הצללה appears only inside the boilerplate meta/JSON-LD description string, never in body copy. There is no blog, no pricing page, no glossary, no project pages, and the 55 catalogued gallery photos carry auto-generated alt text (`פרויקט אלומיניום של סקיי שייד — דקים 1`) with no addressable category URLs because filtering is client-side `useState` (components/marketing/FilterableGallery.tsx:35). The architecture is not merely thin — its one attempt at scale, the city matrix, is already sitting on the wrong side of Google's doorway-page line, which makes "expand it 6×" the most dangerous available move.
 
-
 ## 1. Fix the 16 existing city pages before building anything on top of them — they are byte-identical doorway pages today
+
 `critical` · impact `high` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** Normalising the city name out of four shipped city pages produces four files of exactly 55,792 bytes with zero `diff` output: `sed 's/תל אביב/CITY/g...' out/locations/{tel-aviv,jerusalem,haifa,modiin}/index.html` → identical. The template (app/locations/[city]/page.tsx:56-86) is two paragraphs plus a link list; total visible text is 266 words including nav and footer chrome, leaving ~100 words of body copy, of which the only per-city variation is the token `{city.name}` appearing three times.
@@ -321,6 +335,7 @@ export const cityContent: Partial<Record<LocationSlug, CityContent>> = {
 **Risk:** Option (b) removes URLs. On GitHub Pages there is no server-side 301 (public/.htaccess is inert), so retired city pages must be redirected via a Cloudflare Bulk Redirect rule or they will 404. Budget that before deleting.
 
 ## 2. Build the product-variant layer — it is the single largest missing keyword surface and it does not require any client facts
+
 `critical` · impact `transformational` · effort `XL`
 
 **Evidence:** Grep across all 36 shipped pages: מצללה 0, מצללות 0, רפפות 0, מרחפת 0, ביוקלימטית 0, נאספת 0, מתקפלת 0, וילון זכוכית 0. Meanwhile the Israeli SERP for these is a dedicated-page market: unikit.co.il/פרגולה-מרחפת-מאלומיניום/, silvergate.co.il/…/bioclimatic-pergula/, pergolass.co.il/electrical-pergola/, sorag.co.il/glass-curtain-balcony/ all run one URL per variant. Sky Shade compresses all of this into six hub pages — app/service/pergolas/ is 430 visible words covering manual pergolas, electric pergolas, polycarbonate, glass and timber roofs at once.
@@ -366,6 +381,7 @@ export function generateStaticParams() {
 **Risk:** Sixteen new pages written fast will read as templated. Write them in batches of three or four, each genuinely different in structure, not filled into one shape. If the team cannot sustain that, ship six variants well rather than sixteen badly.
 
 ## 3. The site never uses מצללה — the head-term synonym that is also the legal term in the planning regulations
+
 `high` · impact `high` · effort `S`
 
 **Evidence:** Zero occurrences of מצללה or מצללות across all 36 shipped pages. הצללה appears 138 times repo-wide but that is one boilerplate string echoed into meta description, og:description and JSON-LD on every page — visible-text extraction of out/index.html finds it exactly once, inside no body paragraph. Yet the exemption regulations Sky Shade's own FAQ leans on (lib/content.ts:111-113) are literally written about a מצללה: 'שטחה של המצללה לא יהיה יותר מ-50 מ"ר', 'המצללה תוקם רק על גבי הקרקע או על גג המבנה'.
@@ -385,6 +401,7 @@ export function generateStaticParams() {
 ```
 
 ## 4. Put service×city under /locations/[city]/[service]/, not /service/[slug]/[city]/ — the variant axis has the stronger claim to the service parent
+
 `high` · impact `high` · effort `M`
 
 **Evidence:** Both axes want to be the child of /service/[slug]/ and Next's App Router cannot host two dynamic siblings at one level — `app/service/[slug]/[city]` and `app/service/[slug]/[variant]` are the same route. The market shows no consensus that settles it externally: silvergate.co.il nests city under the service (`/פרגולות-אלומיניום/התקנת-פרגולות-אלומיניום-בתל-אביב/`), perlumpergola.com goes flat (`/pergola-ramat-gan/`), pergolass.co.il goes flat Hebrew (`/פרגולות-בתל-אביב/`). Meanwhile /locations/[city]/ already exists as 16 published URLs (app/locations/[city]/page.tsx) with nothing beneath them.
@@ -414,6 +431,7 @@ export function generateMetadata({ params }): Metadata {
 **Risk:** If the team later decides service-first was right, moving 20+ published URLs on GitHub Pages needs Cloudflare Bulk Redirects. Decide once, now, before publishing.
 
 ## 5. Build roughly 18-24 of the 96 service×city combinations, not 96 — and gate each on delivered work
+
 `high` · impact `high` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** 6 services × 16 cities = 96. The existing 16-page city matrix already demonstrates what happens when the matrix outruns the content: 100 unique words per page, byte-identical output. There is also demand asymmetry the matrix ignores — the SERP for `פרגולות אלומיניום תל אביב` is saturated with dedicated vendor pages, while `מטבח חוץ בני ברק` or `חיפוי קירות מודיעין` show no such competition because the query volume does not support one.
@@ -444,6 +462,7 @@ export const publishable = serviceAreas.filter(
 **Risk:** The whole plan depends on the client's real project-by-city list. Without it, either the pages are fabricated (spam) or the tiering is guesswork. Get the job list before writing a line.
 
 ## 6. There is no pricing content anywhere — the largest commercial-investigation cluster in this market is fully unaddressed
+
 `high` · impact `transformational` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** Zero occurrences of מחירון or "כמה עולה" across all 36 shipped pages; the word מחיר appears only inside CTA copy ('הצעת מחיר'), never attached to a number or a range. The Israeli SERP for this category is almost entirely price-led: results are titled `פרגולות אלומיניום מחיר מ-700₪ למ"ר`, `מחירון פרגולות מעודכן [2026]`, `כמה עולה דק סינטטי`, `מחירון סגירת מרפסות (מעודכן לשנת 2025)`. Published ranges cluster at roughly ₪700-1,200/m² for a post-supported aluminium pergola, ₪1,000-1,800/m² attached, ₪1,300-2,200/m² electric/bioclimatic, ~₪850/m² installed for WPC decking, ₪800-1,500/m² for balcony closure — meaning buyers arrive already anchored, and a site with no price signal is filtered out before contact.
@@ -475,6 +494,7 @@ export function assertFresh(b: PriceBand) {
 **Risk:** Publishing ranges invites price-shoppers and lets competitors undercut. It also constrains quoting. Frame as 'טווח מחירים — הצעה מדויקת לאחר מדידה' and confirm the client accepts the tradeoff before building.
 
 ## 7. Build a /guides/ hub and make the building-permit guide its anchor — it is the highest-intent informational query in this category
+
 `high` · impact `transformational` · effort `XL`
 
 **Evidence:** The site has no informational content at all; the only permit coverage is two FAQ answers (lib/content.ts:111-113 and 345-347) totalling about 60 words, and 'תיקון 101' / 'חוק הפרגולות' / 'רפורמת הפרגולות' appear zero times across the export. The competing SERP for this is contested by law firms (felaw.co.il, benyacov.com), architecture publications (architecture.org.il) and vendors (goodlife-outdoors.com, ipac.co.il, nayer.co.il) — a category where a vendor with real installation experience can legitimately outrank a law firm, because the buyer's actual question is 'will my pergola get me a demolition order' and the vendor is the one who deals with it weekly.
@@ -502,6 +522,7 @@ export interface Guide {
 **Risk:** Regulatory content ages and being wrong here is costly for readers. Cite the regulation, date every page, and carry the non-advice disclosure. Do not let an AI draft ship unreviewed.
 
 ## 8. The Sukkot cluster is a uniquely Israeli seasonal opportunity with zero current coverage
+
 `medium` · impact `high` · effort `M`
 
 **Evidence:** Zero occurrences of סוכה or סוכות across all 36 shipped pages. The query is real and commercially contested: pergola vendors run dedicated pages (pergolan.co.il/pergolot/pergola-for-a-sukkah/, stb.co.il/פרגולה-סוכה/, wood-artist.co.il/wooden-pergolas/sukkot/) alongside halachic authorities (yeshiva.org.il, toraland.org.il, ph.yhb.org.il). The halachic problem is specific and directly product-relevant: סכך resting on metal is problematic because metal is מקבל טומאה, and the standard resolution is timber battens laid across the aluminium so the metal becomes מעמיד דמעמיד — which is a construction detail Sky Shade controls at design time.
@@ -523,6 +544,7 @@ export interface Guide {
 **Risk:** Getting halacha wrong damages credibility with a large segment of the target market. Have the copy reviewed by someone competent, and never claim a product is 'כשר' as a blanket statement.
 
 ## 9. The accordion-products service is named after a category, not a query — it is invisible to the balcony-closure market
+
 `high` · impact `high` · effort `M`
 
 **Evidence:** The slug is `accordion-products` and the Hebrew name is `מוצרים אקורדיאוניים` (lib/site-config.ts:65) — a literal translation nobody types into a search box. The actual queries are סגירת מרפסת, וילון זכוכית, זכוכית נאספת, זכוכית מתקפלת, סגירת חורף למרפסת, and the SERP is a dense commercial market with published ranges around ₪700-1,500/m² for aluminium-profile closure and ₪1,500-1,800/m² + VAT for frameless folding glass. The page does contain the phrase סגירת מרפסת in its body (lib/content.ts:226-246) but the title, H1, slug, metadata and every internal link label say מוצרים אקורדיאוניים, so the strongest signals all point at a non-query.
@@ -546,6 +568,7 @@ export interface Guide {
 **Risk:** Changing the display name changes the label in the nav and in six related-service lists. Check the header does not overflow at mobile width — the new name is longer.
 
 ## 10. 55 gallery photos, zero addressable URLs, zero project pages, and machine-generated alt text
+
 `high` · impact `high` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** site.config.json images.gallery holds 55 items across four categories; all 55 ship in out/gallery/index.html (56 <img> including the logo), so they are crawlable. But every alt string is generated as `פרויקט אלומיניום של סקיי שייד — {category} {n}` (lib/gallery.ts:56-57, mirrored into the catalog), carrying no material, no city, no product. The four category tabs live only in client `useState` (components/marketing/FilterableGallery.tsx:35) so `/gallery/` is one URL for four topics. The gallery page ships 173 visible words for 55 photographs.
@@ -576,6 +599,7 @@ export interface Project {
 **Risk:** Project pages need real job facts — city, size, year, materials. Inventing them is fabrication. If the client cannot supply them, ship layers (1) and (2) only; they are still worth doing.
 
 ## 11. Sitemap paths are a hardcoded array — every new section will be silently orphaned
+
 `high` · impact `medium` · effort `M`
 
 **Evidence:** app/sitemap.ts:19-29 hardcodes nine static paths and then maps over `services` and `locations` from lib/site-config. Nothing derives from a content registry. Any new section — variants, guides, pricing, projects, gallery categories — ships as real HTML that never enters /sitemap.xml unless someone remembers to edit this array. Given the plan adds five new route families, the failure is close to certain.
@@ -600,6 +624,7 @@ const entries: MetadataRoute.Sitemap = [
 ```
 
 ## 12. Internal linking is a flat footer blanket with no hub-and-spoke structure and almost no contextual in-body links
+
 `high` · impact `high` · effort `M`
 
 **Evidence:** Every page ships the same footer carrying all six services and twelve of the sixteen cities (visible in out/locations/tel-aviv/index.html footer text). Contextual body links are nearly absent: the city template's only in-body links are the six service cards (app/locations/[city]/page.tsx:73-85), and the service template's only ones are four sibling services (app/service/[slug]/page.tsx:155-167) selected by `.slice(0, 4)` — arbitrary array order, not relevance. Nothing links pergolas→decks as a natural pairing, nothing links a service to a project, and no page links to any FAQ answer's subject.
@@ -633,6 +658,7 @@ const others = relatedServices[card.slug].map((s) => byslug(s));
 ```
 
 ## 13. Comparison queries are answered in one-line FAQ answers with no URL of their own
+
 `medium` · impact `high` · effort `M`
 
 **Evidence:** Three high-value comparisons already exist as FAQ pairs but are buried: WPC vs natural wood (lib/content.ts:186-188, 42 words), composite/ACP vs HPL (lib/content.ts:161-163, 47 words), aluminium vs iron fencing (lib/content.ts:136-138, 33 words). None has a URL, an H1, or a title. The aluminium-vs-wood pergola comparison — the single most searched decision in this category, covered by ynet among others — is not addressed at all. These are commercial-investigation queries: the searcher has decided to buy and is choosing a material, which is the highest-converting moment a vendor can intercept.
@@ -653,6 +679,7 @@ export interface ComparisonRow {
 ```
 
 ## 14. /locations/ is a 207-word bare link list — it should be the geo hub that makes the city pages legitimate
+
 `medium` · impact `medium` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** out/locations/index.html carries 207 total visible words including nav and footer, and its heading outline is `<h1>אזורי שירות` followed only by the shared CTA `<h2>רוצים לשדרג את החוץ שלכם?` — no structural headings, no regional grouping, nothing but sixteen links.
@@ -674,6 +701,7 @@ export const regions = [
 **Risk:** Lead-time and travel claims by region are business facts. Confirm before publishing.
 
 ## 15. Keep English URL slugs — a Hebrew-slug migration cannot be executed safely on this host
+
 `medium` · impact `low` · effort `S`
 
 **Evidence:** Israeli competitors do rank with Hebrew slugs (pergolass.co.il/פרגולות-בתל-אביב/, silvergate.co.il/פרגולות-אלומיניום/…), so the question will come up. But the deploy target is GitHub Pages via .github/workflows/deploy.yml with `output: "export"` (next.config.mjs:8) and no server runtime; public/.htaccess is Apache-only and therefore inert. There is no mechanism in the current stack to issue a 301 from an old English URL to a new Hebrew one.
@@ -691,11 +719,12 @@ export const regions = [
 ```
 
 ## 16. Add a publishing gate that makes doorway pages fail the build rather than relying on discipline
+
 `high` · impact `high` · effort `M`
 
 **Evidence:** The existing city matrix proves the failure mode is real and silent: sixteen pages generated from one template, byte-identical after token substitution, shipped and indexed without anyone noticing. The plan in this report adds five new programmatic route families, several of which are matrix-shaped. Without a mechanical check the same outcome is near-certain at larger scale.
 
-**Recommendation:** Add ops/verify-uniqueness.mjs to the build, run after `next build` and before deploy. For each programmatic route family it should extract visible body text from out/**/index.html excluding header, footer and the shared CTA, then assert two things: every page carries at least N words of body text (150 for city and service×city pages, 400 for variants and guides), and no two pages in a family exceed roughly 70% shingle similarity. Fail the deploy on violation. Beyond the mechanical check, hold three editorial lines. A page must answer a question a searcher actually has, not merely contain a keyword — `מטבח חוץ בחולון` with no Holon-specific substance is a doorway regardless of word count. A geo page must reference something that could only be written about that place: a real project, a named area, a municipal requirement. And never spin one article into six by swapping the city name; that is scaled content abuse whether a human or a model writes it. Where a page cannot clear the bar, the correct move is not to publish it — the six service hubs plus a strong nationwide statement will outrank ninety-six empty ones.
+**Recommendation:** Add ops/verify-uniqueness.mjs to the build, run after `next build` and before deploy. For each programmatic route family it should extract visible body text from out/\*\*/index.html excluding header, footer and the shared CTA, then assert two things: every page carries at least N words of body text (150 for city and service×city pages, 400 for variants and guides), and no two pages in a family exceed roughly 70% shingle similarity. Fail the deploy on violation. Beyond the mechanical check, hold three editorial lines. A page must answer a question a searcher actually has, not merely contain a keyword — `מטבח חוץ בחולון` with no Holon-specific substance is a doorway regardless of word count. A geo page must reference something that could only be written about that place: a real project, a named area, a municipal requirement. And never spin one article into six by swapping the city name; that is scaled content abuse whether a human or a model writes it. Where a page cannot clear the bar, the correct move is not to publish it — the six service hubs plus a strong nationwide statement will outrank ninety-six empty ones.
 
 ```
 // ops/verify-uniqueness.mjs
@@ -723,13 +752,12 @@ for (const [a, b] of pairs(family)) {
 
 **Risk:** A strict gate will block deploys while content is being written. Run it as a warning for the first sprint, then flip to failing — but do flip it, or it becomes decoration.
 
-
 # E-E-A-T, trust, authority and off-site reputation
 
-**Current state:** Sky Shade currently ships almost no verifiable trust evidence. The shipped HTML in `out/` contains zero `Organization`, `Person`, `Review`, `AggregateRating`, `hasCredential`, `memberOf` or `award` nodes, `site.config.json` has `schema.sameAs: []` and no `schema.address`, so the `HomeAndConstructionBusiness` node in `out/index.html` is an unanchored entity with a phone number and nothing else corroborating it. The `/about/` page ships 1,631 characters of text of which roughly 150 words are unique — two paragraphs and six one-word "values" — with no named human being, no photo of a person, no workshop, no founding story detail, no licence, no insurance, no certification. Worse, the site actively ships trust-*destroying* content: an unsubstantiated "מספר 1 בישראל" superiority claim in the hero (`components/marketing/Hero.tsx:23`), internal 🔶 placeholder markers rendered live on `/privacy/`, `/terms/` and `/accessibility/` ("🔶 נוסח משפטי מלא לאישור."), a `trustStats` bar whose "15+ שנות ניסיון" contradicts the site's own `foundedYear: 2009` (17 years as of 2026), and three testimonials whose own source comment admits the wording was "lightly completed". The single genuine asset — 55 real project photographs — is dumped into an undifferentiated filter grid with generated alt text ("פרויקט אלומיניום של סקיי שייד — דקים 1") and produces zero indexable, evidence-bearing project pages. The one thing the site gets right on this dimension is that it does *not* emit self-serving `Review`/`AggregateRating` schema, which would be ineligible for rich results and a policy risk; that restraint should be preserved.
-
+**Current state:** Sky Shade currently ships almost no verifiable trust evidence. The shipped HTML in `out/` contains zero `Organization`, `Person`, `Review`, `AggregateRating`, `hasCredential`, `memberOf` or `award` nodes, `site.config.json` has `schema.sameAs: []` and no `schema.address`, so the `HomeAndConstructionBusiness` node in `out/index.html` is an unanchored entity with a phone number and nothing else corroborating it. The `/about/` page ships 1,631 characters of text of which roughly 150 words are unique — two paragraphs and six one-word "values" — with no named human being, no photo of a person, no workshop, no founding story detail, no licence, no insurance, no certification. Worse, the site actively ships trust-_destroying_ content: an unsubstantiated "מספר 1 בישראל" superiority claim in the hero (`components/marketing/Hero.tsx:23`), internal 🔶 placeholder markers rendered live on `/privacy/`, `/terms/` and `/accessibility/` ("🔶 נוסח משפטי מלא לאישור."), a `trustStats` bar whose "15+ שנות ניסיון" contradicts the site's own `foundedYear: 2009` (17 years as of 2026), and three testimonials whose own source comment admits the wording was "lightly completed". The single genuine asset — 55 real project photographs — is dumped into an undifferentiated filter grid with generated alt text ("פרויקט אלומיניום של סקיי שייד — דקים 1") and produces zero indexable, evidence-bearing project pages. The one thing the site gets right on this dimension is that it does _not_ emit self-serving `Review`/`AggregateRating` schema, which would be ineligible for rich results and a policy risk; that restraint should be preserved.
 
 ## 1. Remove the unsubstantiated "מספר 1 בישראל" superiority claim from the hero
+
 `critical` · impact `high` · effort `S`
 
 **Evidence:** components/marketing/Hero.tsx:23 renders the badge `מספר 1 בישראל · מאז 2009`, and it ships: `grep -c "מספר 1 בישראל" out/index.html` returns 1. Nothing anywhere in the repo, the manifest, or lib/content.ts substantiates a #1 market-position claim; trustStats (500+ projects, 200+ customers) would not substantiate it even if verified.
@@ -749,6 +777,7 @@ for (const [a, b] of pairs(family)) {
 **Risk:** If the client insists the claim is true, it still needs documented substantiation (market-share study, industry award) held on file before it can be republished; a bare assertion is not substantiation.
 
 ## 2. Strip internal 🔶 placeholder markers that ship live on /privacy/, /terms/ and /accessibility/
+
 `critical` · impact `high` · effort `S` · **NEEDS CLIENT INPUT**
 
 **Evidence:** app/privacy/page.tsx:24 and app/terms/page.tsx:23 render `<span>🔶 נוסח משפטי מלא לאישור.</span>`; app/accessibility/page.tsx:39 renders `🔶 פרטי רכז נגישות ותאריך עדכון לאישור.` All three ship: `grep -o "🔶[^<]*" out/privacy/index.html out/terms/index.html out/accessibility/index.html` returns the visible strings on all three built pages.
@@ -770,6 +799,7 @@ for (const [a, b] of pairs(family)) {
 **Risk:** The accessibility coordinator's name and the survey date are business facts — do not invent them. Publishing a fabricated coordinator is worse than the placeholder.
 
 ## 3. Do not publish the current trustStats — they are unverified and internally contradictory
+
 `critical` · impact `high` · effort `S` · **NEEDS CLIENT INPUT**
 
 **Evidence:** lib/content.ts:284-289 defines `trustStats = [500+ פרויקטים, 200+ לקוחות מרוצים, 15+ שנות ניסיון, 100% אחריות מלאה]` under the file header comment at line 6: `🔶 = assumption; confirm with client (esp. stats and testimonials)`. The bar renders on two pages (`grep -rl "500+" --include=index.html out/` → out/index.html, out/about/index.html). site.config.json:10 sets `foundedYear: 2009`, which is 17 years as of 2026 — the site's own stat bar says 15+.
@@ -792,6 +822,7 @@ export const trustStats = [
 **Risk:** Static export bakes `new Date()` at build time — acceptable here since the site rebuilds on deploy, but note it will drift if the site is not rebuilt for over a year. Alternatively hard-code and add a yearly reminder next to the existing `const year = 2026` in components/layout/Footer.tsx:7.
 
 ## 4. Do not publish the current testimonials as-is — the source file admits the wording was altered
+
 `critical` · impact `high` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** lib/content.ts:301-304 comment: `Testimonials — real reviews carried over from the live skyshade.co.il site. (Full wording lightly completed from the live excerpts; confirm before launch.)` Three testimonials with named individuals (יונתן כהן, מיכל דהן, רועי ונועה שפירא) and 5-star ratings render on the homepage only (`grep -rl "יונתן כהן" --include=*.html out/` → ./index.html). components/marketing/Reviews.tsx:28 headlines them with `מאות לקוחות מרוצים בכל הארץ`.
@@ -832,6 +863,7 @@ export const testimonials = [
 **Risk:** If the three names are real customers who did give reviews, deleting them loses genuine social proof — so ask the client first whether verbatim originals and consent exist before removing.
 
 ## 5. Keep Review/AggregateRating schema OFF the site — collect real Google reviews instead
+
 `high` · impact `high` · effort `S`
 
 **Evidence:** No `Review` or `AggregateRating` node exists anywhere in out/ (`grep -o '"Review"\|AggregateRating' -r out/ --include=*.html` returns nothing). @ishub/site-kit's seo/index.ts provides no review builder either — localBusinessJsonLd (lines 78-115) emits no rating fields.
@@ -851,11 +883,12 @@ export const testimonials = [
 **Risk:** An agency or a plugin may 'helpfully' add review schema later. Add a comment in lib/content.ts above `testimonials` explaining why it is deliberately unmarked-up.
 
 ## 6. Publish a real physical address and wire it into schema.address (the builder already supports it)
+
 `high` · impact `high` · effort `S` · **NEEDS CLIENT INPUT**
 
 **Evidence:** site.config.json:29-54 `schema` block has no `address` key at all, so the LocalBusiness node in out/index.html carries no PostalAddress. app/contact/page.tsx:72-79 shows only `{siteConfig.serviceArea}` = "שירות בכל הארץ" next to a map pin. Confirmed absent site-wide: greps for `רחוב`/`כתובת` across out/ match only the city name רחובות. Meanwhile @ishub/site-kit/seo/index.ts:87-89 already handles `s.address` and will emit a PostalAddress the moment the manifest has one — zero code change required.
 
-**Recommendation:** Add the real registered/workshop address to site.config.json under `schema.address`; the JSON-LD builder picks it up automatically. Then surface it in components/layout/Footer.tsx (next to the existing phone/email/hours list) and on app/contact/page.tsx replacing the bare 'שירות בכל הארץ' pin. For a business that installs at the customer's home, the address does not have to be a showroom — a workshop or registered office is fine, and if the client does not want walk-ins the Google Business Profile can hide it while still using it for verification. But *some* verifiable address is the single largest missing trust and local-SEO signal: it is what lets Google connect the site to a Business Profile, and it is what a customer about to hand over a five-figure deposit looks for. Keep the address byte-identical between site.config.json, the GBP, and every directory listing.
+**Recommendation:** Add the real registered/workshop address to site.config.json under `schema.address`; the JSON-LD builder picks it up automatically. Then surface it in components/layout/Footer.tsx (next to the existing phone/email/hours list) and on app/contact/page.tsx replacing the bare 'שירות בכל הארץ' pin. For a business that installs at the customer's home, the address does not have to be a showroom — a workshop or registered office is fine, and if the client does not want walk-ins the Google Business Profile can hide it while still using it for verification. But _some_ verifiable address is the single largest missing trust and local-SEO signal: it is what lets Google connect the site to a Business Profile, and it is what a customer about to hand over a five-figure deposit looks for. Keep the address byte-identical between site.config.json, the GBP, and every directory listing.
 
 ```
 // site.config.json — inside "schema", alongside priceRange/areaServed
@@ -879,6 +912,7 @@ export const testimonials = [
 ```
 
 ## 7. Disclose the legal entity: ח.פ. / ע.מ. number and full legal name in the footer and schema
+
 `high` · impact `medium` · effort `S` · **NEEDS CLIENT INPUT**
 
 **Evidence:** site.config.json:7 sets `"legalName": "סקיי שייד"` — the brand name, not a registered entity. No company/VAT number appears anywhere in out/ (greps for `ח.פ`, `ע.מ.`, `עוסק מורשה` return nothing). components/layout/Footer.tsx:119-121 shows only `© 2026 סקיי שייד. כל הזכויות שמורות.` app/terms/page.tsx never names a contracting party.
@@ -903,9 +937,10 @@ export const testimonials = [
 **Risk:** The kit's SiteSchema type (node_modules/@ishub/site-kit/src/types.ts:33-41) does not declare vatID/taxID, and localBusinessJsonLd does not emit them — either extend the shared kit at its source (do not edit node_modules or the vendored tgz) or spread the extra fields onto the node in app/page.tsx after calling the builder.
 
 ## 8. Rebuild /about/ around named people, photographs and a checkable company history
+
 `high` · impact `transformational` · effort `L` · **NEEDS CLIENT INPUT**
 
-**Evidence:** app/about/page.tsx is 54 lines and renders exactly two paragraphs plus six single-phrase values from lib/content.ts:292-299. Extracted visible text of out/about/index.html is 1,631 characters *including* the full header/footer chrome — roughly 150 words of unique body copy. It contains no person's name, no photograph of any human being, no address, no founding detail beyond the year, and no h3 subheadings (h1 → one h2 → a bullet list).
+**Evidence:** app/about/page.tsx is 54 lines and renders exactly two paragraphs plus six single-phrase values from lib/content.ts:292-299. Extracted visible text of out/about/index.html is 1,631 characters _including_ the full header/footer chrome — roughly 150 words of unique body copy. It contains no person's name, no photograph of any human being, no address, no founding detail beyond the year, and no h3 subheadings (h1 → one h2 → a bullet list).
 
 **Recommendation:** This is the highest-leverage single page on the site for this dimension and it is currently a stub. Rebuild it with, in order: (1) the founder — real name, real photograph, how many years in aluminium before founding Sky Shade in 2009, what he did before, why he started; the manifest already tells us the owner's email is yossi@skyshade.co.il, so there is a person to name. (2) The team — installers, fabricator, measurer — with first names, roles, tenure, and real photos taken on site. (3) The workshop/fabrication capability with real photographs (do they cut and weld in-house or assemble supplied kits? that distinction is exactly the Experience signal a buyer wants). (4) A dated milestone timeline (2009 founded · first electric pergola · move to current workshop · Nth project). (5) The concrete trust block: address, ח.פ., insurance, licences, warranty length, standards. (6) Only then the values list. Add h3 subheadings so the outline is genuinely three levels deep. Every photo must be an original photograph of Sky Shade's own people and work — stock imagery on an About page is a detectable negative and defeats the entire purpose. Target 700-900 words of unique copy.
 
@@ -932,6 +967,7 @@ export const milestones = [
 **Risk:** Do not write a founder bio from imagination. If the client will not sit for a 30-minute interview and supply photos, ship a shorter honest page rather than a longer invented one.
 
 ## 9. Model the founder as a Person entity and link it to the business node
+
 `high` · impact `high` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** No `Person` node exists in out/ (`grep -o '"Person"' -r out/ --include=*.html` returns nothing). @ishub/site-kit/seo/index.ts has no Person builder. The business node in out/index.html has no `founder`, `employee` or `knowsAbout` property.
@@ -972,6 +1008,7 @@ const jsonLd = [
 **Risk:** Only ship this if the LinkedIn profile actually exists and is public. A `sameAs` pointing at a thin or empty profile corroborates nothing; an invented one is a policy violation.
 
 ## 10. Populate schema.sameAs — the entity currently has zero off-site corroboration
+
 `high` · impact `transformational` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** site.config.json:53 `"sameAs": []`, and lib/site-config.ts:47-51 has `social: { facebook: "", instagram: "", googleBusiness: "" }` all empty and marked 🔶. `grep -o sameAs -r out/ --include=*.html` returns nothing — the prune() helper at @ishub/site-kit/seo/index.ts:19-27 drops empty arrays, so the property vanishes entirely from the shipped node. No social icons exist in components/layout/Footer.tsx either.
@@ -1000,11 +1037,12 @@ social: {
 **Risk:** Only list profiles that exist and are actively maintained. A sameAs to an abandoned Facebook page with three 2019 posts is weak corroboration but not harmful; a sameAs to a 404 is.
 
 ## 11. Stand up and verify a Google Business Profile, then run a compliant review-acquisition programme
+
 `high` · impact `transformational` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** lib/site-config.ts:50 `googleBusiness: ""` — no profile URL is known to the codebase. site.config.json:57 `"googleSiteVerification": null`. No GBP link, no review count, and no star rating appears anywhere in out/. The site's only social proof is the three unverified testimonials in lib/content.ts:305-324.
 
-**Recommendation:** For an Israeli home-improvement SMB, the Google Business Profile *is* the reputation surface: it renders the star rating in the local pack and in branded search, and it is the only place review stars for this business will ever legitimately appear (see the self-serving-review finding). Set it up as a Service Area Business (hide the address, list the served cities) using the exact same NAP as site.config.json — brand name סקיי שייד, phone 050-5063152, and the address from the address finding. Then run a review programme that is compliant: ask every completed customer, ask all of them (not only the happy ones — review gating violates Google's policy), never offer any incentive, and never buy reviews. Practical mechanics that work in Israel: a WhatsApp message with the short review link sent by the installer on the day of handover, while satisfaction peaks. Target a steady trickle — 2-4 per month sustained beats 30 in one week, which trips spam detection. Reply to every review in Hebrew, including negative ones, since the replies are public evidence of how the business handles problems. Finally, once the profile exists, put its URL in schema.sameAs and link it from the Reviews section and the footer.
+**Recommendation:** For an Israeli home-improvement SMB, the Google Business Profile _is_ the reputation surface: it renders the star rating in the local pack and in branded search, and it is the only place review stars for this business will ever legitimately appear (see the self-serving-review finding). Set it up as a Service Area Business (hide the address, list the served cities) using the exact same NAP as site.config.json — brand name סקיי שייד, phone 050-5063152, and the address from the address finding. Then run a review programme that is compliant: ask every completed customer, ask all of them (not only the happy ones — review gating violates Google's policy), never offer any incentive, and never buy reviews. Practical mechanics that work in Israel: a WhatsApp message with the short review link sent by the installer on the day of handover, while satisfaction peaks. Target a steady trickle — 2-4 per month sustained beats 30 in one week, which trips spam detection. Reply to every review in Hebrew, including negative ones, since the replies are public evidence of how the business handles problems. Finally, once the profile exists, put its URL in schema.sameAs and link it from the Reviews section and the footer.
 
 ```
 // WhatsApp handover message template (Hebrew, no incentive, no gating)
@@ -1021,6 +1059,7 @@ social: {
 **Risk:** Verification for a SAB can take weeks and may require a video verification of the workshop and vehicles — factor that into the timeline. Also: if a profile already exists but is unclaimed or has the wrong phone, claiming and correcting it is the first step, not creating a duplicate.
 
 ## 12. Ship a /warranty/ page — "אחריות מלאה" is claimed 19 times on the homepage with no terms
+
 `high` · impact `high` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** `grep -o "אחריות מלאה" out/index.html | wc -l` → 19 occurrences on the homepage alone. It appears in trustStats (lib/content.ts:288 "100% אחריות מלאה"), differentiators (lib/content.ts:266-267), every service's benefits list, processSteps (lib/content.ts:280), aboutValues (lib/content.ts:296), the FAQ (lib/content.ts:349-350) and every city page. Not once does any file state a duration, a covered component, an exclusion, or a claims procedure. There is no /warranty/ route in app/.
@@ -1048,6 +1087,7 @@ social: {
 ```
 
 ## 13. Publish a standards, permits and insurance page — the Israeli regulatory context is a trust moat
+
 `high` · impact `high` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** The site references regulation only in passing: lib/content.ts:111-112 claims 'פרגולות עד 50 מ״ר בדרך כלל פטורות מהיתר' inside a service FAQ, and lib/content.ts:345-346 repeats it on the homepage FAQ. No page discusses standards compliance, insurance, engineering certification or the actual conditions of the permit exemption. `grep` across out/ finds no תקן reference except ת״י 5568 on the accessibility page.
@@ -1065,6 +1105,7 @@ social: {
 **Risk:** Do not state a standard the business does not actually comply with, and do not claim insurance cover without seeing the policy — a false compliance claim is far more damaging than silence. Have the client's insurance broker and profile supplier confirm each line before publishing.
 
 ## 14. Add a data-collection notice and privacy link to the lead form (Amendment 13 obligation)
+
 `high` · impact `medium` · effort `S`
 
 **Evidence:** components/forms/LeadForm.tsx renders name, phone, service and message fields and posts to Web3Forms, ending at the submit button with only a WhatsApp alternative link — there is no notice of what the data is used for, no mention of transfer to a third-party processor (api.web3forms.com), and no link to /privacy/. The form appears on the homepage hero (components/marketing/Hero.tsx) and on /contact/, i.e. on the two highest-traffic pages.
@@ -1085,6 +1126,7 @@ social: {
 ```
 
 ## 15. Turn the 55 project photos into evidence-bearing case studies instead of an anonymous grid
+
 `high` · impact `transformational` · effort `XL` · **NEEDS CLIENT INPUT**
 
 **Evidence:** site.config.json:96-811 catalogues 55 gallery items whose alt text is machine-generated boilerplate — e.g. `"altHe": "פרויקט אלומיניום של סקיי שייד — גדרות ושערים 34"`. lib/content.ts:366-419 maps them to four category tabs. There is no /projects/ or /project/[slug] route in app/, so 55 real photographs of real completed work produce exactly zero indexable pages of evidence.
@@ -1124,6 +1166,7 @@ const jsonLd = [
 **Risk:** Photographing customers' private homes requires their permission; get written consent per project. If records for older jobs do not exist, document new jobs going forward rather than reconstructing details from memory.
 
 ## 16. Build an off-site authority plan appropriate to an Israeli aluminium SMB
+
 `medium` · impact `high` · effort `XL` · **NEEDS CLIENT INPUT**
 
 **Evidence:** site.config.json:53 `sameAs: []` and lib/site-config.ts:47-51 all-empty social means the site currently has no known inbound reference of any kind. Nothing in the repo (footer, about, service pages) links out to a supplier, association, partner or publication.
@@ -1148,6 +1191,7 @@ const jsonLd = [
 **Risk:** memberOf and hasCredential must reflect real, current memberships and certifications. Fabricating either is a spam-policy violation and, for a construction trade, a consumer-protection one.
 
 ## 17. Wire the unused images.badges slot to display real certification and supplier marks
+
 `medium` · impact `medium` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** site.config.json:86 `"badges": []` — empty. The manifest schema explicitly supports it: node_modules/@ishub/site-kit/src/media/types.ts declares `badges?: ImageRef[]` on SiteImages, so the pipeline was built for exactly this and the site never used it. No trust-badge component exists in components/marketing/.
@@ -1180,6 +1224,7 @@ export function TrustBadges() {
 ```
 
 ## 18. Add the missing Organization and WebSite entity nodes so the graph has a root
+
 `medium` · impact `medium` · effort `M`
 
 **Evidence:** out/index.html contains only HomeAndConstructionBusiness + FAQPage. No `Organization` or `WebSite` node exists anywhere in out/ (`grep -o '"Organization"' -r out/ --include=*.html` returns nothing). @ishub/site-kit/seo/index.ts exposes only localBusinessJsonLd, serviceJsonLd, faqJsonLd and breadcrumbJsonLd — there is no Organization or WebSite builder in the shared kit.
@@ -1221,6 +1266,7 @@ const jsonLd = [
 **Risk:** foundingLocation and numberOfEmployees are business facts — omit them rather than guessing. The prune() helper in the kit only runs inside the builder, so any spread-in field that is undefined must be omitted manually.
 
 ## 19. Extend trust content beyond the homepage — service and city pages carry none
+
 `medium` · impact `medium` · effort `M`
 
 **Evidence:** Testimonials render on exactly one page (`grep -rl "יונתן כהן" --include=*.html out/` → ./index.html only). The TrustBar renders on two (out/index.html, out/about/index.html). The 16 city pages built from app/locations/[city]/page.tsx contain only a PageHeader, two boilerplate paragraphs with the city name interpolated, a service link list and a CTA — no proof of any kind, and their JSON-LD is a BreadcrumbList and nothing else.
@@ -1252,16 +1298,15 @@ const cityProjects = projects.filter((p) => p.city === city.name).slice(0, 3);
 
 **Risk:** Depends on the case-study finding landing first. Do not fill these blocks with the generic gallery images and invented captions as a stopgap — that reintroduces the unverified-content problem at 16× the scale.
 
-
 # Content quality, depth and on-page optimisation
 
 **Current state:** The site is a well-built shell wrapped around roughly 1,900 words of unique Hebrew copy spread over 36 URLs — and it shows. Measured on the shipped HTML in out/, visible words inside <main> are: home 747, /services 221 (of which only 24 are not byte-identical to the homepage's services block), each /service/[slug] 287–316 (180–226 unique after removing the 5-step process and CTA boilerplate repeated on all six), each /locations/[city] 152, /about 158, /gallery 65, /contact 78. The 16 city pages are not merely similar: after masking the city name and slug, all 16 normalised <main> bodies hash to a single value — one identical document served 16 times, which is the textbook definition of a doorway page set. Title and description patterns are mechanically templated, with 43 characters of identical suffix on every service title and a description template on the city pages whose only variable is the city name. Every page except the homepage and /gallery ships zero images inside <main>, so the 55-photo catalog — the strongest proof asset the business owns — is locked behind one filterable grid with formulaic alt text ("פרויקט אלומיניום של סקיי שייד — {category} {n}", 52 of 55 English `alt` values on a Hebrew site). There is no middle-of-funnel content at all: no pricing, no materials comparison, no permit guide, no buying guides — precisely the pages competitors (pergolass.co.il, lidar.co.il, catomltd.co.il, pergolas4u.co.il) rank with. I also found a live Hebrew rendering bug on all 16 city pages and a factually misleading permit FAQ that contradicts the company's own product mix.
 
-
 ## 1. Rewrite or retire the 16 city pages — all 16 are one identical document
+
 `critical` · impact `transformational` · effort `XL` · **NEEDS CLIENT INPUT**
 
-**Evidence:** Hashing the normalised <main> of all 16 built city pages in out/locations/*/index.html (city name → CITY, slug → SLUG) yields exactly 1 distinct body: `distinct normalised <main> bodies across 16 city pages: 1`. Visible words in <main> = 152 (tel-aviv), 146 (jerusalem). The only variable content is the city name, which appears 20 times per document (title, description, canonical, breadcrumb JSON-LD, h1, subtitle, two body paragraphs, one h2). Template: app/locations/[city]/page.tsx lines 22–23 (metadata), 47–48 (header), 58–72 (entire body).
+**Evidence:** Hashing the normalised <main> of all 16 built city pages in out/locations/\*/index.html (city name → CITY, slug → SLUG) yields exactly 1 distinct body: `distinct normalised <main> bodies across 16 city pages: 1`. Visible words in <main> = 152 (tel-aviv), 146 (jerusalem). The only variable content is the city name, which appears 20 times per document (title, description, canonical, breadcrumb JSON-LD, h1, subtitle, two body paragraphs, one h2). Template: app/locations/[city]/page.tsx lines 22–23 (metadata), 47–48 (header), 58–72 (entire body).
 
 **Recommendation:** Either cut to the 4–6 cities where Sky Shade can genuinely say something specific, or give each surviving page a real content model. Target 700–900 visible words per city with this outline in app/locations/[city]/page.tsx, driven by a new per-city record in lib/site-config.ts (add fields: `demandProfile`, `climate`, `planningAuthority`, `permitNote`, `projects[]`, `faqs[]`):
 
@@ -1295,6 +1340,7 @@ export const locations = [
 **Risk:** Deleting city URLs needs 301s to /locations/ — impossible on GitHub Pages static export. Either keep the pages and fill them, or add a Cloudflare Pages Function / Worker redirect rule (Cloudflare already fronts the domain per the live `Server: cloudflare` header), or ship `<meta name="robots" content="noindex">` on the thin ones until they are written.
 
 ## 2. Fix the broken Hebrew on every city page: "כולל תל אביבוהסביבה"
+
 `critical` · impact `high` · effort `S`
 
 **Evidence:** Shipped HTML, out/locations/tel-aviv/index.html: `…בכל הארץ, כולל <!-- -->תל אביב<!-- -->והסביבה. כל פרויקט…` — no space between the city name and "והסביבה", so readers see "כולל תל אביבוהסביבה". Cause: app/locations/[city]/page.tsx lines 65–66, where the newline after `{city.name}` is stripped by JSX whitespace rules. Present on all 16 city pages.
@@ -1314,6 +1360,7 @@ export const locations = [
 ```
 
 ## 3. Give /services its own reason to exist — it is currently 24 unique words
+
 `critical` · impact `high` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** out/services/index.html <main> is 221 visible words. The `<section id="services">` block (10,045 chars, 175 words) is byte-for-byte identical to the same block on out/index.html — verified by string equality. Subtracting that block and the sitewide FinalCta leaves exactly 24 unique words: the breadcrumb, the h1 "השירותים שלנו", and one subtitle line. app/services/page.tsx is 25 lines and renders only <PageHeader>, <ServicesGrid> (the shared homepage component) and <FinalCta>. Heading outline is h1 + one real h2 (which is itself the homepage's h2 "פתרונות אלומיניום לכל מרחב חוץ") + the CTA h2.
@@ -1332,6 +1379,7 @@ Rewrite the homepage's card descriptions or the hub's, so the same 175 words nev
 **Risk:** If /services stays a mirror, Google will pick one of /services or / for "פתרונות אלומיניום" queries and the other becomes dead weight in the crawl budget.
 
 ## 4. Service pages carry 180–226 unique words — triple them with a real content model
+
 `high` · impact `transformational` · effort `XL` · **NEEDS CLIENT INPUT**
 
 **Evidence:** Sentence-level de-duplication across the six built service pages: pergolas 316 total / 226 unique, fences-gates 287/197, wall-cladding 294/203, decks 288/197, outdoor-kitchen 288/182, accordion-products 287/180. The 90–107 shared words are the identical 5-step process (lib/content.ts:272–281) and the FinalCta, repeated verbatim on all six. Heading outline on out/service/pergolas/index.html is h1 + 4 h2 (one of which is the sitewide CTA) + 4 FAQ h3s. Zero images inside <main> (measured: `imgs-in-main=0` on pergolas, decks, outdoor-kitchen). Meta description is verbatim identical to the first on-page paragraph (app/service/[slug]/page.tsx:38 reuses `card.description`, which line 85 also renders).
@@ -1352,6 +1400,7 @@ H2 איך אנחנו עובדים (keep)
 Also decouple the meta description from `card.description` so the SERP snippet and the opening paragraph are two different pieces of writing.
 
 ## 5. Rewrite service titles around the terms customers actually search
+
 `high` · impact `high` · effort `S`
 
 **Evidence:** Built titles from out/: `פרגולות, מחסות וגגות — אלומיניום פרימיום בהתאמה אישית | סקיי שייד` (65 ch), `מוצרים אקורדיאוניים — אלומיניום פרימיום בהתאמה אישית | סקיי שייד` (64), `דקים — אלומיניום פרימיום בהתאמה אישית | סקיי שייד` (49). The suffix `— אלומיניום פרימיום בהתאמה אישית` is 32 identical characters on all six, plus 14 more from the `%s | סקיי שייד` template in app/layout.tsx:23. Generated at app/service/[slug]/page.tsx:36. The pergolas page — the company's flagship — does not contain the exact string "פרגולות אלומיניום" in its title; it uses the internal catalogue name "פרגולות, מחסות וגגות". Likewise "מוצרים אקורדיאוניים" is an internal product-line label; the consumer query is "סגירת מרפסת" (search results for "סגירת מרפסת" and "חוק הפרגולות וסגירת מרפסת" show established commercial pages competing for it).
@@ -1395,6 +1444,7 @@ return {
 ```
 
 ## 6. The permit FAQ is misleading given Sky Shade's own product range
+
 `high` · impact `high` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** lib/content.ts:112 (pergolas FAQ) and :346 (homepage FAQ) both ship the answer "פרגולות עד 50 מ״ר בדרך כלל פטורות מהיתר". Verified in out/index.html and out/service/pergolas/index.html. But תיקון 101 conditions the exemption on the roof gaps being evenly distributed and constituting at least 40% of the מצללה ceiling — i.e. no more than 60% may be opaque. Sky Shade's pergolas page (lib/content.ts:97, 102) explicitly sells "חיפוי פוליקרבונט, זכוכית או גג עץ" and "פרגולה חשמלית עם להבים מתכווננים" — a solid or closed-louvre roof, which fails the 40% test. The FAQ also omits the post-construction "הודעה על ביצוע עבודה פטורה" filing (within 45 days) and the building-line constraint.
@@ -1410,6 +1460,7 @@ Then remove the duplicate generic version at lib/content.ts:345–347 and link t
 **Risk:** The exact wording of the exemption and the 45-day filing should be confirmed against the current תקנות התכנון והבנייה (עבודות ומבנים הפטורים מהיתר) text and by the client's own planning contact before publishing — the site should not become the authority on a rule it got second-hand. Publishing a wrong permit rule is worse than publishing none.
 
 ## 7. Turn the 55 gallery photos into indexable project case studies
+
 `high` · impact `transformational` · effort `XL` · **NEEDS CLIENT INPUT**
 
 **Evidence:** site.config.json images.gallery holds 55 items across four categories (גדרות ושערים 18, חיפוי קירות 15, פרגולות מחסות וגגות 13, דקים 9). All 55 render on exactly one URL — out/gallery/index.html, whose <main> contains just 65 visible words. lib/gallery.ts:36–38 already exposes a stable, resizer-backed key per photo (`skyshade/gallery/project-N.webp`). No per-project page exists anywhere in app/.
@@ -1417,7 +1468,7 @@ Then remove the duplicate generic version at lib/content.ts:345–347 and link t
 **Recommendation:** Add `app/projects/[slug]/page.tsx` plus a `projects` array in a new lib/projects.ts, generating 20–30 static pages at 350–500 words each. Each project reuses 2–4 existing catalog keys — zero new photography needed, only the facts behind photos the client already owns.
 
 Per-project outline:
-H1 {מה נבנה} ב{עיר} — {מ״ר}, {חומר/גימור}   e.g. "פרגולה חשמלית ברעננה — 28 מ״ר, אלומיניום בגימור דמוי עץ"
+H1 {מה נבנה} ב{עיר} — {מ״ר}, {חומר/גימור} e.g. "פרגולה חשמלית ברעננה — 28 מ״ר, אלומיניום בגימור דמוי עץ"
 H2 האתגר (~80w — the constraint: west-facing balcony with no afternoon shade / a sloping garden / a body-corporate restriction)
 H2 הפתרון (~120w — what was designed and why that choice)
 H2 חומרים ומידות (~60w — spec list: profile, coating, roofing, dimensions)
@@ -1430,6 +1481,7 @@ This is the highest-leverage move on the site: it is the only content type that 
 **Risk:** Requires the client to supply, per photo set: city, service, approximate size, materials/finish, duration and the problem solved. Do NOT invent these. Start with the 8–10 projects the client can recall in detail and expand; ten real case studies beat thirty invented ones, and invented project details would be exactly the fabricated-credential pattern Google's spam policies target.
 
 ## 8. Replace the formulaic alt text on all 55 photos
+
 `high` · impact `high` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** All 56 alt values in out/gallery/index.html follow one pattern: "פרויקט אלומיניום של סקיי שייד — {category} {n}" (e.g. "…— חיפוי קירות 12"). site.config.json shows 52 of the 55 `alt` fields are ENGLISH ("Sky Shade aluminium project - wall cladding 12") on a he-IL site, with only `altHe` in Hebrew. The numbering is also broken: project-53/54/55 carry altHe "…— פרגולות 4 / 3 / 2" while project-52 and project-43 carry "…— פרגולות, מחסות וגגות 52 / 43". On the homepage the mismatch is visible in shipped HTML: tiles labelled under the tab "פרגולות" carry alts reading "פרגולות, מחסות וגגות 52", "פרגולות 2", "פרגולות 3" side by side. Alt is generated at lib/gallery.ts:56–57 for the legacy path and read straight from the catalog otherwise.
@@ -1437,16 +1489,17 @@ This is the highest-leverage move on the site: it is the only content type that 
 **Recommendation:** Add `subject`, `city`, `materials` fields to each item in site.config.json `images.gallery` (and to the Media Studio sync that writes it, ops/sync-media.ps1), then compose alt from those. Alt should describe the photograph, not the brand — the brand name in 55 identical alts is keyword repetition with no user benefit and no accessibility value.
 
 Current: פרויקט אלומיניום של סקיי שייד — חיפוי קירות 12
-Target:  חיפוי חזית בית פרטי בלוחות קומפוזיט אפורים, עם גדר אלומיניום תואמת
-         (private-house facade clad in grey composite panels, with a matching aluminium fence)
-Target:  פרגולה חשמלית מעל פינת ישיבה במרפסת, להבי אלומיניום פתוחים
-         (electric pergola over a balcony seating area, aluminium louvres open)
+Target: חיפוי חזית בית פרטי בלוחות קומפוזיט אפורים, עם גדר אלומיניום תואמת
+(private-house facade clad in grey composite panels, with a matching aluminium fence)
+Target: פרגולה חשמלית מעל פינת ישיבה במרפסת, להבי אלומיניום פתוחים
+(electric pergola over a balcony seating area, aluminium louvres open)
 
 Rules: 8–16 Hebrew words, no "תמונה של", no brand name, no serial number, city only where it is genuinely identifiable. Fix the 52 English `alt` fields — on a he-IL site `alt` and `altHe` should both be Hebrew unless there is a separate English locale. Fix the project-53/54/55 numbering collision.
 
 **Risk:** Alt text must describe what is actually in each photo, which means someone has to look at all 55. Do not batch-generate plausible descriptions — a wrong alt is worse than a generic one for accessibility.
 
 ## 9. Build the missing middle of the funnel — a Hebrew guides hub
+
 `high` · impact `transformational` · effort `XL` · **NEEDS CLIENT INPUT**
 
 **Evidence:** No blog, guides, or article route exists anywhere in app/ (confirmed by full directory listing: about, accessibility, contact, gallery, locations, privacy, service, services, terms). out/sitemap.xml lists 31 URLs, all of them transactional or legal. Meanwhile the SERP for "פרגולות אלומיניום מחיר למ״ר" is owned by dedicated pricing pages: pergolass.co.il/pergola-price, lidar.co.il, catomltd.co.il, pergolas4u.co.il — all publishing concrete ranges (₪550–₪1,500/m² manual, ₪1,600–₪3,000/m² electric). "חוק הפרגולות" is likewise owned by dedicated guide pages. Sky Shade has zero content that can rank for any informational query and therefore no way to reach a buyer before they are already shortlisting.
@@ -1469,6 +1522,7 @@ Each guide links down to its service page and out to 2–3 relevant project case
 **Risk:** Publishing ten guides quickly is only safe if each is genuinely written from the company's own installation experience. Ten thin AI-templated articles would be scaled-content abuse and would cost more than the zero pages cost today. Rate: one guide per two weeks, written or dictated by the person who does the measuring.
 
 ## 10. City pages, service pages and the homepage all fight over "פרגולות אלומיניום"
+
 `high` · impact `high` · effort `M`
 
 **Evidence:** The homepage H1 is "סקיי שייד — פרגולות ופתרונות אלומיניום פרימיום". All 16 city H1s are "פרגולות אלומיניום ב{עיר}" (app/locations/[city]/page.tsx:47), and their meta descriptions all open with the full six-service list "פרגולות, גדרות, שערים, דקים ומטבחי חוץ מאלומיניום" (line 23) — so each city page targets all six services plus the head term. The dedicated /service/pergolas/ page, meanwhile, does not use the string "פרגולות אלומיניום" in its title at all. Net: 18 URLs compete for one term while the page that should own it is under-optimised for it.
@@ -1479,11 +1533,12 @@ Each guide links down to its service page and out to 2–3 relevant project case
 /locations/[city]/ owns geo-modified terms only: פרגולות אלומיניום ב{עיר}, סגירת מרפסת ב{עיר}, גדרות ושערים ב{עיר} — and must earn them with city-specific substance, not with the head term repeated
 / owns the brand term סקיי שייד and the category-navigational intent
 /services/ owns broad category terms: חברת אלומיניום, פתרונות אלומיניום לחוץ
-/guides/* own the informational terms (מחירון, חוק הפרגולות, השוואות)
+/guides/\* own the informational terms (מחירון, חוק הפרגולות, השוואות)
 
 Concretely: stop listing all six services in every city meta description; make each city description lead with the one service that city actually generates. And add contextual links from each city page to the specific service pages using geo-modified anchor text ("סגירת מרפסת בתל אביב"), which the current template does not do — its service list uses bare service names as anchors (lines 74–84).
 
 ## 11. Rewrite the templated meta descriptions — 16 differ only by the city name
+
 `medium` · impact `medium` · effort `S`
 
 **Evidence:** Every city description from out/ is the same 141–147-character string with one substitution, e.g. `סקיי שייד — פרגולות, גדרות, שערים, דקים ומטבחי חוץ מאלומיניום בתל אביב. עיצוב בהתאמה אישית, חומרים מהמשובחים בשוק ואחריות מלאה. שירות בכל הארץ.` (app/locations/[city]/page.tsx:23). The homepage description is 163 characters (out/index.html) — past the ~155-char snippet budget, so "…שירות בכל הארץ מאז 2009" gets cut. All six service descriptions are `card.description` reused verbatim as the first paragraph of the page body. None of the 36 descriptions contains a phone number, a differentiator, or a reason to click rather than click the competitor above.
@@ -1505,6 +1560,7 @@ Homepage (replace manifest.shortPitch, currently 163 ch):
 Every city description must reflect content that actually appears on the page — otherwise it is a snippet promise the page does not keep, and the click bounces.
 
 ## 12. Remove or substantiate the "מספר 1 בישראל" claim and the unverified trust stats
+
 `high` · impact `medium` · effort `S` · **NEEDS CLIENT INPUT**
 
 **Evidence:** components/marketing/Hero.tsx renders the badge "מספר 1 בישראל · מאז 2009" — verified present in shipped out/index.html. lib/content.ts:284–289 ships "500+ פרויקטים", "200+ לקוחות מרוצים", "15+ שנות ניסיון", "100% אחריות מלאה" on the homepage, /about and every service page via <TrustBar/>; the file header at lib/content.ts:6 explicitly marks these "🔶 = assumption; confirm with client (esp. stats and testimonials)". The three testimonials at lib/content.ts:305–324 carry the note "Full wording lightly completed from the live excerpts; confirm before launch." Two internal inconsistencies are visible to any reader: 500 projects from 200 customers implies 2.5 projects per household, and "15+ שנות ניסיון" contradicts "מאז 2009" (17 years as of 2026) — a hardcoded number that has already gone stale.
@@ -1515,6 +1571,7 @@ Every city description must reflect content that actually appears on the page �
 (3) Confirm the three testimonials are verbatim from real customers who consented to attribution. If the wording was "lightly completed", either restore the original excerpt or drop the quote. Do not add Review/AggregateRating schema to these until (3) is settled — self-serving review markup for reviews not genuinely collected is an explicit spam-policy violation.
 
 ## 13. Heading outlines are shallow — several pages have only the sitewide CTA as an h2
+
 `medium` · impact `medium` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** Extracted from built HTML: /locations/[city] = h1 + "השירותים שלנו ב{עיר}" + "רוצים לשדרג את החוץ שלכם? בואו נתחיל." (the shared FinalCta). /locations = h1 + FinalCta only. /gallery = h1 + FinalCta only — 65 words and one heading. /about = h1 + "הערכים שלנו" + FinalCta. /services = h1 + the homepage's h2 + FinalCta. Service pages fare better (h1 + 4 h2 + 3–4 h3) but the h2s awkwardly inline the full catalogue name: "למה לבחור בנו לפרגולות, מחסות וגגות?" (app/service/[slug]/page.tsx:89) and "שאלות נפוצות על פרגולות, מחסות וגגות" (line 147).
@@ -1526,6 +1583,7 @@ Every city description must reflect content that actually appears on the page �
 (d) The FinalCta h2 appears on 34 of 36 pages with identical text; it is fine as a CTA but should not be the only h2 on a page.
 
 ## 14. /service/accordion-products/ receives zero internal links from sibling service pages
+
 `medium` · impact `medium` · effort `S`
 
 **Evidence:** app/service/[slug]/page.tsx:48 — `const others = serviceCards.filter((c) => c.slug !== card.slug).slice(0, 4);`. Because accordion-products is last in the `services` array (lib/site-config.ts:65), it never falls inside the first four of any filtered list. Measured across the six built pages: pergolas 5 inbound sibling links, fences-gates 5, wall-cladding 5, decks 5, outdoor-kitchen 4, accordion-products 0. Separately, components/layout/Footer.tsx uses `locations.slice(0, 12)`, so הרצליה, כפר סבא, רעננה and מודיעין get no footer link — verified absent from out/index.html's <footer>.
@@ -1543,6 +1601,7 @@ Every city description must reflect content that actually appears on the page �
 ```
 
 ## 15. Two of six services have no photos and the thinnest copy on the site
+
 `medium` · impact `medium` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** site.config.json images.gallery categories cover only four of six services — גדרות ושערים 18, חיפוי קירות 15, פרגולות מחסות וגגות 13, דקים 9, total 55. There are zero photos categorised for מטבח חוץ or מוצרים אקורדיאוניים. Those same two pages have the least unique copy of the six (outdoor-kitchen 182 unique words, accordion-products 180, versus pergolas 226). Neither page renders any image at all (`imgs-in-main=0` on out/service/outdoor-kitchen/index.html).
@@ -1550,6 +1609,7 @@ Every city description must reflect content that actually appears on the page �
 **Recommendation:** Commission or locate photos for these two lines and add two categories to the media catalog ("מטבח חוץ", "סגירת מרפסת"), then surface them on their service pages and in the /gallery tabs. A page selling a ₪20,000+ outdoor kitchen with 182 words and no photograph converts at close to zero, whatever it ranks for. If no photos exist because the company has done few of these jobs, that is the more important finding: consider whether these two belong as full service pages at all, or whether they should be sections inside /service/pergolas/ and a renamed balcony-enclosure page until there is proof to show.
 
 ## 16. Nothing on the site can go stale-detectable — no dates, and 31 identical sitemap lastmods
+
 `medium` · impact `medium` · effort `M`
 
 **Evidence:** out/sitemap.xml carries 31 URLs and exactly 1 distinct <lastmod> value: `2026-08-16T17:43:41.310Z` — the build timestamp, applied to every page including /privacy and /terms. components/layout/Footer.tsx hardcodes `const year = 2026; // static export — keep build deterministic; update yearly.` No page anywhere carries a published or updated date, and there is no content type whose freshness is meaningful.
@@ -1571,21 +1631,22 @@ lastModified: serviceDetails[s.slug].lastUpdated ?? BUILD_TIME,
 ```
 
 ## 17. The permit FAQ is duplicated between the homepage and /service/pergolas
+
 `low` · impact `low` · effort `S`
 
 **Evidence:** lib/content.ts:345–347 (homepage `faqs`) and lib/content.ts:111–113 (pergolas `serviceDetails.faqs`) carry near-identical Q&A, both opening "פרגולות עד 50 מ״ר בדרך כלל פטורות מהיתר". Both strings verified present in out/index.html and out/service/pergolas/index.html, and both are rendered as visible h3+body AND serialised into a FAQPage graph (per the ground-truth count of 7 FAQPage instances).
 
 **Recommendation:** Keep exactly one canonical answer per question. Give /service/pergolas/ the full, corrected permit answer (see the permit finding) and reduce the homepage FAQ item to a one-line summary plus a link to the guide. More broadly: the homepage's six general FAQs (lib/content.ts:327–352) overlap with per-service FAQs on materials and warranty too — audit the 6 + 20 questions as one set, dedupe, and route each question to the single page where it belongs. This also thins out the seven overlapping FAQPage graphs, which is worth doing regardless of whether FAQ rich results are still granted to commercial sites.
 
-
 # Navigation, internal linking and site structure
 
-**Current state:** Crawl depth is genuinely good and should not be "fixed": a BFS over the 33 shipped HTML files in out/ reaches all 31 canonical URLs at depth 1 from the homepage, with zero broken internal links, correct trailing-slash hrefs everywhere (`href="/service/pergolas/"`), and a sitemap.xml carrying exactly those 31 URLs. What is broken is link *distribution* and *contextual* linking. Measured sitewide inbound link counts: /locations/ 116, /gallery/ 100, /about/ 99, /contact/ 99, /services/ 72, service pages 51–56, twelve city pages 35 each — and herzliya, kfar-saba, raanana, modiin at **2 each**, because Footer.tsx:64 renders `locations.slice(0, 12)`. Utility pages (/about/, /contact/) therefore outrank every money page on internal links, and /gallery/ — a page whose body contains zero outbound links at all — is the second most-linked URL on the site. Almost all linking is boilerplate: header nav (rendered twice, desktop + mobile), footer, and templated card grids. There is not one contextual in-body link anywhere: no service links to another service from prose, no service links to a city or to the gallery, no city links to another city or to the gallery, and the gallery links to nothing. Breadcrumbs render on 9 templates that emit no BreadcrumbList schema (only /service/[slug] and /locations/[city] emit it, and those two are correct and match the visible crumbs exactly). FilterableGallery's four category filters are `<button role="tab">` with client-side state and no URLs, so four high-intent collections (9/15/18/13 photos) have no address. There is no HTML sitemap for users, no project pages, and no service×city surface.
-
+**Current state:** Crawl depth is genuinely good and should not be "fixed": a BFS over the 33 shipped HTML files in out/ reaches all 31 canonical URLs at depth 1 from the homepage, with zero broken internal links, correct trailing-slash hrefs everywhere (`href="/service/pergolas/"`), and a sitemap.xml carrying exactly those 31 URLs. What is broken is link _distribution_ and _contextual_ linking. Measured sitewide inbound link counts: /locations/ 116, /gallery/ 100, /about/ 99, /contact/ 99, /services/ 72, service pages 51–56, twelve city pages 35 each — and herzliya, kfar-saba, raanana, modiin at **2 each**, because Footer.tsx:64 renders `locations.slice(0, 12)`. Utility pages (/about/, /contact/) therefore outrank every money page on internal links, and /gallery/ — a page whose body contains zero outbound links at all — is the second most-linked URL on the site. Almost all linking is boilerplate: header nav (rendered twice, desktop + mobile), footer, and templated card grids. There is not one contextual in-body link anywhere: no service links to another service from prose, no service links to a city or to the gallery, no city links to another city or to the gallery, and the gallery links to nothing. Breadcrumbs render on 9 templates that emit no BreadcrumbList schema (only /service/[slug] and /locations/[city] emit it, and those two are correct and match the visible crumbs exactly). FilterableGallery's four category filters are `<button role="tab">` with client-side state and no URLs, so four high-intent collections (9/15/18/13 photos) have no address. There is no HTML sitemap for users, no project pages, and no service×city surface.
 
 ## 1. Give the gallery's four categories real URLs and turn the gallery into a linking hub
+
 `high` · impact `transformational` · effort `L`
 
+<!-- prettier-ignore -->
 **Evidence:** out/gallery/index.html ships all 55 tiles in the default tab (56 <img> incl. logo) but its body contains ZERO outbound links — measured hrefs are only chrome: /service/* ×1 each (footer), /locations/* ×1 each (footer), /gallery/ ×3 (nav×2 + footer). The four filters are `role="tab"` <button>s in components/marketing/FilterableGallery.tsx:56-77 with `useState` only — no URL changes, so the filtered views are unaddressable and unindexable under output:"export". site.config.json images.gallery.categories = ["דקים","חיפוי קירות","גדרות ושערים","פרגולות, מחסות וגגות"] with 9/15/18/13 items — these map 1:1 onto four of the six service slugs. /gallery/ receives 100 sitewide inbound links (2nd highest on the site) and passes none of it onward.
 
 **Recommendation:** Add `app/gallery/[category]/page.tsx` generating four static routes — /gallery/pergolas/, /gallery/fences-gates/, /gallery/wall-cladding/, /gallery/decks/ — each with PageHeader crumbs [בית, גלריה, <category>], a breadcrumbJsonLd, a short unique intro paragraph, the filtered grid, and one prominent contextual link to the matching /service/<slug>/. Add a `galleryCategoryMap` + `itemsInCategory()` helper to lib/gallery.ts. On /gallery/ itself, replace the single flat grid with four <h2> sections (one per category), each ending in a 'לכל התמונות' link to its category URL and a 'למידע על השירות' link to its service page. Add the four new URLs to `staticPaths` in app/sitemap.ts. Google's faceted-navigation guidance says index a facet only when it maps to real demand, offers unique content, and returns a non-empty set — these four qualify; do NOT generate parameter combinations or an ?cat= surface. Note a taxonomy inconsistency to resolve first: the homepage preview uses two different labels ("פרגולות" / "חיפויים", lib/content.ts:422) that do not match the catalog's four canonical categories. Also note מטבח חוץ and מוצרים אקורדיאוניים have zero photos in the catalog, so no category page exists for them.
@@ -1614,6 +1675,7 @@ export function generateStaticParams() {
 ```
 
 ## 2. Add contextual in-body links between services — the copy already cross-references them in plain text
+
 `high` · impact `high` · effort `M`
 
 **Evidence:** lib/content.ts:182 (decks) reads "שילוב מושלם עם פרגולה ומטבח חוץ" and lib/content.ts:207 (outdoor-kitchen) reads "מרחב אירוח שלם — משתלב עם דק ופרגולה" — both are plain strings rendered as <li> text in app/service/[slug]/page.tsx:92-97, with no anchor. Measured: out/service/pergolas/index.html contains exactly 2 links to each sibling service (one templated 'שירותים נוספים' card + one footer link) and none from prose. The `FaqPair` type (lib/content.ts:79-82) declares `a: string`, so FAQ answers structurally cannot carry a link even though several answers cross-reference other products.
@@ -1643,6 +1705,7 @@ decks: {
 ```
 
 ## 3. Emit BreadcrumbList schema on the nine templates that already render visible breadcrumbs
+
 `high` · impact `high` · effort `S`
 
 **Evidence:** Grep across out/ for 'BreadcrumbList' vs the visible crumb nav (aria-label="פירורי לחם", components/layout/PageHeader.tsx:23): services/index.html, gallery/index.html, about/index.html, contact/index.html, locations/index.html, privacy/index.html, terms/index.html, accessibility/index.html all render the visible breadcrumb but emit BreadcrumbList=0. Only service/[slug] and locations/[city] emit it (22 pages total, matching the orchestrator's count). The two that do emit it are correct — out/service/pergolas/index.html carries positions 1-3 with items https://skyshade.co.il/ , /services/ , /service/pergolas/ , exactly matching the rendered crumbs including the trailing slash.
@@ -1680,6 +1743,7 @@ export function PageHeader({ title, subtitle, crumbs }: {…}) {
 **Risk:** The last crumb currently has no `href`, so PageHeader needs a `selfPath` prop (or the caller must supply href on the final crumb and PageHeader must render it as text). Do not let the schema emit a wrong/missing `item` URL for the final position.
 
 ## 4. Stop dropping four cities from the footer — they have 2 internal links each vs 35 for the rest
+
 `high` · impact `high` · effort `S`
 
 **Evidence:** components/layout/Footer.tsx:64 — `{locations.slice(0, 12).map(...)}`. Measured sitewide inbound links across all 33 built HTML files: /locations/tel-aviv/ … /locations/rehovot/ = 35 each; /locations/herzliya/, /locations/kfar-saba/, /locations/raanana/, /locations/modiin/ = **2 each** (homepage ServiceAreas + the /locations/ index only). Confirmed in out/service/pergolas/index.html, whose href list contains twelve /locations/<city>/ entries and none of those four.
@@ -1700,6 +1764,7 @@ export function PageHeader({ title, subtitle, crumbs }: {…}) {
 ```
 
 ## 5. Expose the six service pages in the primary nav — utility pages currently outrank every money page
+
 `high` · impact `high` · effort `M`
 
 **Evidence:** lib/content.ts:355-361 `navItems` contains five entries, none of which is a service page. components/layout/Header.tsx renders that same list twice (desktop nav :46-59 and the always-in-DOM mobile panel :80-96), so every nav item gets 2 sitewide links while service pages get 1 (footer). Measured result: /about/ 99 and /contact/ 99 sitewide inbound links vs /service/pergolas/ 56 and /service/accordion-products/ 51. Also: the footer 'קישורים' column (Footer.tsx:75-114) links /about/, /gallery/, /locations/, /contact/ and three legal pages but **does not link /services/ at all** — /services/ gets 72 links, all from the nav (66) plus 6 service-page breadcrumbs.
@@ -1739,9 +1804,10 @@ export const navItems = [
 **Risk:** Hover-only dropdowns are unusable on touch and by keyboard. `group-focus-within` (above) covers keyboard; on touch the parent 'השירותים שלנו' must remain a real link to /services/ so a tap never traps the user. Do not put all 16 cities in the nav — that is 32 more sitewide links of pure boilerplate; cities belong in the footer.
 
 ## 6. City pages are structural dead-ends: no link to another city, to the gallery, or to anything but six service cards
+
 `high` · impact `high` · effort `M`
 
-**Evidence:** app/locations/[city]/page.tsx renders exactly one link block — the six service cards at :73-85. Measured on out/locations/tel-aviv/index.html: body links are the breadcrumb 'בית' plus six /service/* cards; every /locations/<other-city>/ link on the page comes from the footer, and /gallery/ appears only 3× (nav×2 + footer). Heading outline is h1 + 'השירותים שלנו בתל אביב' + the FinalCta h2 — two h2s, one of which is sitewide boilerplate.
+**Evidence:** app/locations/[city]/page.tsx renders exactly one link block — the six service cards at :73-85. Measured on out/locations/tel-aviv/index.html: body links are the breadcrumb 'בית' plus six /service/\* cards; every /locations/<other-city>/ link on the page comes from the footer, and /gallery/ appears only 3× (nav×2 + footer). Heading outline is h1 + 'השירותים שלנו בתל אביב' + the FinalCta h2 — two h2s, one of which is sitewide boilerplate.
 
 **Recommendation:** Add two modules to app/locations/[city]/page.tsx. (1) 'אזורי שירות נוספים' — 4 sibling cities from a hand-built region table in lib/site-config.ts, plus a link to /locations/. (2) A gallery cross-link: 'פרויקטים שביצענו' with three tiles linking to /gallery/pergolas/ etc. Separately, note the h1/body mismatch: the h1 is `פרגולות אלומיניום ב{city}` (page.tsx:47) but the body sells all six services — that mismatch is why service-qualified anchors into city pages are currently unsafe (see the anchor-text finding). Either broaden the h1 to 'פרגולות ופתרונות אלומיניום ב{city}' or build the service×city tier.
 
@@ -1786,6 +1852,7 @@ export const nearbyCities: Record<LocationSlug, LocationSlug[]> = {
 **Risk:** The `nearbyCities` table above is a service-region grouping, not literal geographic adjacency (e.g. חיפה↔תל אביב). Label the module 'אזורי שירות נוספים באזור' rather than 'ערים סמוכות' so the copy stays truthful, and have the client sanity-check the groupings against how they actually route crews.
 
 ## 7. Link every service page out to the location tier and to its gallery category
+
 `high` · impact `high` · effort `M`
 
 **Evidence:** app/service/[slug]/page.tsx contains exactly two link blocks: 'שירותים נוספים' (:153-168) and nothing else. Measured on out/service/pergolas/index.html: every /locations/<city>/ href on the page (12 of them) is footer chrome, and /gallery/ appears 3× (nav×2 + footer) with zero body links. The 16 city pages send 16 links up to each service, but no service sends a single contextual link back down.
@@ -1819,6 +1886,7 @@ export const nearbyCities: Record<LocationSlug, LocationSlug[]> = {
 ```
 
 ## 8. Fix the off-by-one that hides one sibling service from every service page
+
 `medium` · impact `medium` · effort `S`
 
 **Evidence:** app/service/[slug]/page.tsx:48 — `const others = serviceCards.filter((c) => c.slug !== card.slug).slice(0, 4);`. There are five siblings, so the last one in `services` order is always dropped. Measured consequence: /service/accordion-products/ has 51 sitewide inbound links (33 footer + 2 grids + 0 related + 16 city pages) while /service/pergolas/ has 56 (33 + 2 + 5 + 16), and /service/outdoor-kitchen/ has 55. The 'שירותים נוספים' grid on out/service/pergolas/index.html lists wall-cladding, outdoor-kitchen, fences-gates, decks — accordion-products is absent.
@@ -1833,6 +1901,7 @@ const others = serviceCards.filter((c) => c.slug !== card.slug);
 ```
 
 ## 9. Qualify the anchor text on city links and stop wrapping whole service cards in one anchor
+
 `medium` · impact `medium` · effort `M`
 
 **Evidence:** Extracted anchor text from out/index.html: all 35 sitewide links to /locations/tel-aviv/ read exactly 'תל אביב' — a bare toponym with no topical qualifier — while the destination's h1 is 'פרגולות אלומיניום בתל אביב'. Conversely, components/marketing/ServicesGrid.tsx:31-49 wraps the entire card (h3 + tagline + 40-word description + 'למידע נוסף') in a single <Link>, so the measured anchor text for /service/pergolas/ from the homepage is 110+ characters of mixed copy: 'פרגולות, מחסות וגגות פרגולות ידניות וחשמליות פרגולות אלומיניום מעוצבות בהתאמה אישית, עם אפשרות חיפוי פוליקרבונ…'.
@@ -1859,6 +1928,7 @@ const others = serviceCards.filter((c) => c.slug !== card.slug);
 ```
 
 ## 10. Make /services/ a real hub instead of a verbatim copy of a homepage section
+
 `medium` · impact `medium` · effort `M`
 
 **Evidence:** app/services/page.tsx renders PageHeader + `<ServicesGrid />` + `<FinalCta />` and nothing else — the exact same `ServicesGrid` component the homepage renders at app/page.tsx:45. The built heading outline of out/services/index.html is h1 'השירותים שלנו', h2 'פתרונות אלומיניום לכל מרחב חוץ' (the grid's own heading, identical to the homepage's), six h3s, then the boilerplate FinalCta h2. It emits no BreadcrumbList and no unique paragraph. It carries 72 sitewide inbound links and forwards six.
@@ -1866,9 +1936,10 @@ const others = serviceCards.filter((c) => c.slug !== card.slug);
 **Recommendation:** Add to app/services/page.tsx: (a) a unique 250-350 word intro that frames the six services as one system (הצללה, גידור, חיפוי, ריצוף חוץ, אירוח, סגירה עונתית) and links each keyword to its service page in prose; (b) a comparison block — 'איזה פתרון מתאים לכם?' — with rows like 'רוצים צל אבל גם שמש בחורף → <a href="/service/pergolas/">פרגולה חשמלית</a>' and 'רוצים להשתמש במרפסת גם בגשם → <a href="/service/accordion-products/">מוצרים אקורדיאוניים</a>'; (c) links to the four gallery category pages; (d) the BreadcrumbList from the schema finding. Give ServicesGrid an optional `heading` prop so the hub can carry a different h2 from the homepage's.
 
 ## 11. Ship an HTML sitemap page for users and turn the 404 into a navigation surface
+
 `medium` · impact `medium` · effort `M`
 
-**Evidence:** out/ contains sitemap.xml (31 URLs) but no human-readable index; `staticPaths` in app/sitemap.ts:19-29 lists nine paths and there is no /site-map/ route. app/not-found.tsx:9-14 offers a single link — 'חזרה לדף הבית' — although the built out/404.html does inherit the header nav and footer (measured: 6 /service/* links present, header nav present).
+**Evidence:** out/ contains sitemap.xml (31 URLs) but no human-readable index; `staticPaths` in app/sitemap.ts:19-29 lists nine paths and there is no /site-map/ route. app/not-found.tsx:9-14 offers a single link — 'חזרה לדף הבית' — although the built out/404.html does inherit the header nav and footer (measured: 6 /service/\* links present, header nav present).
 
 **Recommendation:** Add `app/site-map/page.tsx` titled 'מפת אתר' listing all 31+ URLs grouped as השירותים שלנו (6) / גלריית פרויקטים (4 category pages) / אזורי שירות (16) / החברה (אודות, גלריה, צור קשר) / מידע משפטי (3), each with descriptive Hebrew anchors. Add "site-map" to `staticPaths` in app/sitemap.ts and a 'מפת אתר' link in the footer 'קישורים' column. In app/not-found.tsx, replace the single home link with a six-item service list plus links to /gallery/, /locations/ and /contact/ — a 404 on a static export is where a mistyped or stale URL lands, and it currently offers users one route out of the dead end.
 
@@ -1895,6 +1966,7 @@ export const metadata: Metadata = {
 ```
 
 ## 12. Harden the mobile menu: it has no aria-controls, no Escape, no outside-click close and no current-page state
+
 `medium` · impact `medium` · effort `M`
 
 **Evidence:** components/layout/Header.tsx:67-75 — the toggle sets `aria-expanded={open}` but has no `aria-controls`, and the panel it controls (:80) has no `id`. There is no Escape handler, no click-outside handler and no body scroll lock (contrast components/marketing/FilterableGallery.tsx:42-49, which does wire Escape for the lightbox). No link ever gets `aria-current="page"`, so on a 5-item nav rendered on 33 pages the user is never told where they are. The panel lives inside `sticky top-0` (:17); with 5 items at ~44px plus the 56px CTA it occupies roughly 320px of a small phone viewport.
@@ -1921,6 +1993,7 @@ useEffect(() => {
 ```
 
 ## 13. Build a restrained service×city tier — 8-12 pages, not the full 96-cell matrix
+
 `medium` · impact `high` · effort `XL` · **NEEDS CLIENT INPUT**
 
 **Evidence:** generateStaticParams in app/service/[slug]/page.tsx:26-28 and app/locations/[city]/page.tsx:12-14 produce 6 and 16 pages respectively with no crossing route. The city template's entire unique body is two templated paragraphs with `{city.name}` interpolated (page.tsx:58-68) — out/locations/tel-aviv/index.html and out/locations/haifa/index.html differ only by the city string. Building all 96 combinations from that same template would produce 96 near-identical pages, which is the textbook doorway pattern.
@@ -1930,6 +2003,7 @@ useEffect(() => {
 **Risk:** This is the highest-risk item in the dimension. Templated service×city pages at scale are exactly what Google's spam policy on doorway pages targets. Gate the build on a per-cell content record existing; an empty record must produce no route and no sitemap entry. It also depends on the client supplying lead-volume data to pick the cities, and real per-city project facts.
 
 ## 14. Turn 55 gallery photos into per-project pages — the missing content tier the whole link graph is waiting for
+
 `medium` · impact `high` · effort `XL` · **NEEDS CLIENT INPUT**
 
 **Evidence:** site.config.json images.gallery.items holds 55 catalog entries with stable keys, dimensions and Hebrew alt text, split 9/15/18/13 across four categories. Every one of them renders only as a lightbox <button> in components/marketing/FilterableGallery.tsx:82-96 — there is not a single indexable URL per project anywhere in out/. The alt text is auto-generated and uniform ('פרויקט אלומיניום של סקיי שייד — דקים 1'), carrying no project-specific information.
@@ -1939,6 +2013,7 @@ useEffect(() => {
 **Risk:** Every field is a business fact: which city each photo was taken in, what the client asked for, which material was used, what the constraint was. None of it can be inferred from the catalog, and inventing it would be fabricated content. Ship only the projects the client can actually describe.
 
 ## 15. Internal-linking blueprint: which template links to which, with Hebrew anchors
+
 `medium` · impact `high` · effort `S`
 
 **Evidence:** Current measured graph (33 built files): every non-chrome link comes from four templated components — ServicesGrid (6 links, on / and /services/), ServiceAreas (17 links, on / only), the city page service list (6 links) and the service page 'שירותים נוספים' list (4 links). No template links sideways within its own tier, and no template links across tiers except downward from home. Nine of eleven templates produce zero contextual body links.
@@ -1969,13 +2044,12 @@ Header (all pages) → 5 top-level items + a 6-item services dropdown, both copi
 
 Rule to enforce in review: no template ships with zero contextual body links, and no URL in sitemap.xml has fewer than 5 sitewide inbound links.
 
-
 # Hebrew keyword and query landscape
 
 **Current state:** The site is competently written Hebrew brochure copy, but it is written in the vocabulary of an aluminium fabricator rather than the vocabulary of an Israeli homeowner typing into Google. Across all 36 shipped pages in `out/`, the entire commercial-research vocabulary is missing: `מחירון` = 0 occurrences, `כמה עולה` = 0, `תיקון 101` = 0, `חוק הפרגולות` = 0, `ועדה מקומית` = 0, `סוכה`/`סכך` = 0, `ביוקלימטית` = 0, `דמוי עץ` = 0, `סינטטי` = 0 (the site spells it `סינתטי`, the market spells it `סינטטי`), `ציפוי אבקתי` = 0. What the site does say heavily — `אלומיניום` 1,307 times, `בהתאמה אישית` 317 times — is brand-voice filler, not query language. The category naming is actively working against it: the accordion service is called `מוצרים אקורדיאוניים` (126 occurrences), a manufacturer-internal term, while the consumer head term `סגירת מרפסת` appears only 18 times and every competitor ranking for it uses it in the URL. There is no route in `app/` capable of hosting informational content — no blog, no guides, no pricing page — so the three largest Hebrew query clusters in this vertical (price, permits, material comparison) have nowhere to live. The 16 city pages are 100% templated from `app/locations/[city]/page.tsx` lines 47–71 with the city name as the only variable (~85 words of unique copy each), which is a doorway-page pattern rather than a keyword asset. Retrieved SERPs show the `[שירות] ב[עיר]` queries are dominated by directories (midrag, b144, pro.co.il, t.co.il), not by manufacturers, which materially changes what local pages can realistically win.
 
-
 ## 1. Build a Hebrew price-intent layer (מחיר / כמה עולה / מחירון) — the highest-intent cluster is entirely absent
+
 `critical` · impact `transformational` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** Shipped HTML across out/ contains `מחירון` 0 times and `כמה עולה` 0 times. On service/pergolas/index.html `מחיר` appears 9 times and `עלות` 6 — all of it CTA boilerplate ("קבלו הצעת מחיר חינם", "הצעת מחיר שקופה"), never an actual number. Retrieved SERP for `פרגולות אלומיניום מחיר למ"ר 2026`: every top result is a dedicated price URL — pergolass.co.il/pergola-price/, lidar.co.il/פרגולות-אלומיניום-מחיר/, catomltd.co.il/מחיר-של-פרגולות/, pergolas4u.co.il/מחירון-פרגולות. Retrieved market bands: aluminium pergola 600–1,500 ₪/m² (avg ~800); electric/louvred 1,600–3,000 ₪/m²; synthetic deck 280–650 ₪/m² supply, ~500–850 ₪/m² installed; aluminium fence 200–1,000 ₪/linear m; electric gate 1,500–5,000 ₪; HPL cladding 600–800 ₪/m² installed.
@@ -2002,6 +2076,7 @@ export const priceBands: Record<ServiceSlug, PriceBand> = {
 **Risk:** Do not publish bands the business cannot honour — a range that undercuts the real quote destroys trust at the site visit. Client must approve every number. Ranges also need an annual refresh or they become a liability.
 
 ## 2. Own the permit cluster (תיקון 101 / חוק הפרגולות) and fix the factually incomplete answer already shipping
+
 `critical` · impact `transformational` · effort `L`
 
 **Evidence:** `תיקון 101` = 0, `חוק הפרגולות` = 0, `רפורמת הפרגולות` = 0, `ועדה מקומית` = 0 across all shipped HTML. Meanwhile `lib/content.ts:112` and `lib/content.ts:346` both ship the single sentence "פרגולות עד 50 מ״ר בדרך כלל פטורות מהיתר". Retrieved sources (architecture.org.il, ipac.co.il, nayer.co.il, felaw.co.il) describe תקנות התכנון והבניה (עבודות ומבנים הפטורים מהיתר), תשע"ד-2014 as: exemption is 50 m² **or ¼ of the ground/roof area, whichever is greater**; light materials only; no external walls or windows; gaps must be evenly distributed and comprise **at least 40%** of the roof; permitted on ground or building roof, **not on balconies**; and even exempt work generally requires reporting to the licensing authority **within 45 days** of completion. The shipped one-liner omits every one of these conditions.
@@ -2019,6 +2094,7 @@ export const priceBands: Record<ServiceSlug, PriceBand> = {
 **Risk:** Planning law is amended periodically and local committees add their own conditions. Have the final wording checked by a licensing professional, add a dated "נכון ל-" line and a short disclaimer directing readers to their ועדה מקומית. Do not present the guide as legal advice.
 
 ## 3. Rename the accordion service to the term Israelis actually search: סגירת מרפסת
+
 `critical` · impact `transformational` · effort `M`
 
 **Evidence:** `מוצרים אקורדיאוניים` appears 126 times in shipped HTML (it is the service name in `lib/site-config.ts:65`, the H1 of out/service/accordion-products/index.html, and every nav/footer/card instance). `סגירת מרפסת` appears only 18 times, `מרפסת חורף` 0, `וילון זכוכית` 0, `זכוכית נאספת` 0, `זכוכית מתקפלת` 0. Retrieved SERP for the category returns exclusively `סגירת מרפסת` URLs — waissman.co.il/סגירת-מרפסת/, alumi.co.il/סגירת-מרפסת-זכוכית-אקורדיון, sorag.co.il/glass-curtain-balcony/, solaris-ltd.co.il, hzk.co.il, bigtips.co.il, midrag.co.il/Content/Price/10009. Retrieved price band 800–1,200 ₪/m², up to 2,500 ₪/m². `מוצרים אקורדיאוניים` is a fabricator's catalogue heading, not a query.
@@ -2041,6 +2117,7 @@ export const priceBands: Record<ServiceSlug, PriceBand> = {
 **Risk:** The service name appears in nav, footer, cards and breadcrumbs, so this is a visible brand change — confirm with the client that "סגירת מרפסת" describes what they actually sell (it does per the current copy: tריסי אקורדיון, קירות הזזה, מחסומי רוח).
 
 ## 4. Name the flagship product with its market term: פרגולה ביוקלימטית / מתקפלת / נאספת
+
 `high` · impact `high` · effort `S` · **NEEDS CLIENT INPUT**
 
 **Evidence:** `ביוקלימטית` = 0, `ביו-אקלימית` = 0, `ביוקלמטיק` = 0, `מתקפלת` = 0, `נאספת` = 0 across all shipped HTML. The site describes the product only descriptively — `lib/content.ts:101` "אפשרות פרגולה חשמלית עם להבים מתכווננים" and `:116` "להבי אלומיניום מתכווננים שנפתחים ונסגרים בשלט". Retrieved SERP for the category is built entirely on the missing terms: silvergate.co.il/פרגולות-חשמליות-מתכווננות/bioclimatic-pergula/, solaris-ltd.co.il/electric-pergola/ ("מתקפלת / נאספת"), pergolass.co.il/electrical-pergola/ ("נאספת / מתקפלת"), lidar.co.il/פרגולה-חשמלית/. This is the highest-margin product in the range and the site is invisible for its own name.
@@ -2064,6 +2141,7 @@ export const priceBands: Record<ServiceSlug, PriceBand> = {
 **Risk:** Only claim the product types Sky Shade actually manufactures. Confirm with the client whether they supply bioclimatic louvred systems, hanging/cantilevered pergolas and wood-effect finishes before publishing any of these terms.
 
 ## 5. Capture פרגולה כשרה לסוכה — the largest Israel-specific intent, and the site's product is the literal answer
+
 `high` · impact `high` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** `סוכה` = 0, `סוכות` = 0, `סכך` = 0 across all shipped HTML. Retrieved SERP shows a fully developed competitor cluster with dedicated pages: pergolass.co.il/פרגולה-כשרה-לסוכה/, pergolas4u.co.il/פרגולה-לגינה/פרגולה-כשרה-לסוכה, aapergulot.co.il/פרגולה-כשרה-לסוכה/, stb.co.il/פרגולה-סוכה/, pergola-expert.co.il/פרגולה-לסוכה-כשרה/, plus halachic sources (toraland.org.il, olamot.net). The retrieved halachic requirement — an opening/retractable roof lets you remove the covering and lay s'chach under open sky — describes exactly the adjustable-louvre electric pergola the site already sells (`lib/content.ts:101,116`). The product-intent match is perfect and completely unexploited.
@@ -2083,6 +2161,7 @@ export const metadata: Metadata = {
 **Risk:** Halachic claims are a reputational minefield. Do not state that a specific Sky Shade product "is kosher" — state the conditions, note that psak depends on the rav and the installation, and have the client confirm whether their louvre system genuinely opens to open sky. A wrong claim here is worse than no page.
 
 ## 6. Fix the דק סינטטי spelling and stop leading with the WPC trade term
+
 `high` · impact `high` · effort `S`
 
 **Evidence:** Shipped HTML contains `סינתטי` 2 times and `סינטטי` 0 times. `lib/content.ts:176` reads "דקים מ-WPC (עץ סינתטי)". Every retrieved competitor uses `סינטטי` with tet: neta-ginun.co.il/דק-סינטטי/, pergolass.co.il/synthetic-deck/, bull-deck.com/דק-סינטטי-מחיר/, superdeck.co.il/synthetic-decking-vs-natural-wood/, eyalyarokad.co.il/דק-סינטטי-vs-דק-עץ-טבעי. The site also leads with `WPC` — a trade acronym — while `דק סינטטי` is the consumer head term and `דק פולימרי` a common synonym (steeldeco.co.il). The decks service is named simply `דקים` (lib/site-config.ts:63), the broadest and least qualified form available.
@@ -2103,6 +2182,7 @@ decks: {
 ```
 
 ## 7. The 16 city pages are a templated doorway pattern, not a keyword asset
+
 `high` · impact `high` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** `app/locations/[city]/page.tsx` lines 47–71 generate every city page from one template with `city.name` as the only variable: the H1 (`פרגולות אלומיניום ב{city.name}`), the subtitle, two body paragraphs and one H2 are string-interpolated. Shipped confirmation — out/locations/tel-aviv/index.html has exactly two prose paragraphs (~85 Hebrew words) plus a link list, `פרגולה` singular appears 0 times, `היתר` 0 times, and the only H2s are "השירותים שלנו ב" and the site-wide CTA. Sixteen URLs differing only by a proper noun is the textbook definition of doorway pages under Google's spam policies, which the assignment explicitly rules out.
@@ -2125,6 +2205,7 @@ export const locations = [
 **Risk:** Per-city angles must be true. Inventing local detail is worse than the current thin template. If the client has no projects in a city, that city should not have a page.
 
 ## 8. Realistic competition read: city SERPs are owned by directories, so nest service×city under the service and build only where you can win
+
 `medium` · impact `medium` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** Retrieved SERP for `פרגולות תל אביב / פרגולות בתל אביב`: positions are dominated by aggregators — midrag.co.il, b144.co.il, pro.co.il ("13 מתקיני פרגולות שבדקנו"), t.co.il, shiplus.co.il, mylist.co.il. The only manufacturer ranking does so with a service-nested city URL: silvergate.co.il/פרגולות-אלומיניום/התקנת-פרגולות-אלומיניום-בתל-אביב/ — city under service, not city as a standalone hub. The current architecture inverts this: `/locations/[city]/` is a standalone hub with a generic multi-service H1. Note also that `siteConfig.social.googleBusiness` is `""` (lib/site-config.ts:50), so there is no GBP entity anchoring any local query.
@@ -2132,6 +2213,7 @@ export const locations = [
 **Recommendation:** Do not build all 96 combinations. Restructure to `/service/[slug]/[city]/` for the two services with real search demand and real project photos — pergolas and decks — across the 6–8 cities where the client has completed work, giving each a genuinely different page (local permit authority, local building stock, named local projects from the gallery). Accept that directory listings will hold the top of these SERPs and treat GBP + directory presence (midrag, b144, pro.co.il) as a parallel channel rather than something organic pages can displace. Update `app/sitemap.ts` to emit the new nested routes.
 
 ## 9. There is no route in app/ capable of hosting informational content — this blocks every cluster above
+
 `critical` · impact `transformational` · effort `L`
 
 **Evidence:** `find app -name "*.tsx"` returns 14 files: the 6 top-level pages, two dynamic routes, 404, layout and the three legal pages. There is no blog, guides or resources segment. Shipped HTML confirms: `מדריך` = 0, `בלוג` = 0 occurrences across all 36 pages. The price, permit, comparison, sukkah and maintenance clusters identified in this report have nowhere to be published. `app/sitemap.ts` hardcodes `staticPaths` as a nine-item array, so any new section must also be wired there.
@@ -2156,6 +2238,7 @@ const guideEntries: MetadataRoute.Sitemap = guides.map((g) => ({
 ```
 
 ## 10. Own the material-comparison cluster — the top-of-funnel entry point for every service
+
 `high` · impact `high` · effort `L`
 
 **Evidence:** The site answers the three biggest comparison queries in one FAQ line each and nowhere else: `lib/content.ts:186-188` ("מה עדיף — דק WPC או עץ טבעי?"), `:161-163` ("מה ההבדל בין קומפוזיט ל-HPL?"), `:136-138` (aluminium vs iron fence). There is no page for `פרגולה אלומיניום או עץ` at all. Retrieved SERPs show a dense, well-developed competitor field for each: c14.co.il/article/801177, silvergate.co.il/wooden-or-aluminum-pergola-pros-cons/, etzvapele.co.il, ofekmaakot.co.il, azgerbi.com for pergola material; superdeck.co.il, eyalyarokad.co.il, bull-deck.com/difference-between-the-deck-types/ for decking; innobld.com/לוחות-חיפוי-קירות-חוץ-בין-אלומיני for HPL vs aluminium. These queries carry the highest informational volume in the vertical and feed directly into a quote request.
@@ -2175,6 +2258,7 @@ const guideEntries: MetadataRoute.Sitemap = guides.map((g) => ({
 **Risk:** A comparison page that only says "aluminium wins" reads as a sales page and will not earn the informational SERP. The page must concede wood's advantages honestly to rank.
 
 ## 11. Hebrew prefix morphology: the site emits only the ב-prefixed city form and only the plural pergola form
+
 `medium` · impact `medium` · effort `S`
 
 **Evidence:** `app/locations/[city]/page.tsx:22,47,48,59,65,71` concatenate `ב${city.name}` throughout, producing only `בתל אביב`. The unprefixed adjacency `פרגולות תל אביב` never appears in any heading or paragraph — it survives only in the breadcrumb (`page.tsx:36` passes the bare `city.name`). Both forms are searched: retrieved SERP titles include both `פרגולות בתל אביב` (midrag, b144, pro.co.il) and `פרגולות אלומיניום תל אביב` (silvergate). Similarly for number/construct forms: shipped HTML has `פרגולות אלומיניום` 110 times but the construct singular `פרגולת אלומיניום` only 4 — yet competitor titles lean on the singular (`פרגולת אלומיניום דמוי עץ`, `פרגולה אלומיניום חשמלית מחיר`), and `דק אלומיניום` = 0, `גדר אלומיניום` = 4 vs `גדרות אלומיניום` = 15.
@@ -2192,6 +2276,7 @@ const guideEntries: MetadataRoute.Sitemap = guides.map((g) => ({
 **Risk:** DOMAIN REASONING, NOT RETRIEVED DATA: I could not retrieve authoritative documentation of how Google Israel handles Hebrew prefix stripping (ב/ל/מ/ה/ש/ו) or construct-state (סמיכות) normalisation. The one retrieved source on Hebrew SEO (ranktracker) only states that Hebrew's morphology is materially harder to stem than English's, and my WebFetch of it failed. Treat this as a low-cost hedge — cover both forms because it is cheap — rather than as a measured effect. Do not over-invest on this basis.
 
 ## 12. Hebrew orthography variants: the site uses typographic gershayim where users type an ASCII quote
+
 `low` · impact `low` · effort `S`
 
 **Evidence:** out/service/pergolas/index.html contains `מ״ר` (U+05F4 GERSHAYIM) 1 time and the ASCII-quote form `מ"ר` 0 times — sourced from `lib/content.ts:112` and `:346`. Israeli users typing on a standard Hebrew keyboard produce the ASCII `"`, and every retrieved competitor title uses the ASCII form (`דק סינטטי מחיר למ"ר`, `פרגולה מחיר למטר`, `מחיר אלומיניום למטר 2026`). The same split applies to `ש"ח` vs `ש״ח`. This compounds the `סינטטי`/`סינתטי` split already noted separately.
@@ -2207,6 +2292,7 @@ const guideEntries: MetadataRoute.Sitemap = guides.map((g) => ({
 **Risk:** Google normalises punctuation reasonably well, so the ranking effect is probably small. Included because it costs minutes and because the same orthographic-split problem is genuinely material in the סינטטי/סינתטי case.
 
 ## 13. Add the technical spec vocabulary that both proves 'premium' and matches buyer-research queries
+
 `medium` · impact `medium` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** `ציפוי אבקתי` = 0, `אבקתי` = 0, `סגסוגת` = 0, `עובי` = 0, `עיגון` = 0, `אנודייז` = 0, `עומס רוח` = 0 across all shipped HTML. `פרופיל` appears 7 times sitewide. Yet the site claims premium positioning 317 times via `בהתאמה אישית` and calls itself `אלומיניום פרימיום` in every title. Retrieved buyer-guidance sources (alumi.co.il/פרופיל-אלומיניום-לפרגולה, dgsaluminium.co.il, unikit.co.il/פרגולות-אלומיניום-ההמלצות) tell buyers to check exactly these things: profile thickness (20×20–40×40 mm light, 50×50–80×40 mm medium, 80×80 mm+ heavy), alloy grade, oven-baked powder coating vs hand painting, and anchoring method. A premium claim with zero verifiable specification is an unsupported adjective.
@@ -2230,6 +2316,7 @@ specs: [
 **Risk:** Every number here is a factual claim about the product. Publishing a profile dimension or alloy grade the company does not actually use is a consumer-protection problem, not just an SEO one. Leave placeholders until the client confirms.
 
 ## 14. Cover the maintenance and repair cluster (תחזוקה, תיקון, חידוש) — currently zero
+
 `medium` · impact `medium` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** `תיקון` = 0 and `חידוש` = 0 across all shipped HTML. Maintenance is addressed only in two FAQ lines (`lib/content.ts:194-196`, `:120`) and the copy actively closes the topic down — "אלומיניום איכותי... מחזיקה שנים רבות עם תחזוקה מינימלית". Retrieved sources show a developed cluster: etsim.co.il/תחזוקת-פרגולת-אלומיניום, sun-tech.co.il/תחזוקת-פרגולות/, my-aluminum.co.il/תיקון-פרגולות-אלומיניום, buyitcenter.co.il, with concrete guidance (rinse twice yearly at end of spring and end of winter, recoat roughly every four years, annual bolt-tightening and drainage-channel checks). The retrieved sources are explicit that "minimum maintenance is not zero maintenance" — the opposite of the site's framing.
@@ -2239,6 +2326,7 @@ specs: [
 **Risk:** Do not publish a repair/renovation service page unless Sky Shade actually offers repairs. `lib/content.ts:140-142` currently says of gates "אנחנו מתמחים בתכנון והתקנה של שערים חדשים" — implying new-build only. Confirm the service scope first.
 
 ## 15. Adopt the year-stamped title convention that dominates this Hebrew vertical
+
 `medium` · impact `medium` · effort `S`
 
 **Evidence:** `2026` appears 66 times in shipped HTML but every instance is the footer copyright (`© 2026 סקיי שייד`) — verified by inspecting the surrounding markup in out/index.html. No title, H1 or H2 carries a year. Across every retrieved SERP in this vertical, the year is in the title: "פרגולות אלומיניום - דגמי 2026", "מחירון פרגולות ודקים 2026", "דק סינטטי מחיר 2026 – מדריך מלא", "מחירון שערים מעודכן 2026", "פרגולות אלומיניום ב-2026: המדריך המלא", "מחירון אלומיניום לבית 2026", "פרגולה לחצר: קטלוג 2026". It is the established convention for price and guide pages here.
@@ -2261,6 +2349,7 @@ export function generateMetadata({ params }): Metadata {
 **Risk:** Creates a recurring maintenance obligation. If nobody will update these annually, omit the year rather than shipping a stale one.
 
 ## 16. Missing product-type long-tail: פוליקרבונט depth, סככה / מחסה לרכב, אלומיניום דמוי עץ
+
 `medium` · impact `medium` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** `פוליקרבונט` appears 19 times but only ever as a list item in `lib/content.ts:29,102,334` — never with its own heading or explanation, despite being a distinct query with its own material considerations. `סככה` = 0, `סככות` = 0, `מחסה לרכב` = 0 and `רעפים` = 0, even though the pergolas service is literally named `פרגולות, מחסות וגגות` (lib/site-config.ts:60) — the site claims the category in its service name and then never uses the words people search for it. `דמוי עץ` = 0 despite the retrieved price data treating `פרגולת אלומיניום דמוי עץ` as its own 800–1,500 ₪/m² segment with dedicated competitor coverage (midrag.co.il/Content/Tip/12543).
@@ -2270,6 +2359,7 @@ export function generateMetadata({ params }): Metadata {
 **Risk:** Confirm the client actually fabricates carports/canopies before building out `סככה`/`מחסה לרכב` — the service name implies it (`מחסות`) but no body copy anywhere describes it.
 
 ## 17. Seasonality strategy — I could not retrieve Israeli demand data; treat the following as domain reasoning only
+
 `low` · impact `medium` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** My WebSearch for Israeli pergola demand seasonality (`עונתיות ביקוש פרגולות ישראל אביב קיץ פסח`) returned no relevant results — the SERP was school-holiday calendars and unrelated content. I have no retrieved data on Israeli seasonal search patterns for this vertical. What I can evidence from the repository: `app/sitemap.ts` sets `lastModified: now` (build time) for every URL identically, so the sitemap carries no real freshness signal, and there is no content surface whose publication could be timed to a season anyway.
@@ -2278,13 +2368,12 @@ export function generateMetadata({ params }): Metadata {
 
 **Risk:** Acting on assumed seasonality without GSC data risks publishing into the wrong month and concluding the content 'did not work'. Verify Search Console before treating any of this as actionable.
 
-
 # Conversion rate optimisation, engagement and lead capture
 
 **Current state:** The funnel is a single 4-field Web3Forms lead form (`components/forms/LeadForm.tsx`) that ships on exactly two of the 28 content pages — `out/index.html` and `out/contact/index.html` both contain one `<form`, while `out/service/pergolas/index.html`, `out/gallery/index.html` and `out/locations/tel-aviv/index.html` contain zero. Everywhere else the only conversion path is a `tel:` link and a WhatsApp deep link, all of which carry the identical hardcoded message "היי, אני מעוניין/ת בהצעת מחיר לפרויקט אלומיניום", so 16 city pages plus gallery/services/about produce leads with no page context and no attribution. The mobile sticky bar (`MobileCtaBar.tsx`) is the strongest thing here — two plain anchors, no JS dependency, always visible — but its WhatsApp half renders white text on `#25D366` at a computed 1.98:1 contrast ratio, failing WCAG AA on the single most-tapped element on the site, and WhatsApp gets 50% of that bar despite ~99% penetration in Israel. The form itself has two defects that destroy leads outright: a failed `fetch` sets `status="error"` but `error` is already `null` (line 52), so the UI shows literally nothing and the `window.open` fallback on line 91 runs after an `await` and has lost transient user activation, so popup blockers eat it; and the shipped `<form class="space-y-4" noValidate="">` has no `action`/`method`, so a submit before hydration does a GET reload and the lead is gone. Above the fold there is no product photography at all — `Hero.tsx` is two CSS radial gradients, the only `priority` image on the page is the 500×79 logo which consumes a high-priority `<link rel=preload as=image imagesrcset>` for a 36px-tall mark, and the 55-photo gallery that should be this business's strongest proof asset is a dead-end lightbox with no CTA, no next/prev, and a median source width of 624px.
 
-
 ## 1. Fix the silent lead loss when submission fails
+
 `critical` · impact `transformational` · effort `S`
 
 **Evidence:** components/forms/LeadForm.tsx:52 calls setError(null), then line 90 sets status="error" and line 91 calls window.open(). Because `error` is null and the `done` branch (line 95) is not taken, the component re-renders the plain form with NO message, NO error styling, and the button back to its idle label. The user taps 'שליחה', sees nothing change, and leaves. Worse, window.open() on line 91 runs after `await fetch(...)` — transient user activation has expired by then, so Safari, Firefox and Chrome all block the popup. Net result on any Web3Forms outage, DNS/corporate filter block of api.web3forms.com, or flaky mobile connection: the lead is destroyed with zero feedback to either party.
@@ -2316,9 +2405,10 @@ const [waHref, setWaHref] = useState<string | null>(null);
 ```
 
 ## 2. Give the form a native action so a pre-hydration submit still delivers
+
 `critical` · impact `high` · effort `M`
 
-**Evidence:** The shipped markup in out/index.html is `<form class="space-y-4" noValidate="">` — no `action`, no `method`. LeadForm is a client component; the site ships ~786KB of uncompressed JS across out/_next/static/chunks (fd9d1056 172KB, framework 140KB, 117-… 125KB, main 117KB, polyfills 113KB). On a mid-range Android on 4G, hydration lands seconds after first paint. Anyone who fills name+phone fast and hits submit before `onSubmit` is attached triggers a native GET to the current URL: the page reloads, the form is empty, the lead never existed. The same applies to any visitor with JS blocked or a failed chunk fetch.
+**Evidence:** The shipped markup in out/index.html is `<form class="space-y-4" noValidate="">` — no `action`, no `method`. LeadForm is a client component; the site ships ~786KB of uncompressed JS across out/\_next/static/chunks (fd9d1056 172KB, framework 140KB, 117-… 125KB, main 117KB, polyfills 113KB). On a mid-range Android on 4G, hydration lands seconds after first paint. Anyone who fills name+phone fast and hits submit before `onSubmit` is attached triggers a native GET to the current URL: the page reloads, the form is empty, the lead never existed. The same applies to any visitor with JS blocked or a failed chunk fetch.
 
 **Recommendation:** Make the form work without JavaScript, then let JS enhance it. Point `action` at Web3Forms (their documented plain-HTML flow), add the hidden fields Web3Forms needs, and add a `redirect` to a new static `/thank-you/` page. Keep `handleSubmit` with `e.preventDefault()` for the hydrated path. The `/thank-you/` page is also a proper GA4/Google Ads conversion destination, which the current in-page success state does not provide. Remove `noValidate` or pair it with real JS validation (see the validation finding).
 
@@ -2342,6 +2432,7 @@ export const metadata = { robots: { index: false }, title: "תודה — קיב�
 ```
 
 ## 3. Put a lead form on the 26 pages that have none
+
 `critical` · impact `transformational` · effort `M`
 
 **Evidence:** grep of the built export: `out/index.html` → 1 `<form`, `out/contact/index.html` → 1, but `out/service/pergolas/index.html` → 0, `out/gallery/index.html` → 0, `out/locations/tel-aviv/index.html` → 0. `grep -rl LeadForm app/` returns only app/contact/page.tsx and components/marketing/Hero.tsx. The six service pages are the highest-intent pages on the site (a visitor on /service/pergolas/ has already self-selected a product) and their only conversion device is the sticky aside at app/service/[slug]/page.tsx:118-141 — two buttons, phone and WhatsApp, no form. The 16 city pages end with a generic FinalCta and nothing else.
@@ -2363,6 +2454,7 @@ export function LeadForm({ className, defaultService, sourcePage }:
 ```
 
 ## 4. Fix the WhatsApp contrast failure on every WhatsApp control
+
 `high` · impact `high` · effort `S`
 
 **Evidence:** components/layout/MobileCtaBar.tsx:20 uses `bg-[#25D366]` with `text-white`. Computed relative luminance of #25D366 is 0.4805, giving a contrast ratio against white of 1.98:1 — WCAG AA requires 4.5:1 for 16px semibold text. The hover state `#1da851` (components/ui/Button.tsx:13) measures 3.10:1, also failing. The inline WhatsApp link in LeadForm.tsx:217 uses `text-[#1da851]` on white at 12px (`text-xs`), 3.10:1. This affects the most-tapped element on the site: on mobile the sticky bar is the only persistent CTA, and half of it is currently low-legibility. In bright outdoor daylight — the exact context in which someone photographs their balcony and looks up a pergola company — a 1.98:1 label is close to unreadable.
@@ -2381,6 +2473,7 @@ className="inline-flex items-center gap-1 font-semibold text-[#075E54] hover:und
 ```
 
 ## 5. Validate the phone number and attach errors to the fields that caused them
+
 `high` · impact `high` · effort `M`
 
 **Evidence:** LeadForm.tsx:115 sets `noValidate`, disabling native constraint validation, and the only check is `if (!name || !phone)` at line 48 producing one generic string, 'נא למלא שם וטלפון', rendered at line 196-200 above the submit button — nowhere near the offending field, with no `aria-invalid`, no `aria-describedby`, and no focus move. There is no format check at all: '050' , '05' or a mistyped 9-digit number is accepted, POSTed to Web3Forms and arrives as an uncallable lead. For a business whose entire follow-up model is a phone callback (the message template literally ends 'טלפון לחזרה:'), an unvalidated phone field is a direct revenue leak, and the business only discovers it when the number does not connect.
@@ -2416,6 +2509,7 @@ if (Object.keys(errs).length) {
 ```
 
 ## 6. Make WhatsApp the primary channel and make every deep link carry page context
+
 `high` · impact `transformational` · effort `M`
 
 **Evidence:** WhatsApp reaches ~99% of the Israeli population with 99% daily usage (DataReportal Digital 2025: Israel / JPost, Aug 2025) — it is the default way Israelis contact a business, and the only channel through which a customer can send a photo of their balcony. Yet the string `whatsappHref("היי, אני מעוניין/ת בהצעת מחיר לפרויקט אלומיניום")` is hardcoded identically in Hero.tsx:51, FinalCta.tsx:25, MobileCtaBar.tsx:19, LeadForm.tsx:216 and app/contact/page.tsx:43. FinalCta takes no props (components/marketing/FinalCta.tsx:6) and is rendered on 7 route files including all 16 city pages, so every one of those pages emits the same context-free message. In the built export out/locations/tel-aviv/index.html there are 4 WhatsApp references and not one mentions תל אביב. Sky Shade therefore cannot tell a Tel Aviv pergola enquiry from a Be'er Sheva fence enquiry, and the salesperson opens every chat cold.
@@ -2440,6 +2534,7 @@ whatsappHref("היי, אני מעוניין/ת בהצעת מחיר. אשלח ת�
 ```
 
 ## 7. Put a real project photograph in the hero and move `priority` off the logo
+
 `high` · impact `transformational` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** components/marketing/Hero.tsx:12-19 renders two CSS radial gradients and nothing else — the built out/index.html hero contains zero `<img>`. The only `priority` image on the homepage is the 500×79 logo (Header.tsx:23-30), and it costs a high-priority `<link rel="preload" as="image" imageSrcSet="…width=500…500w, …width=1000…">` in the head for an element painted at 36px tall. Because there is no hero image, the LCP element today is the `<h1>` text, so the site is sitting on real LCP headroom while showing a prospective buyer of a premium aluminium structure a flat navy rectangle. There is also no font preload (0 `woff2` references in out/index.html; the Heebo `@font-face` blocks live inside the 43KB CSS with `font-display:swap`), so the Hebrew headline paints in Arial and swaps.
@@ -2468,6 +2563,7 @@ whatsappHref("היי, אני מעוניין/ת בהצעת מחיר. אשלח ת�
 **Risk:** The media catalog cannot supply this photo: across the 55 catalog items the median width is 624px, only 6 are ≥1200px and exactly one (project-6.webp, 1729×647) is ≥1600px. A 624px source stretched full-bleed will look worse than the gradient it replaces. The hero must come from new photography.
 
 ## 8. Turn the gallery from a dead-end lightbox into the site's best closing tool
+
 `high` · impact `transformational` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** components/marketing/FilterableGallery.tsx renders 55 tiles into a lightbox whose only control is a close button (lines 111-136). There is no next/prev, no swipe, no counter, no caption, no CTA — a visitor must close and re-open the modal 55 times to browse. out/gallery/index.html contains 0 `<form`. The lightbox `<img>` uses `srcFor(siteImages, lightbox, { fit: "contain" })`, which per node_modules/@ishub/site-kit/src/media/url.ts:110-115 requests `width: ref.width` — the intrinsic width, median 624px across the catalog — then displays it at `max-w-[90vw]`, so on a 1440px desktop the 'premium finish' proof shot is a soft 624px upscale. The dialog also has `role="dialog" aria-modal="true"` with no `aria-label`, no focus trap and no focus restore.
@@ -2495,6 +2591,7 @@ const go = (d: number) => setLightbox(filtered[(idx + d + filtered.length) % fil
 **Risk:** Re-shooting or re-exporting 55 originals at ≥2000px is client-dependent; the CTA and navigation work ship independently and should not wait for it.
 
 ## 9. Move social proof next to the decision, and fix the trust claims that cannot be checked
+
 `high` · impact `high` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** `grep -rl Reviews app/` returns only app/page.tsx — the three testimonials in lib/content.ts:305-324 appear on the homepage and nowhere else, positioned sixth (after Hero, TrustBar, ServicesGrid, WhyUs, Process, Gallery), which on mobile is roughly 5-6 screens below the form they are supposed to support. The service pages, all 16 city pages, /gallery and /contact carry no social proof at all. Meanwhile lib/content.ts:302-304 flags the testimonials as needing confirmation, lib/content.ts:284-289 marks trustStats the same, and '15+ שנות ניסיון' is hardcoded against a `foundedYear` of 2009 — 17 years as of 2026 and drifting. The hero badge at Hero.tsx:23 reads 'מספר 1 בישראל', an unsubstantiated superlative that Israeli consumer-protection law treats as misleading advertising and that Google Ads disallows in copy pulled from a landing page.
@@ -2518,6 +2615,7 @@ export const trustStats = [
 **Risk:** If the testimonials are not genuine collected reviews, they must be replaced with real ones rather than moved around — and they must never be marked up as Review/AggregateRating schema.
 
 ## 10. Close the measurement gaps: 8 CTAs have no `data-cta` and form abandonment is invisible
+
 `high` · impact `high` · effort `M`
 
 **Evidence:** The kit's own comment (node_modules/@ishub/site-kit/src/analytics/index.ts) states that call and WhatsApp conversions are tracked in GTM off the `data-cta` attribute — but the attribute is missing from eight conversion links. Counted in the built export: out/service/pergolas/index.html has 6 `href="tel:` and only 5 `data-cta` (the aside buttons at app/service/[slug]/page.tsx:127 and :131 have none); out/contact/index.html has 5 `tel:` and 5 WhatsApp references but only 5 `data-cta`, none of them on the contact page's own phone/WhatsApp/email links (app/contact/page.tsx:34, 42, 53). The LeadForm WhatsApp fallback (LeadForm.tsx:215) and the gallery 'לכל הגלריה' link (FilterableGallery.tsx:101) also have none. Separately, `trackEvent` fires only on a confirmed send (LeadForm.tsx:87) — there is no `form_start`, so form abandonment rate cannot be computed at all, and no gallery interaction events, so the 55-photo asset produces no signal.
@@ -2550,6 +2648,7 @@ onClick={() => { setActive(tab); trackEvent("gallery_filter", { tab }); }}
 ```
 
 ## 11. Rewrite the highest-impact Hebrew micro-copy
+
 `high` · impact `high` · effort `S` · **NEEDS CLIENT INPUT**
 
 **Evidence:** The message field is labelled 'פרטים על הבעיה (אופציונלי)' (LeadForm.tsx:173) — 'details about the problem'. This is residue from a break/fix home-services template and it frames a discretionary premium design purchase as a fault report; nobody buying a designed pergola has a 'בעיה'. The submit button reads 'שליחה וקבלת הצעת מחיר' (line 210), which leads with the user's cost ('sending') before their benefit. The sending state 'שולח…' is masculine singular while the entire site addresses the visitor in the plural ('קבלו', 'חייגו', 'השאירו'). The success message 'צריכים מענה מיידי? התקשרו אלינו.' (line 105) is plain text with no `tel:` link. The service select's placeholder option is 'בחירת שירות…', a noun phrase rather than an instruction.
@@ -2596,6 +2695,7 @@ sub    : "ייעוץ, מדידה והצעת מחיר שקופה — ללא על�
 ```
 
 ## 12. Rebuild the mobile sticky bar as a three-channel bar and test the ordering
+
 `medium` · impact `high` · effort `S`
 
 **Evidence:** components/layout/MobileCtaBar.tsx is a two-column grid: gold 'חייגו עכשיו' first (which in RTL puts it on the right, the primary visual position) and green 'וואטסאפ' second. Given ~99% WhatsApp penetration in Israel, the phone is occupying the dominant slot for the channel with higher friction — a call demands the visitor be somewhere they can talk, during 08:00-18:00, whereas WhatsApp works at 23:00 from a sofa and lets them attach a photo. The bar also offers no route to the form: on the 26 pages that have no form, a visitor who wants a written quote has nowhere to go. Positively, both are plain `<a>` elements that work with no JS, and app/layout.tsx:68 adds a spacer so the footer is never covered — that part is correct and should be preserved.
@@ -2624,6 +2724,7 @@ sub    : "ייעוץ, מדידה והצעת מחיר שקופה — ללא על�
 ```
 
 ## 13. Give customers a way to send a photo of their space
+
 `medium` · impact `high` · effort `M`
 
 **Evidence:** There is no file input anywhere in LeadForm.tsx, and Web3Forms' free plan does not support file attachments (attachments are a Pro feature at $12/month; the free tier is capped at 250 submissions per month and includes hCaptcha and custom redirects). For an outdoor-structures quote, a photo of the balcony or yard is the single most valuable field on the form — it lets Sky Shade give a meaningful number without a site visit and materially shortens the sales cycle. The 250/month cap is also a silent-failure risk: a spam flood against the public access key (4f939db2-…, necessarily exposed in the client bundle) could exhaust the quota and start dropping genuine leads with no alert.
@@ -2645,6 +2746,7 @@ if (Date.now() - mountedAt.current < 3000) return;      // time trap
 **Risk:** Web3Forms' 250/month ceiling and its pricing should be re-verified before committing; and the R2 upload path adds a runtime dependency the rest of the site does not have.
 
 ## 14. Add a consent line at the form — legally required and a measurable trust lever
+
 `medium` · impact `medium` · effort `S` · **NEEDS CLIENT INPUT**
 
 **Evidence:** There is no privacy or consent micro-copy anywhere near the submit button in LeadForm.tsx — the button at line 202 is followed only by the WhatsApp alternative at line 213. Amendment 13 to the Israeli Privacy Protection Law took effect on 14 August 2025 and explicitly covers a brochure site that collects contact details through a form; the personal data here is additionally transmitted to a third-party US processor (Web3Forms) which app/privacy/page.tsx does not name. Separately, the form gives no indication of how the details will be used, which is exactly the uncertainty that produces abandonment at the final field.
@@ -2661,6 +2763,7 @@ if (Date.now() - mountedAt.current < 3000) return;      // time trap
 ```
 
 ## 15. Build a seasonality mechanism — the static export currently has none
+
 `medium` · impact `medium` · effort `M` · **NEEDS CLIENT INPUT**
 
 **Evidence:** No urgency, deadline or seasonal messaging exists anywhere in the copy — lib/content.ts, Hero.tsx and FinalCta.tsx are entirely evergreen. More fundamentally the site has no way to express it: .github/workflows/deploy.yml triggers only on `push` to main and `workflow_dispatch`, with no `schedule:` block, so any build-time date logic freezes at the last commit. The same staleness already shows in components/layout/Footer.tsx:7, `const year = 2026; // static export — keep build deterministic; update yearly`, and in the '15+ שנות ניסיון' stat. Israeli outdoor-construction demand is not evenly distributed across the year — shading and pergola enquiries cluster ahead of summer and ahead of the autumn holidays, and balcony-closing / wind-barrier products (the accordion range) cluster in late autumn — but none of that is reflected in the site.
@@ -2690,6 +2793,7 @@ const copy =
 **Risk:** Fabricated scarcity ('רק 3 מקומות נותרו') is both an Israeli consumer-protection exposure and a trust destroyer for a high-ticket considered purchase. Only ship urgency that is factually true.
 
 ## 16. Don't multi-step the lead form — build a spec picker on the service pages instead
+
 `medium` · impact `high` · effort `L` · **NEEDS CLIENT INPUT**
 
 **Evidence:** The current form has four fields, of which two are required (LeadForm.tsx:48). Splitting a two-required-field form into steps adds interaction cost without reducing perceived length and typically loses conversions — multi-step wins are found on forms of six or more fields. The genuine opportunity is elsewhere: the six service pages have no capture device at all, and the form's own placeholder already reveals what the business needs to quote — 'פרגולה חשמלית למרפסת בגודל 4×3 מ׳' (LeadForm.tsx:180) — i.e. product, dimensions and location, currently begged for in a free-text box that most visitors will leave empty.
@@ -2709,6 +2813,7 @@ const FINISH = { pergolas: ["פרגולה ידנית", "פרגולה חשמלי�
 **Risk:** A price estimator that quotes low and is then corrected upward at the site visit converts leads into complaints. Ship the spec picker without prices first; add ranges only once the client signs off on them.
 
 ## 17. Add scroll-triggered re-engagement; keep exit intent to desktop only
+
 `low` · impact `medium` · effort `M`
 
 **Evidence:** There is no exit-intent, scroll-triggered or dwell-triggered re-engagement anywhere in the codebase — no `mouseleave`, no `IntersectionObserver` beyond the decorative `Reveal` component (components/ui/Reveal.tsx). A visitor who scrolls the full homepage passes the hero form at the top and then meets nothing until FinalCta at the very bottom; on the 26 form-less pages there is no capture device at all between the header and the footer.
@@ -2735,6 +2840,7 @@ useEffect(() => {
 **Risk:** Google treats mobile interstitials that obscure content as an intrusive-interstitial ranking signal; an exit-intent modal on mobile is also unreliable (there is no real 'exit' gesture) and often fires on scroll-up. Restrict strictly to `matchMedia('(pointer: fine)')`.
 
 ## 18. Run the A/B backlog in the right order — and accept that most of it should ship untested
+
 `medium` · impact `medium` · effort `M`
 
 **Evidence:** A local Israeli contractor site does not generate the traffic classic A/B testing needs. At a 3% form-conversion baseline, detecting a +20% relative lift at 80% power and 95% confidence requires roughly 14,000 sessions per arm — for this site that is many months per test, during which the losing arm is costing real leads. Meanwhile several of the items in this report are not hypotheses at all: a form that silently swallows failures, a WhatsApp button at 1.98:1 contrast, and 26 pages with no capture device are defects, and A/B testing a defect against its fix is a way of delaying the fix.

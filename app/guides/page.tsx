@@ -46,9 +46,9 @@ export default function GuidesPage() {
       <Section tone="white">
         <div className="mx-auto max-w-3xl">
           <p className="text-lg leading-relaxed text-gray-700">
-            רוב ההחלטות סביב פרגולה נסגרות לפני שמישהו מודד משהו: אם צריך היתר, מאיזה חומר,
-            וכמה תחזוקה זה ידרוש בעוד עשור. המדריכים כאן עונים על השאלות האלה במלואן — גם
-            כשהתשובה היא שהתכנון שרציתם אינו פטור מהיתר.
+            רוב ההחלטות סביב פרגולה נסגרות לפני שמישהו מודד משהו: אם צריך היתר, מאיזה
+            חומר, וכמה תחזוקה זה ידרוש בעוד עשור. המדריכים כאן עונים על השאלות האלה במלואן
+            — גם כשהתשובה היא שהתכנון שרציתם אינו פטור מהיתר.
           </p>
 
           <ul className="mt-10 grid gap-4">
@@ -58,7 +58,9 @@ export default function GuidesPage() {
                   href={`/guides/${g.slug}/`}
                   className="block rounded-2xl border border-gray-100 bg-gray-50 p-6 transition-colors hover:border-secondary"
                 >
-                  <h2 className="font-heading text-lg font-bold text-primary">{g.title}</h2>
+                  <h2 className="font-heading text-lg font-bold text-primary">
+                    {g.title}
+                  </h2>
                   <p className="mt-2 text-gray-700">{g.summary}</p>
                   <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-secondary">
                     למדריך המלא

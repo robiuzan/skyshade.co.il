@@ -14,11 +14,11 @@ Yossi. Nothing is ever solved by writing a more confident sentence.
 
 Before any claim ships, find its row in `docs/evidence-register.md`:
 
-| Status | Meaning | You may |
-|---|---|---|
-| ✅ confirmed | owner-supplied, dated, with a source noted | publish, mark up in schema |
-| 🔶 unverified | assumed, derived, or developer-written | **not publish** — leave the marker, add a register row |
-| ⛔ retracted | was live, found false, removed | never re-add without new evidence |
+| Status        | Meaning                                    | You may                                                |
+| ------------- | ------------------------------------------ | ------------------------------------------------------ |
+| ✅ confirmed  | owner-supplied, dated, with a source noted | publish, mark up in schema                             |
+| 🔶 unverified | assumed, derived, or developer-written     | **not publish** — leave the marker, add a register row |
+| ⛔ retracted  | was live, found false, removed             | never re-add without new evidence                      |
 
 If a claim has no row, it is 🔶 by default. Add the row rather than guessing.
 
@@ -52,7 +52,7 @@ review counts and ratings.
 5. **Legal identity**: ח.פ., address, insurance — footer and `/about/`.
 6. **Process transparency**: what happens after the call, timelines, who comes, what it costs to
    find out.
-7. **Honest limits**: what they don't do, lead times, when a permit *is* required. Stating a limit
+7. **Honest limits**: what they don't do, lead times, when a permit _is_ required. Stating a limit
    raises credibility more than another superlative.
 
 ## The intake session

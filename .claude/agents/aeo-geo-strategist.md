@@ -41,7 +41,7 @@ Run the fixed prompt set and report verbatim what assistants say, including whic
 `האם צריך היתר לפרגולה?` · `חברות פרגולות אלומיניום במרכז`
 
 Use WebSearch to see what currently ranks/gets cited for those. Report competitor pages that win a
-citation and *why* — usually one specific number the competitor published and we did not.
+citation and _why_ — usually one specific number the competitor published and we did not.
 
 ## Rules
 

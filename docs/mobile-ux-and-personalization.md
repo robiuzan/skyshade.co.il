@@ -23,11 +23,11 @@ mobile majority; if the real split says otherwise, that changes the priorities i
 
 For a 5.5–6.7" phone held one-handed, the screen divides into three bands:
 
-| Band | Region | What belongs there |
-|---|---|---|
-| **Easy** | bottom third, and the bottom-right arc for right-handers (mirrored in an RTL layout — Hebrew readers still hold the phone the same way, so **do not mirror the thumb arc**; it is a hand, not a script) | the primary conversion actions: call, WhatsApp, form submit |
-| **Stretch** | middle third | body content, secondary CTAs, form fields |
-| **Hard** | top strip | logo, back, the hamburger — navigation you press rarely and deliberately |
+| Band        | Region                                                                                                                                                                                                  | What belongs there                                                       |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| **Easy**    | bottom third, and the bottom-right arc for right-handers (mirrored in an RTL layout — Hebrew readers still hold the phone the same way, so **do not mirror the thumb arc**; it is a hand, not a script) | the primary conversion actions: call, WhatsApp, form submit              |
+| **Stretch** | middle third                                                                                                                                                                                            | body content, secondary CTAs, form fields                                |
+| **Hard**    | top strip                                                                                                                                                                                               | logo, back, the hamburger — navigation you press rarely and deliberately |
 
 Consequences that are already shipped and must not be "tidied away":
 
@@ -35,7 +35,7 @@ Consequences that are already shipped and must not be "tidied away":
   WhatsApp on `#0E7A34`. Bottom-anchored because that is the easy band.
 - [app/layout.tsx](../app/layout.tsx) renders a `h-16 lg:hidden` spacer so the bar can never cover
   footer content. This is an audit fix. Deleting it re-introduces the defect.
-- The primary nav is a top hamburger precisely *because* navigation is not the conversion path.
+- The primary nav is a top hamburger precisely _because_ navigation is not the conversion path.
   The conversion path never requires opening it.
 
 ## 3. Rules for mobile surfaces
@@ -74,12 +74,12 @@ Consequences that are already shipped and must not be "tidied away":
 The request "swap content based on the visitor's location" collides with four constraints on this
 specific site. All four are real; none of them is a preference.
 
-| Constraint | Consequence |
-|---|---|
-| `output: "export"` + Cloudflare CDN | every visitor is served **the same cached HTML**. There is no server, no middleware, no edge function in front. Any variation happens in the browser, after paint |
-| `Permissions-Policy: geolocation=()` in [public/_headers](../public/_headers) | the **Geolocation API is disabled site-wide**. Using it means editing that header *and* a browser permission prompt — a prompt on arrival is a conversion loss, not a gain |
-| [seo-guardrails.md](seo-guardrails.md) §1 + `CLAUDE.md` rule 3 | the site's entire local strategy is *anti*-doorway. Injecting a detected city name into headings is the doorway pattern re-implemented in JavaScript |
-| Googlebot renders the page | if the rendered content differs from what a user sees, that is **cloaking**. If it differs per-visitor for indexable content, the indexed version is arbitrary |
+| Constraint                                                                     | Consequence                                                                                                                                                                |
+| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `output: "export"` + Cloudflare CDN                                            | every visitor is served **the same cached HTML**. There is no server, no middleware, no edge function in front. Any variation happens in the browser, after paint          |
+| `Permissions-Policy: geolocation=()` in [public/\_headers](../public/_headers) | the **Geolocation API is disabled site-wide**. Using it means editing that header _and_ a browser permission prompt — a prompt on arrival is a conversion loss, not a gain |
+| [seo-guardrails.md](seo-guardrails.md) §1 + `CLAUDE.md` rule 3                 | the site's entire local strategy is _anti_-doorway. Injecting a detected city name into headings is the doorway pattern re-implemented in JavaScript                       |
+| Googlebot renders the page                                                     | if the rendered content differs from what a user sees, that is **cloaking**. If it differs per-visitor for indexable content, the indexed version is arbitrary             |
 
 ### The ladder — what may be personalized
 
@@ -94,7 +94,7 @@ meaning:
 - Remembering a gallery filter or a form draft within the session.
 - Returning-visitor CTA emphasis (WhatsApp over form for someone who already saw the form).
 
-**Tier 2 — allowed with review.** A coarse, non-indexable location *hint* used only inside a
+**Tier 2 — allowed with review.** A coarse, non-indexable location _hint_ used only inside a
 conversion element, never in a heading:
 
 - A line in the contact block: `נותנים שירות גם באזור שלך` with the region named — rendered only
@@ -104,7 +104,7 @@ conversion element, never in a heading:
   otherwise nothing. **Do not add a third-party IP-geolocation script** — it is a new network
   dependency, a new CSP entry, a privacy disclosure obligation, and a CWV cost, to render one
   line of text.
-- The default must be complete and correct on its own. Personalization is an *addition*, never a
+- The default must be complete and correct on its own. Personalization is an _addition_, never a
   substitution.
 
 **Tier 3 — forbidden.**

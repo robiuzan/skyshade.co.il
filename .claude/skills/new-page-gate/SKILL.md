@@ -15,7 +15,7 @@ All must be true:
 - [ ] The keyword/intent has **no owner** in `docs/keyword-map.md`, or this URL is the listed
       planned owner.
 - [ ] Its intent is genuinely different from every existing page (not just different words).
-- [ ] **500+ words that exist nowhere else on this site** are available *now* — not "will be added".
+- [ ] **500+ words that exist nowhere else on this site** are available _now_ — not "will be added".
 - [ ] It contains at least **one fact no competitor could publish**: a real project, a real number, a
       real municipal detail, a real photo of our work.
 - [ ] Every fact in it is ✅ in `docs/evidence-register.md`.
@@ -23,6 +23,7 @@ All must be true:
 - [ ] **The token test:** delete the city/keyword token from the page. Does it still read as useful?
 
 Page-type extras:
+
 - **City page** → the three-of-five evidence gate in `local-seo-il`. Phase-2 hard cap: ~12 new or
   rewritten pages total, each individually gated.
 - **Service spoke** (e.g. `/service/pergolas/electric-pergola/`) → 500+ unique words, own photos, own

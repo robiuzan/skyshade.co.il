@@ -57,7 +57,7 @@ most-quoted structure in this category.
 - איך מנקים ומתחזקים פרגולת אלומיניום?
 - האם הפרגולה עמידה בסופה / ברוח?
 - אילו צבעים וגימורים קיימים?
-- פרגולה מותאמת לסוכה — מה צריך לדעת? *(`מותאמת`, never `כשרה` — refer the reader to their rabbi)*
+- פרגולה מותאמת לסוכה — מה צריך לדעת? _(`מותאמת`, never `כשרה` — refer the reader to their rabbi)_
 
 ## Process and trust → `/about/`, `/contact/`, `/warranty/`
 
@@ -71,8 +71,8 @@ most-quoted structure in this category.
 
 - פרגולות אלומיניום ב{עיר}
 - מי מתקין פרגולות ב{עיר}?
-- האם צריך היתר לפרגולה ב{עיר}? *(only where the local ועדה's posture is genuinely known — this is
-  the differentiator that keeps a city page alive)*
+- האם צריך היתר לפרגולה ב{עיר}? _(only where the local ועדה's posture is genuinely known — this is
+  the differentiator that keeps a city page alive)_
 
 ## Rules
 

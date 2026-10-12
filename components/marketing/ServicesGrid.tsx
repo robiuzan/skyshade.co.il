@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { Blinds, ChevronLeft, Fence, Layers, LayoutGrid, Sun, Utensils } from "lucide-react";
+import {
+  Blinds,
+  ChevronLeft,
+  Fence,
+  Layers,
+  LayoutGrid,
+  Sun,
+  Utensils,
+} from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";

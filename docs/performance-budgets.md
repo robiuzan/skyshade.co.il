@@ -20,28 +20,28 @@ budget is spent in exactly four places:
 
 ## 2. The budgets
 
-| Metric | Budget | Source of truth |
-|---|---|---|
-| LCP | **< 2.5s** (p75, mobile) | CrUX / GSC Core Web Vitals |
-| CLS | **< 0.05** (stricter than Google's 0.1 — a sticky CTA bar makes shifts expensive) | CrUX |
-| INP | **< 200ms** (p75) | CrUX |
-| First-load JS, per page | **≤ 130 KB gzip** (120 KB until 2026-10-12 — raised by the owner, §3), excluding the legacy polyfill chunk, **including** `/assets/live.js` | build artifact |
-| CSS | ≤ 15 KB gzip | build artifact |
-| HTML per page | ≤ 35 KB gzip | build artifact |
-| Hero image transfer | ≤ 150 KB | network panel |
-| Third-party requests before LCP | **0** other than the GTM bootstrap | network panel |
+| Metric                          | Budget                                                                                                                                      | Source of truth            |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| LCP                             | **< 2.5s** (p75, mobile)                                                                                                                    | CrUX / GSC Core Web Vitals |
+| CLS                             | **< 0.05** (stricter than Google's 0.1 — a sticky CTA bar makes shifts expensive)                                                           | CrUX                       |
+| INP                             | **< 200ms** (p75)                                                                                                                           | CrUX                       |
+| First-load JS, per page         | **≤ 130 KB gzip** (120 KB until 2026-10-12 — raised by the owner, §3), excluding the legacy polyfill chunk, **including** `/assets/live.js` | build artifact             |
+| CSS                             | ≤ 15 KB gzip                                                                                                                                | build artifact             |
+| HTML per page                   | ≤ 35 KB gzip                                                                                                                                | build artifact             |
+| Hero image transfer             | ≤ 150 KB                                                                                                                                    | network panel              |
+| Third-party requests before LCP | **0** other than the GTM bootstrap                                                                                                          | network panel              |
 
 ## 3. Measured, 2026-09-01
 
-| Item | Measured | Budget | Verdict |
-|---|---|---|---|
-| Home first-load JS, gzip, excl. polyfills | **119.5 KB** | 120 KB | ⚠️ **~0.5 KB of headroom — effectively exhausted** |
-| Legacy polyfill chunk, gzip | 39.4 KB | — | legacy browsers only; excluded by convention |
-| CSS, gzip | 8.2 KB | 15 KB | ✅ |
-| Home HTML, gzip | 26.4 KB | 35 KB | ✅ (187 KB raw) |
-| `/service/pergolas/` HTML, gzip | 21.3 KB | 35 KB | ✅ |
-| `out/` total | 24 MB across 38 HTML pages | — | dominated by the legacy `public/project-*.webp` fallback set |
-| JSON-LD blocks on home | 4 | — | entity graph + page graph; inside the HTML budget |
+| Item                                      | Measured                   | Budget | Verdict                                                      |
+| ----------------------------------------- | -------------------------- | ------ | ------------------------------------------------------------ |
+| Home first-load JS, gzip, excl. polyfills | **119.5 KB**               | 120 KB | ⚠️ **~0.5 KB of headroom — effectively exhausted**           |
+| Legacy polyfill chunk, gzip               | 39.4 KB                    | —      | legacy browsers only; excluded by convention                 |
+| CSS, gzip                                 | 8.2 KB                     | 15 KB  | ✅                                                           |
+| Home HTML, gzip                           | 26.4 KB                    | 35 KB  | ✅ (187 KB raw)                                              |
+| `/service/pergolas/` HTML, gzip           | 21.3 KB                    | 35 KB  | ✅                                                           |
+| `out/` total                              | 24 MB across 38 HTML pages | —      | dominated by the legacy `public/project-*.webp` fallback set |
+| JSON-LD blocks on home                    | 4                          | —      | entity graph + page graph; inside the HTML budget            |
 
 Movement: 119.3 → 119.5 KB (+197 bytes) on 2026-09-01 from the `LeadForm` accessibility and
 validation batch — two `useState`/`useRef` hooks, a `useEffect`, a digit check and four
@@ -122,11 +122,11 @@ baseline that everything else in the plan depends on.
 A defer experiment is scheduled for **week 7+** — after the event baseline exists
 ([measurement-plan.md](measurement-plan.md)). Proposing it earlier contradicts the plan, and
 every new tag added to the container costs both bytes and a CSP allowlist entry
-([public/_headers](../public/_headers)) that must be added **before** the tag is published.
+([public/\_headers](../public/_headers)) that must be added **before** the tag is published.
 
 ## 8. Caching
 
-From [public/_headers](../public/_headers):
+From [public/\_headers](../public/_headers):
 
 - `/_next/static/*` → `public, max-age=31536000, immutable` (content-hashed, safe forever)
 - HTML → short-lived, so a deploy is visible immediately

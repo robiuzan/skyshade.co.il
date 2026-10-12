@@ -29,11 +29,11 @@ Three sinks, and the boundary between them is the most important rule in this do
 
 ## 2. The PII boundary
 
-| Sink | May contain | Never contains |
-|---|---|---|
-| **Email via Web3Forms** | name, phone, service, message, consent, first-touch referrer + landing path | — this is the legitimate destination |
-| **GA4 / dataLayer** | `form_location`, `service`, `consent` (boolean), `has_message` (boolean), `link_location`, `error_type` | **name, phone, email, message text, IP-as-identifier, user ids** |
-| **`sessionStorage`** | `ss_first_touch` = `{ref, landing}` only | anything identifying a person |
+| Sink                    | May contain                                                                                             | Never contains                                                   |
+| ----------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| **Email via Web3Forms** | name, phone, service, message, consent, first-touch referrer + landing path                             | — this is the legitimate destination                             |
+| **GA4 / dataLayer**     | `form_location`, `service`, `consent` (boolean), `has_message` (boolean), `link_location`, `error_type` | **name, phone, email, message text, IP-as-identifier, user ids** |
+| **`sessionStorage`**    | `ss_first_touch` = `{ref, landing}` only                                                                | anything identifying a person                                    |
 
 **No PII into GA4, ever** (`CLAUDE.md` rule 11). The free-text message is reduced to a boolean
 `has_message` specifically so this line cannot be crossed by accident. Any new event parameter is
@@ -49,18 +49,18 @@ already learned here (2026-08-17).
 The question comes up because ITP/ad-blockers cost measured events, and because a strict CSP
 would be easier with a first-party endpoint. Three options:
 
-| Option | What it means | Cost | Verdict |
-|---|---|---|---|
-| **A. Client-side only** (today) | GTM web container → GA4 directly | none | ✅ **stay here** |
+| Option                                          | What it means                                                                            | Cost                                                                                                                                                                                                     | Verdict                               |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| **A. Client-side only** (today)                 | GTM web container → GA4 directly                                                         | none                                                                                                                                                                                                     | ✅ **stay here**                      |
 | **B. Cloudflare Worker as a first-party proxy** | a Worker on this zone serving `gtm.js` and forwarding `/collect` from a same-origin path | one Worker, ongoing maintenance, and it **re-opens the entire Next advisory surface** documented in [security-posture.md](security-posture.md) — that assessment turns on there being no server in front | 🔶 only if measured loss justifies it |
-| **C. Hosted server-side GTM** (GCP/Stape) | a real sGTM container | monthly hosting + a subdomain + certificate management | ⛔ not at this traffic |
+| **C. Hosted server-side GTM** (GCP/Stape)       | a real sGTM container                                                                    | monthly hosting + a subdomain + certificate management                                                                                                                                                   | ⛔ not at this traffic                |
 
 **Decision: A.** The reasoning is ordering, not ideology — **this site has no measured baseline
 at all.** Building infrastructure to recover an unquantified percentage of an unmeasured number
 is spending the most expensive resource here (the owner's attention, and the change budget) on a
 problem nobody has demonstrated exists.
 
-**Revisit B when, and only when:** four clean weeks of baseline exist *and* the gap between GA4
+**Revisit B when, and only when:** four clean weeks of baseline exist _and_ the gap between GA4
 `generate_lead` and the actual email count in the inbox is measured and material. That gap is
 directly observable — the inbox is the ground truth, and it is free to count.
 
@@ -73,7 +73,7 @@ premise that several assessments in this repo rest on, so each of them gets re-r
 
 The CRM today is an email inbox. When a real CRM arrives, the integration rule is absolute:
 
-> **A CRM is wired to the form's *delivery*, not to the page.** Zero front-end bytes.
+> **A CRM is wired to the form's _delivery_, not to the page.** Zero front-end bytes.
 
 ```
 LeadForm ──► Web3Forms ──┬──► email (unchanged)
@@ -85,7 +85,7 @@ does not change by a single byte, so:
 
 - **No CWV cost.** No CRM SDK, no chat widget, no tracking pixel added to the page.
 - **No CSP change.** Nothing new is fetched from the browser, so
-  [public/_headers](../public/_headers) is untouched.
+  [public/\_headers](../public/_headers) is untouched.
 - **No new PII surface in the client.** The data already leaves via Web3Forms; the webhook is a
   second consumer of the same POST.
 
@@ -102,7 +102,7 @@ Scheduled weeks 5–6, **after** the four clean baseline weeks. Sequencing is th
 
 1. Build the events (W1). Collect **four clean weeks**.
 2. **Write the expected 20–40% measured-session drop into
-   [measurement-plan.md](measurement-plan.md) *before* shipping the banner.** A drop that was
+   [measurement-plan.md](measurement-plan.md) _before_ shipping the banner.** A drop that was
    predicted is a known cost; the same drop discovered afterwards looks like a catastrophe and
    gets "fixed" by reverting something unrelated.
 3. Ship `default` consent state → banner → `update` on interaction. The banner reserves its
@@ -126,7 +126,7 @@ Scheduled weeks 5–6, **after** the four clean baseline weeks. Sequencing is th
 property by hostname lookup. **An unscoped trigger fires on nine other clients' sites.**
 
 Every trigger carries `Page Hostname equals skyshade.co.il`. The verification step that catches a
-mistake is running GTM Preview against a *second* fleet domain and confirming none of the
+mistake is running GTM Preview against a _second_ fleet domain and confirming none of the
 `SS - …` tags fire there. Full detail and the build order: [gtm-tag-spec.md](gtm-tag-spec.md).
 
 This is also why tag additions are a fleet decision, not a skyshade one, whenever the hostname
@@ -135,7 +135,7 @@ condition is dropped.
 ## 7. The CSP coupling
 
 Every new tag that fetches from a new host needs that host in the CSP in
-[public/_headers](../public/_headers) **before** the tag is published. The CSP is currently
+[public/\_headers](../public/_headers) **before** the tag is published. The CSP is currently
 **report-only**, so a violation today is silent — which means a tag added now will appear to work
 and then break on the day the CSP is enforced, with no obvious cause.
 

@@ -38,6 +38,7 @@ is `[]`, there is no Google Business Profile, no address, no ח.פ. — the enti
 unresolvable, which is why brand-name searches surface competitors.
 
 The fix, in dependency order:
+
 1. **Google Business Profile** (name exactly `סקיי שייד`, never keyword-appended) — the anchor.
 2. **`sameAs`** populated with GBP + real Facebook/Instagram, once they exist.
 3. **NAP identical everywhere** — one phone format, one name spelling, one URL (apex, https,

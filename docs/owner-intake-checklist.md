@@ -11,8 +11,8 @@ Hand this document to Yossi in advance. Record answers **with the date**, then u
 ## 1. Access (do this first — some items take days)
 
 - [ ] **Google Business Profile** — does one exist? If yes: transfer/grant Manager access. If no:
-      create it (name exactly `סקיי שייד`, service-area business). *Unblocks: the map pack, reviews,
-      the entity anchor, `sameAs`, AI assistants being able to identify the business at all.*
+      create it (name exactly `סקיי שייד`, service-area business). _Unblocks: the map pack, reviews,
+      the entity anchor, `sameAs`, AI assistants being able to identify the business at all._
 - [ ] Facebook / Instagram business profiles — URLs, or a decision not to have them.
 - [ ] Cloudflare dashboard access for the zone (some fixes have no repo equivalent).
 
@@ -23,7 +23,7 @@ Hand this document to Yossi in advance. Record answers **with the date**, then u
 - [ ] Insurance: which policies, which insurer, valid through when? (Can we say "מבוטח"?)
 - [ ] Licences, standards, certifications — any ת״י compliance, any manufacturer authorizations?
 
-*Unblocks: schema `PostalAddress`, the footer, `/terms/`, the trust bar, local ranking.*
+_Unblocks: schema `PostalAddress`, the footer, `/terms/`, the trust bar, local ranking._
 
 ## 3. The people
 
@@ -31,7 +31,7 @@ Hand this document to Yossi in advance. Record answers **with the date**, then u
 - [ ] Permission to publish a photo and a short bio
 - [ ] Team size; who installs — employees or subcontractors?
 
-*Unblocks: E-E-A-T, `Person` schema, a real `/about/` page, AI-citable authorship.*
+_Unblocks: E-E-A-T, `Person` schema, a real `/about/` page, AI-citable authorship._
 
 ## 4. Warranty and service terms
 
@@ -42,7 +42,7 @@ Hand this document to Yossi in advance. Record answers **with the date**, then u
 - [ ] Typical lead time from order to installation, per product
 - [ ] Typical installation duration on site
 
-*Unblocks: `/warranty/`, every "אחריות מלאה" mention, form microcopy, service-page spec blocks.*
+_Unblocks: `/warranty/`, every "אחריות מלאה" mention, form microcopy, service-page spec blocks._
 
 ## 5. Prices — the single largest keyword gap
 
@@ -56,7 +56,7 @@ cannot ship without real numbers.
 - [ ] A typical project's total, as a worked example
 - [ ] Is a "starting from" figure acceptable to publish?
 
-*A range with stated conditions is worth more than exactness — and far more than silence.*
+_A range with stated conditions is worth more than exactness — and far more than silence._
 
 ## 6. Projects — the anti-doorway substance
 
@@ -69,8 +69,8 @@ For **8–12 real projects**, ideally spread across different cities:
 - [ ] Photos (which catalog images belong to it)
 - [ ] Permission to name the city (customer name is not needed)
 
-*Unblocks: `/projects/[slug]/`, which city pages survive the cull, and the only content in this
-market competitors cannot template.*
+_Unblocks: `/projects/[slug]/`, which city pages survive the cull, and the only content in this
+market competitors cannot template._
 
 ## 7. Cities
 
@@ -78,7 +78,7 @@ market competitors cannot template.*
 - [ ] Any city where the local ועדה's stance on מצללה exemptions is known from experience?
 - [ ] Any city that should be added because that is where the work actually comes from?
 
-*Decides which 6–8 city pages are differentiated and which are 301'd.*
+_Decides which 6–8 city pages are differentiated and which are 301'd._
 
 ## 8. Reviews
 
@@ -92,7 +92,7 @@ market competitors cannot template.*
 
 - [ ] Which aluminum profiles / systems / suppliers are used?
 - [ ] Finishes and colour ranges available
-- [ ] What does the business explicitly *not* do? (Stating limits raises credibility.)
+- [ ] What does the business explicitly _not_ do? (Stating limits raises credibility.)
 
 ## 10. Competitors
 

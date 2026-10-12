@@ -5,7 +5,7 @@ description: Which picture belongs in which slot on סקיי שייד — resolv
 
 # Page imagery
 
-Getting a picture to *fit* is a CSS question, and the answers are measured, not guessable.
+Getting a picture to _fit_ is a CSS question, and the answers are measured, not guessable.
 [docs/image-inventory.md](../../../docs/image-inventory.md) holds the measurements — the four
 slots, the 55-item catalog and the gaps. **Read it before briefing anything.** This file is the
 method; that file is the state.
@@ -19,12 +19,12 @@ The one sentence to keep in mind: **the only photo slot on this site force-crops
 
 Four different jobs get asked for as "we need an image". They have different gates.
 
-| Ask | What it actually is | Gate |
-|---|---|---|
-| "this tile looks wrong / cut off" | a **focal-point** fix | §5 — metadata, needs a hub sync + rebuild |
-| "swap this photo for a better one" | a **byte replace** at the same key | §6 — aspect ratio ±0.01, never narrower |
-| "the pergola page needs a picture" | a **new slot** in the markup | §4 — perf + LCP gate first, then a photo |
-| "we need a picture that doesn't exist" | a **generated image** | §7 — a prompt file, approved by Yossi |
+| Ask                                    | What it actually is                | Gate                                      |
+| -------------------------------------- | ---------------------------------- | ----------------------------------------- |
+| "this tile looks wrong / cut off"      | a **focal-point** fix              | §5 — metadata, needs a hub sync + rebuild |
+| "swap this photo for a better one"     | a **byte replace** at the same key | §6 — aspect ratio ±0.01, never narrower   |
+| "the pergola page needs a picture"     | a **new slot** in the markup       | §4 — perf + LCP gate first, then a photo  |
+| "we need a picture that doesn't exist" | a **generated image**              | §7 — a prompt file, approved by Yossi     |
 
 Never skip to the last one. Most imagery requests here are answered by a photo that is already in
 the catalog, cropped properly.
@@ -105,10 +105,10 @@ Media Studio and re-syncing.
 The object key is immutable and baked into deployed HTML. A replace is an **overwrite at the same
 key**, and Media Studio refuses one that changes the aspect ratio by more than ±0.01 or narrows
 the master — both would break live pages with no build to catch it. So the replacement must be
-shot or cropped to the *existing* dimensions, which you look up first.
+shot or cropped to the _existing_ dimensions, which you look up first.
 
 A byte swap reaches users in ~5 minutes with no rebuild. Anything that changes the catalog
-*entry* — a new item, a new category, a focal point, new alt text — needs a hub sync, a rebuild
+_entry_ — a new item, a new category, a focal point, new alt text — needs a hub sync, a rebuild
 and a deploy.
 
 ## 7. Generating an image that does not exist

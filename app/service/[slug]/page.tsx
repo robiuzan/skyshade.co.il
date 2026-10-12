@@ -121,7 +121,9 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
                     {s.items.map((it) => (
                       <div key={it.term}>
                         <dt className="font-semibold text-primary">{it.term}</dt>
-                        <dd className="mt-0.5 leading-relaxed text-gray-700">{it.text}</dd>
+                        <dd className="mt-0.5 leading-relaxed text-gray-700">
+                          {it.text}
+                        </dd>
                       </div>
                     ))}
                   </dl>
@@ -166,7 +168,12 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
                 ייעוץ, מדידה והצעה שקופה — ללא עלות וללא התחייבות.
               </p>
               <div className="mt-5 flex flex-col gap-3">
-                <Button href={telHref} data-cta="service-aside-call" variant="accent" size="lg">
+                <Button
+                  href={telHref}
+                  data-cta="service-aside-call"
+                  variant="accent"
+                  size="lg"
+                >
                   <Phone className="h-5 w-5" aria-hidden />
                   <span dir="ltr">{siteConfig.phone}</span>
                 </Button>

@@ -25,14 +25,14 @@ pages were before the nav fix.
 
 ## Link budget by page type
 
-| Page | Outbound internal links |
-|---|---|
-| Home | all 6 services, gallery, locations hub, contact — no more |
+| Page         | Outbound internal links                                                                                                     |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| Home         | all 6 services, gallery, locations hub, contact — no more                                                                   |
 | Service page | 2–3 sibling services, the relevant guides, gallery filtered to its category, 1–2 city pages where real work exists, contact |
-| City page | its parent hub, the 2–3 services actually delivered there, the projects in that city |
-| Guide | the service page it supports (**the money link**, above the fold), 1–2 related guides, contact |
-| Project page | its service, its city, the gallery |
-| Gallery | the service page for each category |
+| City page    | its parent hub, the 2–3 services actually delivered there, the projects in that city                                        |
+| Guide        | the service page it supports (**the money link**, above the fold), 1–2 related guides, contact                              |
+| Project page | its service, its city, the gallery                                                                                          |
+| Gallery      | the service page for each category                                                                                          |
 
 Rules: no page with **zero** inbound internal links (orphan). No money page more than one click from
 a hub. Contextual in-body links outrank footer links — a link only in the footer is a weak link.

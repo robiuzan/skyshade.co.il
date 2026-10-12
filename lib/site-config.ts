@@ -33,7 +33,8 @@ export const siteConfig = {
   whatsapp: manifest.contact.whatsappE164.replace(/\D/g, ""),
   email: manifest.contact.email,
   /** Web3Forms PUBLIC access key (per-site UUID). Delivery inbox = email. null until provisioned. */
-  formAccessKey: (manifest.contact as { formAccessKey?: string | null }).formAccessKey ?? null,
+  formAccessKey:
+    (manifest.contact as { formAccessKey?: string | null }).formAccessKey ?? null,
   serviceArea: manifest.schema.areaServed ?? "",
 
   /** Business hours (from live site). */
@@ -73,7 +74,11 @@ export const siteConfig = {
 export const socialLinks = [
   // Hebrew labels: these become the aria-label/title on icon-only footer links, and a
   // screen-reader user on a dir="rtl" site should not hit an English string mid-list.
-  { key: "google", label: "הפרופיל העסקי שלנו בגוגל", href: siteConfig.social.googleBusiness },
+  {
+    key: "google",
+    label: "הפרופיל העסקי שלנו בגוגל",
+    href: siteConfig.social.googleBusiness,
+  },
   { key: "facebook", label: "פייסבוק", href: siteConfig.social.facebook },
   { key: "instagram", label: "אינסטגרם", href: siteConfig.social.instagram },
 ].filter((l) => l.href.length > 0);

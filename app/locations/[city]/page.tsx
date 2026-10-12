@@ -79,6 +79,9 @@ export default function LocationPage({ params }: { params: { city: string } }) {
             למידות, לסגנון ולצרכים שלכם. אנחנו עובדים עם אלומיניום וחומרים ברמת הגימור
             הגבוהה ביותר, עמידים בחלודה, ב-UV ובכל מזג אוויר.
           </p>
+          {/* Kept hand-wrapped: a Prettier reflow moves the {" "} below, which changes the
+              text nodes React prints into the HTML, though not what the visitor reads. */}
+          {/* prettier-ignore */}
           <p className="mt-4 text-gray-700">
             {/* {" "} is required: JSX drops newline whitespace adjacent to an expression,
                 which previously rendered "תל אביבוהסביבה" with no space. */}

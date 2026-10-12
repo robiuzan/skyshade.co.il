@@ -34,7 +34,10 @@ type LegacyEntry = { src: string; category: string };
  * every page that renders a gallery. The homepage needs 12 tiles, not the catalog.
  */
 export const siteImages: SiteImages | null = manifest.images
-  ? { mediaHost: manifest.images.mediaHost, defaultQuality: manifest.images.defaultQuality }
+  ? {
+      mediaHost: manifest.images.mediaHost,
+      defaultQuality: manifest.images.defaultQuality,
+    }
   : null;
 
 const block = manifest.images?.gallery ?? null;

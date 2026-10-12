@@ -132,9 +132,9 @@ export default function AluminumVsWoodGuide() {
           <p className="text-sm text-gray-500">עודכן: אוגוסט 2026</p>
 
           <p className="mt-6 text-lg leading-relaxed text-gray-800">
-            בקצרה: ההבדל בין פרגולת אלומיניום לפרגולת עץ אינו באיכות אלא בתחזוקה. אלומיניום
-            נשאר כפי שהותקן כמעט ללא טיפול; עץ נותן מראה חם יותר ודורש טיפול תקופתי כדי
-            לשמור עליו. הבחירה היא בין מראה לבין זמן.
+            בקצרה: ההבדל בין פרגולת אלומיניום לפרגולת עץ אינו באיכות אלא בתחזוקה.
+            אלומיניום נשאר כפי שהותקן כמעט ללא טיפול; עץ נותן מראה חם יותר ודורש טיפול
+            תקופתי כדי לשמור עליו. הבחירה היא בין מראה לבין זמן.
           </p>
 
           <h2 className="mt-10 font-heading text-xl font-bold text-primary">
@@ -166,7 +166,9 @@ export default function AluminumVsWoodGuide() {
                     <td className="border border-gray-200 px-3 py-2 text-gray-700">
                       {r.aluminium}
                     </td>
-                    <td className="border border-gray-200 px-3 py-2 text-gray-700">{r.wood}</td>
+                    <td className="border border-gray-200 px-3 py-2 text-gray-700">
+                      {r.wood}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -174,8 +176,8 @@ export default function AluminumVsWoodGuide() {
           </div>
 
           <p className="mt-4 text-sm text-gray-600">
-            עלות לא מופיעה בטבלה בכוונה: היא נגזרת מהמידות, מהמפרט ומתנאי ההתקנה בשטח, ומחירון
-            כללי היה מטעה יותר מאשר עוזר. אנחנו נותנים הצעה אחרי מדידה, ללא עלות.
+            עלות לא מופיעה בטבלה בכוונה: היא נגזרת מהמידות, מהמפרט ומתנאי ההתקנה בשטח,
+            ומחירון כללי היה מטעה יותר מאשר עוזר. אנחנו נותנים הצעה אחרי מדידה, ללא עלות.
           </p>
 
           {faqs.map((f, i) => (
@@ -185,9 +187,12 @@ export default function AluminumVsWoodGuide() {
 
               {i === 2 && (
                 <p className="mt-3 leading-relaxed text-gray-700">
-                  ההבחנה הזו חשובה כי היא מפילה הנחה נפוצה — שפרגולת עץ &quot;פטורה יותר&quot;.
-                  הפירוט המלא של תנאי הפטור נמצא במדריך{" "}
-                  <Link href="/guides/pergola-permit/" className="text-secondary underline">
+                  ההבחנה הזו חשובה כי היא מפילה הנחה נפוצה — שפרגולת עץ &quot;פטורה
+                  יותר&quot;. הפירוט המלא של תנאי הפטור נמצא במדריך{" "}
+                  <Link
+                    href="/guides/pergola-permit/"
+                    className="text-secondary underline"
+                  >
                     היתר בנייה לפרגולה
                   </Link>
                   .
@@ -201,20 +206,20 @@ export default function AluminumVsWoodGuide() {
           </h2>
           <ul className="mt-3 space-y-2 text-gray-700">
             <li>
-              <strong className="text-primary">חזית ים או אוויר מלוח</strong> — אלומיניום, בלי
-              היסוס.
+              <strong className="text-primary">חזית ים או אוויר מלוח</strong> — אלומיניום,
+              בלי היסוס.
             </li>
             <li>
               <strong className="text-primary">מרפסת בבניין שאין אליה גישה נוחה</strong> —
               אלומיניום, כי כל טיפול עתידי יהיה יקר ומסובך.
             </li>
             <li>
-              <strong className="text-primary">גינה עם עיצוב טבעי ונכונות לתחזק</strong> — עץ,
-              או שילוב של שלד אלומיניום עם קירוי עץ.
+              <strong className="text-primary">גינה עם עיצוב טבעי ונכונות לתחזק</strong> —
+              עץ, או שילוב של שלד אלומיניום עם קירוי עץ.
             </li>
             <li>
-              <strong className="text-primary">רוצים שליטה בכמות הצל</strong> — אלומיניום עם
-              להבים מתכווננים; בעץ אין מקבילה.
+              <strong className="text-primary">רוצים שליטה בכמות הצל</strong> — אלומיניום
+              עם להבים מתכווננים; בעץ אין מקבילה.
             </li>
           </ul>
 
@@ -227,7 +232,10 @@ export default function AluminumVsWoodGuide() {
               לחצר. ייעוץ ומדידה בשטח — ללא עלות וללא התחייבות.
             </p>
             <p className="mt-3">
-              <Link href="/service/pergolas/" className="font-medium text-secondary underline">
+              <Link
+                href="/service/pergolas/"
+                className="font-medium text-secondary underline"
+              >
                 לעמוד הפרגולות ←
               </Link>
             </p>

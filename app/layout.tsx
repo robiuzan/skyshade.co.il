@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     "מומחים לפרגולות, גדרות ושערי אלומיניום, פתרונות הצללה וגידור בהתאמה אישית. אלומיניום ברמת גימור גבוהה, שירות בכל הארץ מאז 2009.",
   alternates: { canonical: "/" },
   openGraph: {
-      images: ogImageMeta(manifest.images),
+    images: ogImageMeta(manifest.images),
     type: "website",
     locale: "he_IL",
     siteName: siteConfig.name,
@@ -70,7 +70,9 @@ export default function RootLayout({
         <LiveHead />
         {/* GTM belongs in <head> (was at the top of <body>, which delays tag firing and
             undercounts fast bounces). */}
-        {gtmHead && <script id="gtm-init" dangerouslySetInnerHTML={{ __html: gtmHead }} />}
+        {gtmHead && (
+          <script id="gtm-init" dangerouslySetInnerHTML={{ __html: gtmHead }} />
+        )}
         {/* First-touch attribution for the lead email (disclosed in /privacy/): captures
             referrer + landing path once per session; LeadForm reads it on submit.
             sessionStorage only — no cookie, no PII, nothing sent to analytics. */}
@@ -80,7 +82,11 @@ export default function RootLayout({
           }}
         />
         {manifest.images?.mediaHost && (
-          <link rel="preconnect" href={`https://${manifest.images.mediaHost}`} crossOrigin="" />
+          <link
+            rel="preconnect"
+            href={`https://${manifest.images.mediaHost}`}
+            crossOrigin=""
+          />
         )}
         <script
           type="application/ld+json"

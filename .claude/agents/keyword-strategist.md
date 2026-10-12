@@ -21,13 +21,13 @@ Cover both vocabularies — they are different audiences: **פרגולה** (cons
 
 Intent tiers and their owners:
 
-| Tier | Shape | Owner | Status |
-|---|---|---|---|
-| Transactional | `{מוצר} {חומר}`, `{מוצר} ב{עיר}` | service + city pages | covered |
-| Commercial | `מחיר`, `כמה עולה`, `X או Y`, `מומלץ` | `/guides/…` | **zero coverage — the biggest gap** |
-| Informational | `היתר`, `חוק`, `כמה זמן`, `איך בוחרים` | `/guides/…` | zero coverage |
-| Navigational | `סקיי שייד` | `/` | losing to competitors — an entity problem, not a keyword one |
-| Proof long-tail | `{מוצר} ב{עיר}` specific | `/projects/[slug]/` | not built |
+| Tier            | Shape                                  | Owner                | Status                                                       |
+| --------------- | -------------------------------------- | -------------------- | ------------------------------------------------------------ |
+| Transactional   | `{מוצר} {חומר}`, `{מוצר} ב{עיר}`       | service + city pages | covered                                                      |
+| Commercial      | `מחיר`, `כמה עולה`, `X או Y`, `מומלץ`  | `/guides/…`          | **zero coverage — the biggest gap**                          |
+| Informational   | `היתר`, `חוק`, `כמה זמן`, `איך בוחרים` | `/guides/…`          | zero coverage                                                |
+| Navigational    | `סקיי שייד`                            | `/`                  | losing to competitors — an entity problem, not a keyword one |
+| Proof long-tail | `{מוצר} ב{עיר}` specific               | `/projects/[slug]/`  | not built                                                    |
 
 The price cluster lives entirely at `/guides/pergola-cost/` — there is deliberately **no `/pricing/`
 page**. Do not propose one.

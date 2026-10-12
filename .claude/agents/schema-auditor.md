@@ -11,13 +11,13 @@ the exact JSON-LD and the file it belongs in.
 
 ## Check, per route
 
-| Route | Expected |
-|---|---|
-| `/` | `HomeAndConstructionBusiness` + `WebSite` + `FAQPage` |
-| `/service/[slug]/` | `Service` + `BreadcrumbList` + `FAQPage` |
-| `/locations/[city]/` | `BreadcrumbList` (+ `Service` with `areaServed` only if the page passes the evidence gate) |
-| `/guides/[slug]/` | `Article` + `FAQPage` + `BreadcrumbList` |
-| `/gallery/`, `/projects/[slug]/` | `ImageObject` / `CreativeWork` with real `contentLocation` + date |
+| Route                            | Expected                                                                                   |
+| -------------------------------- | ------------------------------------------------------------------------------------------ |
+| `/`                              | `HomeAndConstructionBusiness` + `WebSite` + `FAQPage`                                      |
+| `/service/[slug]/`               | `Service` + `BreadcrumbList` + `FAQPage`                                                   |
+| `/locations/[city]/`             | `BreadcrumbList` (+ `Service` with `areaServed` only if the page passes the evidence gate) |
+| `/guides/[slug]/`                | `Article` + `FAQPage` + `BreadcrumbList`                                                   |
+| `/gallery/`, `/projects/[slug]/` | `ImageObject` / `CreativeWork` with real `contentLocation` + date                          |
 
 Emission is one `<script type="application/ld+json">` per page containing an array, built from
 `@ishub/site-kit/seo` helpers. Verify live, not just in source:

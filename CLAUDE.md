@@ -38,13 +38,13 @@ baseline and the dated change log — **every shipped change gets a row there**.
    testimonials were developer-completed; the quotes were altered. Review equity lives on the Google
    Business Profile, nowhere else. This is a Google spam-policy line, not a style preference.
 3. **Never build another templated city page.** The 16 `/locations/[city]/` pages are byte-identical
-   doorway pages — the fix is *differentiation or deletion*, never duplication. The ~80 unbuilt
+   doorway pages — the fix is _differentiation or deletion_, never duplication. The ~80 unbuilt
    service×city combinations are **never** built. See [docs/seo-guardrails.md](docs/seo-guardrails.md) §1.
 4. **Never edit `site.config.json` directly.** It is synced from the hub roster
    (`Israeli services sites/roster/sites/skyshade.json`); local edits to synced fields are
    overwritten on the next sync. Page-level overrides live in code (see the curated meta description
    in [app/layout.tsx](app/layout.tsx#L28)).
-5. **One keyword → one owning URL.** Check [docs/keyword-map.md](docs/keyword-map.md) *before*
+5. **One keyword → one owning URL.** Check [docs/keyword-map.md](docs/keyword-map.md) _before_
    writing or retitling any page. Strengthen the owner; never open a second front.
 6. **Business facts come from `lib/site-config.ts`, never hardcoded in components.** Import
    `siteConfig`, `manifest`, `services`, `locations`, `telHref`, `whatsappHref()`.
@@ -91,17 +91,17 @@ directly to **Web3Forms** from the browser.
 
 ## 4. Routes
 
-| Route | File | Notes |
-|---|---|---|
-| `/` | `app/page.tsx` | LocalBusiness + FAQ JSON-LD |
-| `/services/` | `app/services/page.tsx` | hub — needs its own intro, must not duplicate home |
-| `/service/[slug]/` ×6 | `app/service/[slug]/page.tsx` | Service + Breadcrumb + FAQ JSON-LD |
-| `/locations/` | `app/locations/page.tsx` | hub |
-| `/locations/[city]/` ×16 | `app/locations/[city]/page.tsx` | ⚠️ doorway pattern — see rule 3 |
-| `/guides/` + `/guides/[topic]/` | `app/guides/…` | the commercial/informational silo; Article + FAQ + breadcrumb |
-| `/gallery/` `/about/` `/contact/` | | |
-| `/privacy/` `/terms/` `/accessibility/` | | legal — copy is reviewed, changes re-reviewed |
-| `/robots.txt` `/sitemap.xml` | `app/robots.ts`, `app/sitemap.ts` | |
+| Route                                   | File                              | Notes                                                         |
+| --------------------------------------- | --------------------------------- | ------------------------------------------------------------- |
+| `/`                                     | `app/page.tsx`                    | LocalBusiness + FAQ JSON-LD                                   |
+| `/services/`                            | `app/services/page.tsx`           | hub — needs its own intro, must not duplicate home            |
+| `/service/[slug]/` ×6                   | `app/service/[slug]/page.tsx`     | Service + Breadcrumb + FAQ JSON-LD                            |
+| `/locations/`                           | `app/locations/page.tsx`          | hub                                                           |
+| `/locations/[city]/` ×16                | `app/locations/[city]/page.tsx`   | ⚠️ doorway pattern — see rule 3                               |
+| `/guides/` + `/guides/[topic]/`         | `app/guides/…`                    | the commercial/informational silo; Article + FAQ + breadcrumb |
+| `/gallery/` `/about/` `/contact/`       |                                   |                                                               |
+| `/privacy/` `/terms/` `/accessibility/` |                                   | legal — copy is reviewed, changes re-reviewed                 |
+| `/robots.txt` `/sitemap.xml`            | `app/robots.ts`, `app/sitemap.ts` |                                                               |
 
 Service slugs: `pergolas`, `fences-gates`, `wall-cladding`, `decks`, `outdoor-kitchen`,
 `accordion-products`. **English slugs only** — no Hebrew-slug migration.
@@ -130,7 +130,7 @@ expand them until Yossi confirms real numbers.
 ## 6. Working style
 
 - Match the surrounding code: Hebrew UI strings inline, English identifiers, comments that explain
-  *why* (this codebase's comments are scar tissue from real defects — do not "clean them up").
+  _why_ (this codebase's comments are scar tissue from real defects — do not "clean them up").
 - Before any content or SEO change, read [docs/seo-guardrails.md](docs/seo-guardrails.md) and
   [docs/keyword-map.md](docs/keyword-map.md). They are short on purpose.
 - Prefer strengthening an existing page over creating a new one. New URLs are a cost.
@@ -143,26 +143,26 @@ expand them until Yossi confirms real numbers.
 
 Invoke the project skill that owns the task rather than improvising — `.claude/skills/`:
 
-| Skill | Owns |
-|---|---|
-| `skyshade-architecture` | orientation: stack, routes, data model, where things live |
-| `seo-metadata` | titles, descriptions, canonicals, sitemap, robots |
-| `schema-structured-data` | the JSON-LD entity graph |
-| `aeo-answer-content` | answer-first blocks, FAQ design, AI-Overview citability |
-| `geo-ai-visibility` | AI-crawler reachability, entity consistency, assistant monitoring |
-| `eeat-trust-evidence` | claim gating, the evidence register, trust surfaces |
-| `hebrew-rtl-copy` | Hebrew voice, RTL mechanics, title/H1 patterns |
-| `keyword-map-governance` | adding a keyword, cannibalization checks |
-| `local-seo-il` | city pages, GBP, NAP, the doorway rules |
-| `internal-linking-ia` | site architecture, nav, breadcrumbs, orphan detection |
-| `conversion-cro` | forms, CTAs, friction, trust placement |
-| `accessibility-wcag` | WCAG 2.1 AA, ARIA, keyboard, contrast, the `/accessibility/` claim |
-| `page-imagery` | which picture goes in which slot, crops and focal points, alt text, image prompts |
-| `performance-web-vitals` | LCP/CLS/INP budgets, images, fonts, JS |
-| `web-security-headers` | `_headers`, CSP, form and dependency posture |
-| `tracking-analytics` | GTM/GA4 event spec, dataLayer, consent |
-| `new-page-gate` | the evidence gate + full checklist for shipping a new URL |
-| `qa-deploy-gate` | pre-flight, deploy, and live verification |
+| Skill                    | Owns                                                                              |
+| ------------------------ | --------------------------------------------------------------------------------- |
+| `skyshade-architecture`  | orientation: stack, routes, data model, where things live                         |
+| `seo-metadata`           | titles, descriptions, canonicals, sitemap, robots                                 |
+| `schema-structured-data` | the JSON-LD entity graph                                                          |
+| `aeo-answer-content`     | answer-first blocks, FAQ design, AI-Overview citability                           |
+| `geo-ai-visibility`      | AI-crawler reachability, entity consistency, assistant monitoring                 |
+| `eeat-trust-evidence`    | claim gating, the evidence register, trust surfaces                               |
+| `hebrew-rtl-copy`        | Hebrew voice, RTL mechanics, title/H1 patterns                                    |
+| `keyword-map-governance` | adding a keyword, cannibalization checks                                          |
+| `local-seo-il`           | city pages, GBP, NAP, the doorway rules                                           |
+| `internal-linking-ia`    | site architecture, nav, breadcrumbs, orphan detection                             |
+| `conversion-cro`         | forms, CTAs, friction, trust placement                                            |
+| `accessibility-wcag`     | WCAG 2.1 AA, ARIA, keyboard, contrast, the `/accessibility/` claim                |
+| `page-imagery`           | which picture goes in which slot, crops and focal points, alt text, image prompts |
+| `performance-web-vitals` | LCP/CLS/INP budgets, images, fonts, JS                                            |
+| `web-security-headers`   | `_headers`, CSP, form and dependency posture                                      |
+| `tracking-analytics`     | GTM/GA4 event spec, dataLayer, consent                                            |
+| `new-page-gate`          | the evidence gate + full checklist for shipping a new URL                         |
+| `qa-deploy-gate`         | pre-flight, deploy, and live verification                                         |
 
 Subagents in `.claude/agents/` (read-only auditors unless stated): `seo-auditor`,
 `aeo-geo-strategist`, `eeat-trust-auditor`, `local-seo-strategist`, `keyword-strategist`,
@@ -178,27 +178,27 @@ Reference docs in `docs/` — the **state** the skills read from, versus the ski
 [docs/README.md](docs/README.md) is the map: what each file owns, and which file already owns a
 topic somebody is about to create a second file for.
 
-| Doc | Holds |
-|---|---|
-| `README.md` | the documentation map + the single-owner rule |
-| `seo-guardrails.md` | the bright lines — read before writing any page |
-| `keyword-map.md` | one keyword → one owning URL |
-| `evidence-register.md` | which claims may be published (✅ / 🔶 / ⛔) |
-| `information-architecture.md` | the URL map, gates, and link flow |
-| `entity-profile.md` | canonical NAP + the GBP spec |
-| `aeo-question-bank.md` | the real query shapes content must answer |
-| `accessibility-and-i18n.md` | the WCAG 2.1 build target vs the 2.0 claim, RTL rules, the gated he/en decision |
-| `mobile-ux-and-personalization.md` | thumb zones, the sticky CTA spec, what personalization is legal on a static export |
-| `conversion-funnel.md` | the funnel, the friction inventory, the one-change-per-window rule |
-| `image-inventory.md` | the four image slots, the 55-photo catalog as measured, and the pages with no photography |
-| `performance-budgets.md` | CWV budgets + the last measured values (⚠️ home JS 125.9/130 KB with `/assets/live.js`; the budget was 120 KB until 2026-10-12) |
-| `data-tracking-infrastructure.md` | the PII boundary, server-side tagging decision, CRM wiring, consent |
-| `measurement-plan.md` | baseline, KPI set, and the dated change log |
-| `gtm-tag-spec.md` | the exact container build — triggers, tags, variables, verification |
-| `security-posture.md` | the standing security assessment, incl. why the npm advisories don't apply |
-| `owner-intake-checklist.md` | the questions blocking a third of the work |
-| `phase-2-improvement-plan.md` | the current 16-week execution plan — **what** and **why** (W1–W10) |
-| `sprint-roadmap.md` | the same work as eight dated sprints with acceptance criteria — **when** and **done-when** |
+| Doc                                | Holds                                                                                                                           |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `README.md`                        | the documentation map + the single-owner rule                                                                                   |
+| `seo-guardrails.md`                | the bright lines — read before writing any page                                                                                 |
+| `keyword-map.md`                   | one keyword → one owning URL                                                                                                    |
+| `evidence-register.md`             | which claims may be published (✅ / 🔶 / ⛔)                                                                                    |
+| `information-architecture.md`      | the URL map, gates, and link flow                                                                                               |
+| `entity-profile.md`                | canonical NAP + the GBP spec                                                                                                    |
+| `aeo-question-bank.md`             | the real query shapes content must answer                                                                                       |
+| `accessibility-and-i18n.md`        | the WCAG 2.1 build target vs the 2.0 claim, RTL rules, the gated he/en decision                                                 |
+| `mobile-ux-and-personalization.md` | thumb zones, the sticky CTA spec, what personalization is legal on a static export                                              |
+| `conversion-funnel.md`             | the funnel, the friction inventory, the one-change-per-window rule                                                              |
+| `image-inventory.md`               | the four image slots, the 55-photo catalog as measured, and the pages with no photography                                       |
+| `performance-budgets.md`           | CWV budgets + the last measured values (⚠️ home JS 125.9/130 KB with `/assets/live.js`; the budget was 120 KB until 2026-10-12) |
+| `data-tracking-infrastructure.md`  | the PII boundary, server-side tagging decision, CRM wiring, consent                                                             |
+| `measurement-plan.md`              | baseline, KPI set, and the dated change log                                                                                     |
+| `gtm-tag-spec.md`                  | the exact container build — triggers, tags, variables, verification                                                             |
+| `security-posture.md`              | the standing security assessment, incl. why the npm advisories don't apply                                                      |
+| `owner-intake-checklist.md`        | the questions blocking a third of the work                                                                                      |
+| `phase-2-improvement-plan.md`      | the current 16-week execution plan — **what** and **why** (W1–W10)                                                              |
+| `sprint-roadmap.md`                | the same work as eight dated sprints with acceptance criteria — **when** and **done-when**                                      |
 
 ---
 
@@ -209,7 +209,7 @@ npm run build          # static export → out/ ; postbuild sitemap guard gates 
 git push origin main   # → .github/workflows/deploy.yml → wrangler pages deploy out
 ```
 
-The live origin is the Cloudflare Pages project **`skyshade`** (direct-upload type — it *cannot* be
+The live origin is the Cloudflare Pages project **`skyshade`** (direct-upload type — it _cannot_ be
 Git-connected, which is why the workflow exists). Secrets `CLOUDFLARE_API_TOKEN` /
 `CLOUDFLARE_ACCOUNT_ID` come from the Sys Admin vault.
 
@@ -247,7 +247,7 @@ AI Crawl Control, WAF. Current status is logged in `docs/measurement-plan.md`.
      deliberately exempted it — and always carry a browser control UA.
 - **The zone can silently invalidate the repo.** Before blaming `_headers`, `_redirects` or
   `robots.ts` for any access fault, check `skyshade.pages.dev`: it serves the identical build
-  without the Cloudflare zone in front of it, so a difference between the two *is* the diagnosis.
+  without the Cloudflare zone in front of it, so a difference between the two _is_ the diagnosis.
   **Bot Fight Mode is ON** (free plan) and cannot be skipped by a Skip rule — it is the one
   crawler-blocking path the order-1 guard does not cover.
 - **Open:** GTM has one tag — GA4 lead/call/WhatsApp events die in the dataLayer

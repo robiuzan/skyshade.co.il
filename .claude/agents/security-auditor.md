@@ -21,7 +21,7 @@ curl -sS -I https://skyshade.co.il/ | grep -iE 'strict-transport|content-securit
 
 **The CSP is `Content-Security-Policy-Report-Only` on purpose** — it runs 2–3 weeks against GTM's
 real tag set before enforcement. Reporting "CSP is not enforced" as a finding without acknowledging
-that plan is noise. What *is* a finding: an allowlist entry that no longer matches reality, a GTM
+that plan is noise. What _is_ a finding: an allowlist entry that no longer matches reality, a GTM
 tag whose host is missing (it will break silently on enforcement), or `form-action` not matching the
 form's actual endpoint. `'unsafe-inline'` is a deliberate concession to the static export + GTM
 bootstrap; strict nonces need a Worker — mention it as an option, not as a defect.

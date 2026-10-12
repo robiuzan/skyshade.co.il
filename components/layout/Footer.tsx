@@ -22,7 +22,12 @@ export function Footer() {
           <ul className="mt-5 space-y-2 text-sm">
             <li className="flex items-center gap-2">
               <Phone className="h-4 w-4 text-accent-400" aria-hidden />
-              <a href={telHref} data-cta="footer-call" className="hover:text-white" dir="ltr">
+              <a
+                href={telHref}
+                data-cta="footer-call"
+                className="hover:text-white"
+                dir="ltr"
+              >
                 {siteConfig.phone}
               </a>
             </li>
@@ -59,7 +64,11 @@ export function Footer() {
               <ul className="flex items-center gap-3">
                 {socialLinks.map((s) => {
                   const Icon =
-                    s.key === "facebook" ? Facebook : s.key === "instagram" ? Instagram : MapPin;
+                    s.key === "facebook"
+                      ? Facebook
+                      : s.key === "instagram"
+                        ? Instagram
+                        : MapPin;
                   return (
                     <li key={s.key}>
                       <a
@@ -87,7 +96,10 @@ export function Footer() {
           <ul className="mt-4 space-y-2 text-sm">
             {services.map((s) => (
               <li key={s.slug}>
-                <Link href={`/service/${s.slug}/`} className="text-white/85 hover:text-white">
+                <Link
+                  href={`/service/${s.slug}/`}
+                  className="text-white/85 hover:text-white"
+                >
                   {s.name}
                 </Link>
               </li>
@@ -102,7 +114,10 @@ export function Footer() {
             {/* All cities — a subset here starves the rest of sitewide internal links. */}
             {locations.map((c) => (
               <li key={c.slug}>
-                <Link href={`/locations/${c.slug}/`} className="text-white/85 hover:text-white">
+                <Link
+                  href={`/locations/${c.slug}/`}
+                  className="text-white/85 hover:text-white"
+                >
                   {c.name}
                 </Link>
               </li>

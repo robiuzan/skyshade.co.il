@@ -41,7 +41,9 @@ if (missing.length || stale.length) {
   console.error("✖ sitemap check FAILED");
   for (const u of missing) console.error(`  exported but missing from sitemap: ${u}`);
   for (const u of stale) console.error(`  in sitemap but not exported:        ${u}`);
-  console.error("  (fix app/sitemap.ts, or add a deliberate exclusion in scripts/check-sitemap.mjs)");
+  console.error(
+    "  (fix app/sitemap.ts, or add a deliberate exclusion in scripts/check-sitemap.mjs)",
+  );
   process.exit(1);
 }
 console.log(

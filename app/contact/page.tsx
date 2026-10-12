@@ -49,7 +49,12 @@ export default function ContactPage() {
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent-50 text-accent-600">
                   <Phone className="h-5 w-5" aria-hidden />
                 </span>
-                <a href={telHref} data-cta="contact-call" className="font-medium hover:text-primary" dir="ltr">
+                <a
+                  href={telHref}
+                  data-cta="contact-call"
+                  className="font-medium hover:text-primary"
+                  dir="ltr"
+                >
                   {siteConfig.phone}
                 </a>
               </li>
@@ -93,7 +98,9 @@ export default function ContactPage() {
                   <br />
                   {siteConfig.hours.friday}
                   <br />
-                  <span className="text-sm text-gray-500">{siteConfig.hours.saturday}</span>
+                  <span className="text-sm text-gray-500">
+                    {siteConfig.hours.saturday}
+                  </span>
                 </span>
               </li>
             </ul>

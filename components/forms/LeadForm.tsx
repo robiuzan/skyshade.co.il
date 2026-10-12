@@ -202,7 +202,10 @@ export function LeadForm({
       setRecoveryHref(buildWhatsapp(form));
       setError("השליחה נכשלה והפנייה לא הגיעה אלינו.");
       setStatus("error");
-      trackEvent("lead_submit_failed", { form_location: location, error_type: "delivery" });
+      trackEvent("lead_submit_failed", {
+        form_location: location,
+        error_type: "delivery",
+      });
       window.open(buildWhatsapp(form), "_blank", "noopener");
     }
   }
@@ -247,7 +250,10 @@ export function LeadForm({
       aria-busy={status === "sending"}
     >
       <div>
-        <label htmlFor={fid("name")} className="mb-1 block text-sm font-medium text-gray-700">
+        <label
+          htmlFor={fid("name")}
+          className="mb-1 block text-sm font-medium text-gray-700"
+        >
           שם מלא
         </label>
         <input
@@ -354,7 +360,10 @@ export function LeadForm({
       </div>
 
       {error && (
-        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm">
+        <div
+          role="alert"
+          className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm"
+        >
           <p className="font-medium text-red-700">{error}</p>
           {recoveryHref && (
             <p className="mt-2 text-gray-700">

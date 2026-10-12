@@ -74,7 +74,11 @@ export function Header() {
       className="sticky top-0 z-40 border-b border-gray-100 bg-white/95 backdrop-blur"
     >
       <Container className="flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="flex items-center" aria-label={`${siteConfig.name} — דף הבית`}>
+        <Link
+          href="/"
+          className="flex items-center"
+          aria-label={`${siteConfig.name} — דף הבית`}
+        >
           {manifest.images?.logo ? (
             // `priority` because the logo is above the fold on every page and this site's hero is
             // a CSS gradient, so there is no other LCP candidate to hand it to.
@@ -155,10 +159,14 @@ export function Header() {
                         <li key={s.slug}>
                           <Link
                             href={`/service/${s.slug}/`}
-                            aria-current={isCurrent(`/service/${s.slug}/`) ? "page" : undefined}
+                            aria-current={
+                              isCurrent(`/service/${s.slug}/`) ? "page" : undefined
+                            }
                             className={cn(
                               "block rounded-lg px-3 py-2 text-sm font-medium hover:bg-gray-50 hover:text-primary",
-                              isCurrent(`/service/${s.slug}/`) ? "text-primary" : "text-gray-700",
+                              isCurrent(`/service/${s.slug}/`)
+                                ? "text-primary"
+                                : "text-gray-700",
                             )}
                           >
                             {s.name}
@@ -184,7 +192,12 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button href={telHref} data-cta="header-call" variant="accent" className="hidden sm:inline-flex">
+          <Button
+            href={telHref}
+            data-cta="header-call"
+            variant="accent"
+            className="hidden sm:inline-flex"
+          >
             <Phone className="h-4 w-4" aria-hidden />
             <span dir="ltr">{siteConfig.phone}</span>
           </Button>
@@ -231,7 +244,9 @@ export function Header() {
                         <li key={s.slug}>
                           <Link
                             href={`/service/${s.slug}/`}
-                            aria-current={isCurrent(`/service/${s.slug}/`) ? "page" : undefined}
+                            aria-current={
+                              isCurrent(`/service/${s.slug}/`) ? "page" : undefined
+                            }
                             className={cn(
                               "block rounded-lg px-2 py-2 text-sm hover:bg-gray-50 hover:text-primary",
                               isCurrent(`/service/${s.slug}/`)
@@ -250,7 +265,13 @@ export function Header() {
               ))}
             </ul>
           </nav>
-          <Button href={telHref} data-cta="header-call" variant="accent" size="lg" className="mt-3 w-full">
+          <Button
+            href={telHref}
+            data-cta="header-call"
+            variant="accent"
+            size="lg"
+            className="mt-3 w-full"
+          >
             <Phone className="h-5 w-5" aria-hidden />
             חייגו עכשיו: <span dir="ltr">{siteConfig.phone}</span>
           </Button>

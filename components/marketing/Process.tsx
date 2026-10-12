@@ -6,7 +6,11 @@ import { processSteps } from "@/lib/content";
 export function Process() {
   return (
     <Section id="process" tone="primary">
-      <SectionHeading eyebrow="איך זה עובד" title="מהפנייה ועד ההתקנה — בחמישה צעדים" tone="light" />
+      <SectionHeading
+        eyebrow="איך זה עובד"
+        title="מהפנייה ועד ההתקנה — בחמישה צעדים"
+        tone="light"
+      />
 
       <ol className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
         {processSteps.map((step, i) => (

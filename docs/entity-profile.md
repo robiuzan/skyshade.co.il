@@ -7,23 +7,23 @@ surfacing competitors.
 
 ## Canonical values
 
-| Field | Value | Notes |
-|---|---|---|
-| Name (he) | `סקיי שייד` | exactly this — **never** keyword-appended, not even on the GBP |
-| Name (en) | `Sky Shade` | |
-| Legal name | `סקיי שייד` | 🔶 pending ח.פ. and the registered entity name |
-| URL | `https://skyshade.co.il/` | apex, https, trailing slash — the only form used anywhere |
-| Phone | `050-5063152` / `+972505063152` | one format per context; E.164 in schema and `tel:` |
-| WhatsApp | `+972505063152` | same number |
-| Email | `yossi@skyshade.co.il` | |
-| Founded | 2009 | |
-| Schema type | `HomeAndConstructionBusiness` | from the manifest |
-| Area served | `שירות בכל הארץ` | nationwide — **not** a list of 16 city branches |
-| Hours | א׳–ה׳ 08:00–18:00 · ו׳ 08:00–13:00 · שבת סגור | |
-| Price range | `₪₪` | schema only; not a price claim in copy |
-| Address | 🔶 **none** | publish nothing rather than two different values |
-| ח.פ. | 🔶 **none** | |
-| `sameAs` | `[]` | ⚠️ **the single biggest entity gap** |
+| Field       | Value                                         | Notes                                                          |
+| ----------- | --------------------------------------------- | -------------------------------------------------------------- |
+| Name (he)   | `סקיי שייד`                                   | exactly this — **never** keyword-appended, not even on the GBP |
+| Name (en)   | `Sky Shade`                                   |                                                                |
+| Legal name  | `סקיי שייד`                                   | 🔶 pending ח.פ. and the registered entity name                 |
+| URL         | `https://skyshade.co.il/`                     | apex, https, trailing slash — the only form used anywhere      |
+| Phone       | `050-5063152` / `+972505063152`               | one format per context; E.164 in schema and `tel:`             |
+| WhatsApp    | `+972505063152`                               | same number                                                    |
+| Email       | `yossi@skyshade.co.il`                        |                                                                |
+| Founded     | 2009                                          |                                                                |
+| Schema type | `HomeAndConstructionBusiness`                 | from the manifest                                              |
+| Area served | `שירות בכל הארץ`                              | nationwide — **not** a list of 16 city branches                |
+| Hours       | א׳–ה׳ 08:00–18:00 · ו׳ 08:00–13:00 · שבת סגור |                                                                |
+| Price range | `₪₪`                                          | schema only; not a price claim in copy                         |
+| Address     | 🔶 **none**                                   | publish nothing rather than two different values               |
+| ח.פ.        | 🔶 **none**                                   |                                                                |
+| `sameAs`    | `[]`                                          | ⚠️ **the single biggest entity gap**                           |
 
 Source of truth is the hub roster → `site.config.json` → `lib/site-config.ts`. Never hardcode any of
 these in a component.
@@ -32,7 +32,7 @@ these in a component.
 
 An assistant asked "מי זו סקיי שייד?" needs corroboration from sources that are not the business's
 own website. With no GBP, no social profiles, no directory listings and no address, there is nothing
-to corroborate — so the assistant answers with whichever competitor *is* resolvable. Populating
+to corroborate — so the assistant answers with whichever competitor _is_ resolvable. Populating
 `sameAs` is downstream of creating those profiles; it is not a code task first.
 
 Dependency order:

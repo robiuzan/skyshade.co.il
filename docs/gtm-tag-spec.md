@@ -14,11 +14,11 @@ events below are already firing into `window.dataLayer`, verified in the build o
 Inspected live 2026-08-25. `GTM-KWGGH438` is **not a skyshade container**. It serves ten Israeli
 fleet sites and picks the GA4 property with a hostname lookup table:
 
-| | | | |
-|---|---|---|---|
-| betonplus.co.il | 3locksmiths.co.il | netomazganim.co.il | gagoline.co.il |
-| visionsecurity.co.il | galbath.co.il | hambabait.co.il | myhomeplumber.co.il |
-| dangates.co.il | **skyshade.co.il → G-BRZ0S93NFS** | | |
+|                      |                                   |                    |                     |
+| -------------------- | --------------------------------- | ------------------ | ------------------- |
+| betonplus.co.il      | 3locksmiths.co.il                 | netomazganim.co.il | gagoline.co.il      |
+| visionsecurity.co.il | galbath.co.il                     | hambabait.co.il    | myhomeplumber.co.il |
+| dangates.co.il       | **skyshade.co.il → G-BRZ0S93NFS** |                    |                     |
 
 It contains exactly **one** real tag — the GA4 config (`googtag`). Verified absent: `form_start`,
 `lead_submit_failed`, `phone_call_click`, `whatsapp_click`, `email_click`, and any `tel:` / `wa.me`
@@ -44,11 +44,11 @@ Everything below assumes Option A.
 Via `trackEvent()` (`@ishub/site-kit/analytics` → `dataLayer.push({event, ...params})`).
 Source: [components/forms/LeadForm.tsx](../components/forms/LeadForm.tsx).
 
-| dataLayer `event` | Fires when | Params |
-|---|---|---|
-| `form_start` | first focus in the lead form, once per mount | `form_location` |
-| `generate_lead` | Web3Forms confirms delivery — **only** on real success | `form_location`, `service`, `consent`, `has_message` |
-| `lead_submit_failed` | delivery failed, or the access key is missing | `form_location`, `error_type` |
+| dataLayer `event`    | Fires when                                             | Params                                               |
+| -------------------- | ------------------------------------------------------ | ---------------------------------------------------- |
+| `form_start`         | first focus in the lead form, once per mount           | `form_location`                                      |
+| `generate_lead`      | Web3Forms confirms delivery — **only** on real success | `form_location`, `service`, `consent`, `has_message` |
+| `lead_submit_failed` | delivery failed, or the access key is missing          | `form_location`, `error_type`                        |
 
 `form_location` values — **all four, verified against the call sites 2026-09-01**:
 `home-hero` ([Hero.tsx:70](../components/marketing/Hero.tsx)) · `contact-page`
@@ -121,13 +121,13 @@ Enable the built-ins first: **Click Element**, **Click URL**, **Page Path**, **P
 
 Then create these Data Layer Variables (Variable Type → Data Layer Variable, version 2):
 
-| Variable name | Data layer key |
-|---|---|
+| Variable name         | Data layer key  |
+| --------------------- | --------------- |
 | `dlv - form_location` | `form_location` |
-| `dlv - service` | `service` |
-| `dlv - consent` | `consent` |
-| `dlv - error_type` | `error_type` |
-| `dlv - has_message` | `has_message` |
+| `dlv - service`       | `service`       |
+| `dlv - consent`       | `consent`       |
+| `dlv - error_type`    | `error_type`    |
+| `dlv - has_message`   | `has_message`   |
 
 One more, a **Custom JavaScript** variable named `cjs - cta location` — it reads the `data-cta`
 attribute off the clicked element or its nearest link ancestor:
@@ -147,27 +147,27 @@ function () {
 shared-container warning above). Name them `SS - …` so they are distinguishable from any fleet-wide
 triggers added later.
 
-| Trigger name | Type | Conditions (all must match) |
-|---|---|---|
-| `SS - CE - form_start` | Custom Event | Event equals `form_start` · Page Hostname equals `skyshade.co.il` |
-| `SS - CE - generate_lead` | Custom Event | Event equals `generate_lead` · Page Hostname equals `skyshade.co.il` |
-| `SS - CE - lead_submit_failed` | Custom Event | Event equals `lead_submit_failed` · Page Hostname equals `skyshade.co.il` |
-| `SS - Click - phone` | Click – Just Links (wait-for-tags off) | Click URL starts with `tel:` · Page Hostname equals `skyshade.co.il` |
-| `SS - Click - whatsapp` | Click – Just Links | Click URL contains `wa.me` · Page Hostname equals `skyshade.co.il` |
-| `SS - Click - email` | Click – Just Links | Click URL starts with `mailto:` · Page Hostname equals `skyshade.co.il` |
+| Trigger name                   | Type                                   | Conditions (all must match)                                               |
+| ------------------------------ | -------------------------------------- | ------------------------------------------------------------------------- |
+| `SS - CE - form_start`         | Custom Event                           | Event equals `form_start` · Page Hostname equals `skyshade.co.il`         |
+| `SS - CE - generate_lead`      | Custom Event                           | Event equals `generate_lead` · Page Hostname equals `skyshade.co.il`      |
+| `SS - CE - lead_submit_failed` | Custom Event                           | Event equals `lead_submit_failed` · Page Hostname equals `skyshade.co.il` |
+| `SS - Click - phone`           | Click – Just Links (wait-for-tags off) | Click URL starts with `tel:` · Page Hostname equals `skyshade.co.il`      |
+| `SS - Click - whatsapp`        | Click – Just Links                     | Click URL contains `wa.me` · Page Hostname equals `skyshade.co.il`        |
+| `SS - Click - email`           | Click – Just Links                     | Click URL starts with `mailto:` · Page Hostname equals `skyshade.co.il`   |
 
 ### 3. Tags
 
 All are **GA4 Event** tags pointing at the existing GA4 Configuration tag (`G-BRZ0S93NFS`).
 
-| Tag name | Event name | Parameters | Trigger |
-|---|---|---|---|
-| `SS - GA4 - form_start` | `form_start` | `form_location` = `{{dlv - form_location}}` | `SS - CE - form_start` |
-| `SS - GA4 - generate_lead` | `generate_lead` | `form_location`, `service`, `consent`, `has_message` from their dlv variables | `SS - CE - generate_lead` |
-| `SS - GA4 - lead_submit_failed` | `lead_submit_failed` | `form_location`, `error_type` | `SS - CE - lead_submit_failed` |
-| `SS - GA4 - phone_call_click` | `phone_call_click` | `link_location` = `{{cjs - cta location}}` | `SS - Click - phone` |
-| `SS - GA4 - whatsapp_click` | `whatsapp_click` | `link_location` = `{{cjs - cta location}}` | `SS - Click - whatsapp` |
-| `SS - GA4 - email_click` | `email_click` | `link_location` = `{{cjs - cta location}}` | `SS - Click - email` |
+| Tag name                        | Event name           | Parameters                                                                    | Trigger                        |
+| ------------------------------- | -------------------- | ----------------------------------------------------------------------------- | ------------------------------ |
+| `SS - GA4 - form_start`         | `form_start`         | `form_location` = `{{dlv - form_location}}`                                   | `SS - CE - form_start`         |
+| `SS - GA4 - generate_lead`      | `generate_lead`      | `form_location`, `service`, `consent`, `has_message` from their dlv variables | `SS - CE - generate_lead`      |
+| `SS - GA4 - lead_submit_failed` | `lead_submit_failed` | `form_location`, `error_type`                                                 | `SS - CE - lead_submit_failed` |
+| `SS - GA4 - phone_call_click`   | `phone_call_click`   | `link_location` = `{{cjs - cta location}}`                                    | `SS - Click - phone`           |
+| `SS - GA4 - whatsapp_click`     | `whatsapp_click`     | `link_location` = `{{cjs - cta location}}`                                    | `SS - Click - whatsapp`        |
+| `SS - GA4 - email_click`        | `email_click`        | `link_location` = `{{cjs - cta location}}`                                    | `SS - Click - email`           |
 
 ### 4. In GA4 itself
 
@@ -236,7 +236,7 @@ what makes everything after it attributable.
 
 ## What deliberately is not here
 
-- **Consent Mode v2** — scheduled for weeks 5–6, *after* the baseline exists, with its expected
+- **Consent Mode v2** — scheduled for weeks 5–6, _after_ the baseline exists, with its expected
   20–40% measured-session drop written down first.
 - **Scroll and engagement events** — add once the guides silo has traffic worth segmenting.
 - **Any tag that sends PII, or any Ads/Meta pixel.** Adding one is also a CSP change: its host must

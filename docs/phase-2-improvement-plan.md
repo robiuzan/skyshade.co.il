@@ -15,21 +15,21 @@ rest first wastes the effort.
 
 **Fixed and live** (verified 2026-08-23): every audit code fix · www→apex 301 · security headers +
 HSTS + report-only CSP · DMARC `p=none` · Search Console verified · AI crawlers unblocked (13/13
-UAs → 200) · managed robots.txt off · corrected permit copy in text *and* schema · truthful privacy
+UAs → 200) · managed robots.txt off · corrected permit copy in text _and_ schema · truthful privacy
 policy · query-led titles · services in the primary nav · sitemap drift guard · media pipeline on
 the imgquarry CDN.
 
 **The two things blocking everything else:**
 
-| Blocker | Consequence today |
-|---|---|
-| **No measurement.** GTM has one tag; every `trackEvent()` call dies in the dataLayer. GA4 has page views only. GSC has no history. | No conversion rate is known. No change can be attributed. Every CRO claim is currently a guess. |
+| Blocker                                                                                                                                  | Consequence today                                                                                                                                                                          |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **No measurement.** GTM has one tag; every `trackEvent()` call dies in the dataLayer. GA4 has page views only. GSC has no history.       | No conversion rate is known. No change can be attributed. Every CRO claim is currently a guess.                                                                                            |
 | **No corroborated substance.** No Google Business Profile, no reviews, no prices, no address, no ח.פ., no named human, no project facts. | The brand's own name search surfaces competitors. AI assistants cannot identify the business. The 16 city pages are doorway clones. The largest keyword cluster (price) cannot be written. |
 
 Neither is a code problem. That is why this plan front-loads a measurement week and an owner
 session, and why weeks 1–2 look unglamorous.
 
-**The strategic thesis:** this market is won on *corroborated specifics* — real projects, real
+**The strategic thesis:** this market is won on _corroborated specifics_ — real projects, real
 prices, accurate regulation, real reviews. Competitors publish templated copy; directories hold the
 top organic slots. The only durable advantage available is substance competitors cannot template,
 and the machinery to prove it moved the needle.
@@ -45,7 +45,7 @@ and the machinery to prove it moved the needle.
 3. **Titles freeze for 90 days** from the Phase-1 final state (2026-08-23 → ~2026-11-21).
 4. **Evidence gates content.** A page that needs a 🔶 fact is not written; its slot is built and the
    question goes to Yossi.
-5. **Consent Mode's 20–40% measured-session drop is written down *before* it ships**, not explained
+5. **Consent Mode's 20–40% measured-session drop is written down _before_ it ships**, not explained
    afterwards.
 6. **Hard cap: ~12 new or rewritten pages this phase**, each individually gated.
 
@@ -55,13 +55,13 @@ and the machinery to prove it moved the needle.
 
 ### W1 · Measurement — week 1 (unblocks everything)
 
-| # | Action | Where | Gate |
-|---|---|---|---|
-| 1.1 | Build the seven GA4 event tags in GTM per the event table | GTM container `GTM-KWGGH438` | GTM Preview → GA4 DebugView, all seven verified firing |
-| 1.2 | Mark `generate_lead`, `phone_call_click`, `whatsapp_click` as GA4 conversions | GA4 | visible in Conversions |
-| 1.3 | Alarm on `lead_submit_failed > 0` | GA4 custom insight | test by forcing a failure |
-| 1.4 | Submit the sitemap; import the property into Bing Webmaster | GSC / Bing | coverage report populated |
-| 1.5 | Record every starting value | `docs/measurement-plan.md` | a dated baseline row per KPI |
+| #   | Action                                                                        | Where                        | Gate                                                   |
+| --- | ----------------------------------------------------------------------------- | ---------------------------- | ------------------------------------------------------ |
+| 1.1 | Build the seven GA4 event tags in GTM per the event table                     | GTM container `GTM-KWGGH438` | GTM Preview → GA4 DebugView, all seven verified firing |
+| 1.2 | Mark `generate_lead`, `phone_call_click`, `whatsapp_click` as GA4 conversions | GA4                          | visible in Conversions                                 |
+| 1.3 | Alarm on `lead_submit_failed > 0`                                             | GA4 custom insight           | test by forcing a failure                              |
+| 1.4 | Submit the sitemap; import the property into Bing Webmaster                   | GSC / Bing                   | coverage report populated                              |
+| 1.5 | Record every starting value                                                   | `docs/measurement-plan.md`   | a dated baseline row per KPI                           |
 
 Then **four weeks of nothing else measurement-related.** Skill: `tracking-analytics`.
 
@@ -88,14 +88,14 @@ Skills: `eeat-trust-evidence`, `local-seo-il`.
 The reason a brand search shows competitors is that the entity is unresolvable: `sameAs` is `[]`,
 there is no GBP, no address, no third-party corroboration.
 
-| # | Action | Depends on |
-|---|---|---|
-| 3.1 | Populate `manifest.schema.sameAs` with the GBP + real social profiles | W2 |
-| 3.2 | Ship the corrected `@id`-linked JSON-LD graph from `audit-roadmap-full.md` §6.1 | — |
-| 3.3 | One canonical business description used verbatim everywhere (`docs/entity-profile.md`) | — |
+| #   | Action                                                                                                                       | Depends on        |
+| --- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| 3.1 | Populate `manifest.schema.sameAs` with the GBP + real social profiles                                                        | W2                |
+| 3.2 | Ship the corrected `@id`-linked JSON-LD graph from `audit-roadmap-full.md` §6.1                                              | —                 |
+| 3.3 | One canonical business description used verbatim everywhere (`docs/entity-profile.md`)                                       | —                 |
 | 3.4 | Israeli directories with identical NAP: b144, dapey zahav, zap, easy.co.il, municipal indexes, supplier "where to buy" pages | W2 (address/ח.פ.) |
-| 3.5 | Monthly AI-assistant prompt set, answers recorded verbatim with cited sources | — |
-| 3.6 | Re-verify the AI-crawler matrix monthly — it was 403 for a year and a dashboard setting can close it again | — |
+| 3.5 | Monthly AI-assistant prompt set, answers recorded verbatim with cited sources                                                | —                 |
+| 3.6 | Re-verify the AI-crawler matrix monthly — it was 403 for a year and a dashboard setting can close it again                   | —                 |
 
 **Metric:** brand search returns us first · knowledge panel exists · assistants name us correctly ·
 AI-referral sessions in GA4. Skills: `geo-ai-visibility`, `schema-structured-data`.
@@ -108,14 +108,14 @@ Commercial and informational demand is **entirely uncovered**, and it is where c
 weakest. This is the largest single source of new rankings available, and it is also what makes the
 site citable by AI.
 
-| Order | URL | Cluster | Gate |
-|---|---|---|---|
-| 1 | `/guides/pergola-permit/` | היתר · חוק הפרגולות · מצללה פטור | municipal sources cited; conditional-exemption wording; legal review |
-| 2 | `/guides/pergola-cost/` | the **entire** price cluster | 🔶 blocked on W2 §5 — real bands |
-| 3 | `/guides/aluminum-vs-wood-pergola/` | X-או-Y comparison | 4–6 criterion table |
-| 4 | `/guides/balcony-enclosure-permit/` | סגירת מרפסת היתר | as #1 |
-| 5 | `/guides/deck-cost/` | דק סינטטי מחיר | as #2 |
-| 6 | `/guides/pergola-sukkah/` | seasonal, evergreen URL | `מותאמת`, never `כשרה` |
+| Order | URL                                 | Cluster                          | Gate                                                                 |
+| ----- | ----------------------------------- | -------------------------------- | -------------------------------------------------------------------- |
+| 1     | `/guides/pergola-permit/`           | היתר · חוק הפרגולות · מצללה פטור | municipal sources cited; conditional-exemption wording; legal review |
+| 2     | `/guides/pergola-cost/`             | the **entire** price cluster     | 🔶 blocked on W2 §5 — real bands                                     |
+| 3     | `/guides/aluminum-vs-wood-pergola/` | X-או-Y comparison                | 4–6 criterion table                                                  |
+| 4     | `/guides/balcony-enclosure-permit/` | סגירת מרפסת היתר                 | as #1                                                                |
+| 5     | `/guides/deck-cost/`                | דק סינטטי מחיר                   | as #2                                                                |
+| 6     | `/guides/pergola-sukkah/`           | seasonal, evergreen URL          | `מותאמת`, never `כשרה`                                               |
 
 Every guide: question-form H2s from `docs/aeo-question-bank.md`, a self-contained 40–60 word answer
 under each, one fact no competitor has, `Article` + `FAQPage` + breadcrumb schema, a visible and
@@ -158,7 +158,7 @@ gate in `local-seo-il`:
 **Never** build more city pages, and never any of the ~80 unbuilt service×city combos. At most
 ~18–24 combos ever exist, gated on delivered work.
 
-**Metric:** indexed-page count (expected to *fall* — that is the goal) · city-query positions ·
+**Metric:** indexed-page count (expected to _fall_ — that is the goal) · city-query positions ·
 map-pack presence. Depends on W2 §7.
 
 ---
@@ -215,7 +215,7 @@ the change log. Guides keep soft CTAs. Skill: `conversion-cro`.
 ### W10 · Performance, accessibility and security — continuous
 
 - Weeks 5–6: **Consent Mode v2 + banner** — with the expected 20–40% measured-session drop written
-  into the change log *first*.
+  into the change log _first_.
 - Week 7+: the GTM defer experiment (not before — it would confound the event baseline).
 - CSP: after 2–3 weeks of clean report-only data, rename to `Content-Security-Policy`. Whoever edits
   GTM owns the allowlist.
@@ -233,15 +233,15 @@ Skills: `performance-web-vitals`, `web-security-headers`.
 
 ## 4. Schedule
 
-| Week | Focus |
-|---|---|
-| 1 | W1 measurement · W2 intake booked and run · GBP created |
-| 2 | W3 entity graph + `sameAs` · review requests start · guide #1 drafted |
-| 3–4 | W4 guides #1–2 · **measurement baseline accumulating — no CRO changes** |
-| 5–6 | W6 city verdicts + 301s · Consent Mode v2 · W5 project template |
-| 7–8 | W4 guides #3–4 · W5 first 6 projects · GTM defer experiment · W8 structure sweep |
-| 9–10 | W7 pergolas deepened · W4 guides #5–6 · W9 CRO change #1 |
-| 11–12 | W5 projects 7–12 · W7 `/warranty/` + spoke decision · W9 CRO change #2 |
+| Week  | Focus                                                                                        |
+| ----- | -------------------------------------------------------------------------------------------- |
+| 1     | W1 measurement · W2 intake booked and run · GBP created                                      |
+| 2     | W3 entity graph + `sameAs` · review requests start · guide #1 drafted                        |
+| 3–4   | W4 guides #1–2 · **measurement baseline accumulating — no CRO changes**                      |
+| 5–6   | W6 city verdicts + 301s · Consent Mode v2 · W5 project template                              |
+| 7–8   | W4 guides #3–4 · W5 first 6 projects · GTM defer experiment · W8 structure sweep             |
+| 9–10  | W7 pergolas deepened · W4 guides #5–6 · W9 CRO change #1                                     |
+| 11–12 | W5 projects 7–12 · W7 `/warranty/` + spoke decision · W9 CRO change #2                       |
 | 13–16 | W7 remaining service pages · W9 CRO changes #3–4 · CSP enforced · DMARC ramp · full re-audit |
 
 **Title freeze lifts ~2026-11-21** (week 13) — the home-page title change waits for it.
@@ -268,10 +268,10 @@ Recorded so nobody proposes them again next quarter:
 Nothing is "done" until its metric is named and its baseline is written into
 `docs/measurement-plan.md`, and every shipped change has a dated row there.
 
-| Horizon | Expected |
-|---|---|
-| 6 weeks | Events firing · GBP live with first reviews · lead volume known for the first time · permit guide indexed |
-| 3 months | Guides ranking for permit/cost queries · city count down and quality up · brand search resolves to us · assistants name us correctly |
+| Horizon  | Expected                                                                                                                                                                                  |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 6 weeks  | Events firing · GBP live with first reviews · lead volume known for the first time · permit guide indexed                                                                                 |
+| 3 months | Guides ranking for permit/cost queries · city count down and quality up · brand search resolves to us · assistants name us correctly                                                      |
 | 6 months | Head-term movement on פרגולות אלומיניום · long-tail project queries landing · lead flow attributable by channel · directories still hold some top slots — that is expected, not a failure |
 
 **The single highest-leverage action in this entire plan** is the 90-minute session with Yossi. Two

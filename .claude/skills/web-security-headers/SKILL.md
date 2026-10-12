@@ -16,11 +16,12 @@ Currently shipped: `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosni
 and **`Content-Security-Policy-Report-Only`**.
 
 Rules:
+
 - **The CSP is report-only on purpose.** It runs 2–3 weeks against GTM's real tag set before being
   renamed to `Content-Security-Policy`. Do not enforce it on a hunch — enforcing it while a GTM tag
   is silently blocked breaks analytics or the form with no visible error.
 - **Whoever edits the GTM container owns the CSP allowlist.** A new tag (Google Ads, Meta pixel)
-  needs its host added to `script-src`/`connect-src`/`img-src` *before* it is published, or it will
+  needs its host added to `script-src`/`connect-src`/`img-src` _before_ it is published, or it will
   be blocked the day the CSP is enforced.
 - `'unsafe-inline'` is a deliberate concession to the static export + the GTM bootstrap. Strict
   nonces would require a Cloudflare Worker in front — a real option, but a separate decision.

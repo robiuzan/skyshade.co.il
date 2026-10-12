@@ -17,15 +17,15 @@ depends on it.
 
 ## The event spec (`audit-roadmap-full.md` §6.3)
 
-| Event | Fires on | Parameters (categorical only) |
-|---|---|---|
-| `form_start` | first input focus in `LeadForm` | `form_location` |
-| `generate_lead` | successful Web3Forms submit | `form_location`, `service`, `consent` |
-| `lead_submit_failed` | submit error | `form_location`, `error_type` — **alarm if > 0** |
-| `phone_call_click` | any `tel:` click | `link_location` |
-| `whatsapp_click` | any WhatsApp click | `link_location`, `prefilled` |
-| `gallery_filter` | category change | `category` |
-| `scroll_75` | 75% depth on guides | `page_type` |
+| Event                | Fires on                        | Parameters (categorical only)                    |
+| -------------------- | ------------------------------- | ------------------------------------------------ |
+| `form_start`         | first input focus in `LeadForm` | `form_location`                                  |
+| `generate_lead`      | successful Web3Forms submit     | `form_location`, `service`, `consent`            |
+| `lead_submit_failed` | submit error                    | `form_location`, `error_type` — **alarm if > 0** |
+| `phone_call_click`   | any `tel:` click                | `link_location`                                  |
+| `whatsapp_click`     | any WhatsApp click              | `link_location`, `prefilled`                     |
+| `gallery_filter`     | category change                 | `category`                                       |
+| `scroll_75`          | 75% depth on guides             | `page_type`                                      |
 
 `trackEvent()` from `@ishub/site-kit/analytics` is the only push path. In GTM: one Custom Event
 trigger per event name, one GA4 Event tag each, parameters mapped explicitly.
@@ -48,7 +48,7 @@ DebugView. Only after all four does the event count as wired.
 
 1. **Week 1:** events + GSC → then **4 clean weeks** of baseline. No other measurement change.
 2. **Weeks 5–6:** Consent Mode v2 + banner. Write the expected **20–40% measured-session drop** down
-   *before* shipping it, or it will read as a traffic collapse.
+   _before_ shipping it, or it will read as a traffic collapse.
 3. **Week 7+:** the GTM defer experiment.
 4. **Title changes freeze for 90 days** after the Phase-1 final state.
 

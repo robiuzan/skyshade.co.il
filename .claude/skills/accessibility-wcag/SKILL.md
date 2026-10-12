@@ -34,15 +34,15 @@ legal problem rather than a quality problem.
 
 These came out of the 2026-08-17 audit. Each has a reason; none is decorative.
 
-| Fix | Where | Why it exists |
-|---|---|---|
-| Footer contrast `/85` and `/80` | `components/layout/Footer.tsx` | the footer failed the ratio the site publicly claimed |
-| WhatsApp accessible green `#0E7A34` for text | `MobileCtaBar`, `LeadForm` | brand WhatsApp green fails 4.5:1 for text |
-| Mobile menu: `aria-expanded` + focus trap + Escape | `components/layout/Header.tsx` | it was keyboard-inoperable |
-| `h-16 lg:hidden` spacer | `app/layout.tsx` | the sticky bar covered footer content |
-| Real 404, no soft-404 | `app/not-found.tsx` | |
-| `useId`-scoped field ids | `components/forms/LeadForm.tsx:51` | two forms now share a page; duplicate ids broke `<label for>` |
-| Visible-by-default reveal | `components/ui/Reveal.tsx` | content could stick at `opacity:0` if the observer never fired; also honours `prefers-reduced-motion` |
+| Fix                                                | Where                              | Why it exists                                                                                         |
+| -------------------------------------------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Footer contrast `/85` and `/80`                    | `components/layout/Footer.tsx`     | the footer failed the ratio the site publicly claimed                                                 |
+| WhatsApp accessible green `#0E7A34` for text       | `MobileCtaBar`, `LeadForm`         | brand WhatsApp green fails 4.5:1 for text                                                             |
+| Mobile menu: `aria-expanded` + focus trap + Escape | `components/layout/Header.tsx`     | it was keyboard-inoperable                                                                            |
+| `h-16 lg:hidden` spacer                            | `app/layout.tsx`                   | the sticky bar covered footer content                                                                 |
+| Real 404, no soft-404                              | `app/not-found.tsx`                |                                                                                                       |
+| `useId`-scoped field ids                           | `components/forms/LeadForm.tsx:51` | two forms now share a page; duplicate ids broke `<label for>`                                         |
+| Visible-by-default reveal                          | `components/ui/Reveal.tsx`         | content could stick at `opacity:0` if the observer never fired; also honours `prefers-reduced-motion` |
 
 If a change would remove one of these, it is a regression — say so explicitly rather than filing
 it as a refactor.

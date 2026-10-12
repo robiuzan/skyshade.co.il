@@ -17,12 +17,12 @@ This file owns **the slots, the catalog and the imagery gaps**. It does not own 
 Every photograph on this site lands in one of four positions. There are no others — the number is
 small because **this site has almost no photography in it**, which is §3.
 
-| Slot | Intrinsic | Rendered by | Fit | What it does to the picture |
-|---|---|---|---|---|
-| **Header logo** | 500×79 · 6.3:1 | [Header.tsx:76](../components/layout/Header.tsx#L76) — `SiteImage … fixed priority fit="contain"`, `h-9 w-auto` | `contain` | Fixed 36px-tall box, so the ladder is 1x/2x only (`widthsFor(intrinsic, fixed)`). **Above the fold on every page and marked `priority`** — with the hero being a CSS gradient this is the site's only nominated LCP candidate. Not a photo slot. |
-| **Gallery tile** | varies wildly — see §2 | [FilterableGallery.tsx:89](../components/marketing/FilterableGallery.tsx#L89) — `aspect-[4/3] object-cover`, `sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"` | `cover` | **Every tile is force-cropped to 4:3 regardless of its real shape.** The only photo slot on the site. Grid is 3-up ≥1024px, 2-up ≥640px, 1-up below. |
-| **Lightbox** | the full original | [FilterableGallery.tsx:129](../components/marketing/FilterableGallery.tsx#L129) — plain `<img>`, `max-h-[90vh] max-w-[90vw] object-contain` | `contain` | The only place a photo is seen uncropped. A deliberate plain `<img>`: the intrinsic `width`/`height` that `SiteImage` always emits would fight the viewport constraints. |
-| **OG card** | 1200×630 · 1.91:1 | `manifest.images.og` → `ogImageMeta()` in [layout.tsx:33](../app/layout.tsx#L33), and `primaryImage` in the home JSON-LD | `cover` | One card for the whole site. Nothing enforces 1200×630; every social platform expects it. |
+| Slot             | Intrinsic              | Rendered by                                                                                                                                                                   | Fit       | What it does to the picture                                                                                                                                                                                                                      |
+| ---------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Header logo**  | 500×79 · 6.3:1         | [Header.tsx:76](../components/layout/Header.tsx#L76) — `SiteImage … fixed priority fit="contain"`, `h-9 w-auto`                                                               | `contain` | Fixed 36px-tall box, so the ladder is 1x/2x only (`widthsFor(intrinsic, fixed)`). **Above the fold on every page and marked `priority`** — with the hero being a CSS gradient this is the site's only nominated LCP candidate. Not a photo slot. |
+| **Gallery tile** | varies wildly — see §2 | [FilterableGallery.tsx:89](../components/marketing/FilterableGallery.tsx#L89) — `aspect-[4/3] object-cover`, `sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"` | `cover`   | **Every tile is force-cropped to 4:3 regardless of its real shape.** The only photo slot on the site. Grid is 3-up ≥1024px, 2-up ≥640px, 1-up below.                                                                                             |
+| **Lightbox**     | the full original      | [FilterableGallery.tsx:129](../components/marketing/FilterableGallery.tsx#L129) — plain `<img>`, `max-h-[90vh] max-w-[90vw] object-contain`                                   | `contain` | The only place a photo is seen uncropped. A deliberate plain `<img>`: the intrinsic `width`/`height` that `SiteImage` always emits would fight the viewport constraints.                                                                         |
+| **OG card**      | 1200×630 · 1.91:1      | `manifest.images.og` → `ogImageMeta()` in [layout.tsx:33](../app/layout.tsx#L33), and `primaryImage` in the home JSON-LD                                                      | `cover`   | One card for the whole site. Nothing enforces 1200×630; every social platform expects it.                                                                                                                                                        |
 
 **Not photo slots.** The `lucide-react` icons throughout, the `TrustBar` marks, the process-step
 numerals. Never brief a photograph for one.
@@ -44,12 +44,12 @@ numerals. Never brief a photograph for one.
 `manifest.images.gallery` — 55 items, key prefix `skyshade/gallery/project-N.webp`, catalog URL
 `https://imgquarry.com/catalog/skyshade.co.il/gallery.json`.
 
-| Category | Items |
-|---|---|
-| גדרות ושערים | 18 |
-| חיפוי קירות | 15 |
-| פרגולות, מחסות וגגות | 13 |
-| דקים | 9 |
+| Category             | Items |
+| -------------------- | ----- |
+| גדרות ושערים         | 18    |
+| חיפוי קירות          | 15    |
+| פרגולות, מחסות וגגות | 13    |
+| דקים                 | 9     |
 
 **⚠️ `mode: "fetched"` describes how the hub built the block, not runtime behaviour.** Nothing in
 this repo fetches `catalogUrl` — the 55 entries are baked into the HTML at build time
@@ -58,15 +58,15 @@ rebuild; adding, removing or recategorising an item requires a hub sync, a rebui
 
 ### Shape — the finding that matters
 
-| Measure | Value |
-|---|---|
-| Landscape (>1.05) | 34 |
-| Portrait (<0.95) | 20 |
-| Square | 1 |
-| Ultra-wide (>2:1) | 7 |
-| Ratio range | **0.56 → 2.67** |
-| **Ratio <1.0 or >1.9 — heavily mangled by the 4:3 tile** | **27 of 55** |
-| Items with a `focal` point | **0** |
+| Measure                                                  | Value           |
+| -------------------------------------------------------- | --------------- |
+| Landscape (>1.05)                                        | 34              |
+| Portrait (<0.95)                                         | 20              |
+| Square                                                   | 1               |
+| Ultra-wide (>2:1)                                        | 7               |
+| Ratio range                                              | **0.56 → 2.67** |
+| **Ratio <1.0 or >1.9 — heavily mangled by the 4:3 tile** | **27 of 55**    |
+| Items with a `focal` point                               | **0**           |
 
 Half the gallery is centre-cropped from a shape the box cannot hold. A 0.56 portrait in a 4:3
 landscape box loses roughly half its height; a 2.67 panorama loses roughly half its width. Focal
@@ -75,12 +75,12 @@ hub sync + rebuild, unlike a byte swap.
 
 ### Weight
 
-| Measure | Value |
-|---|---|
-| Catalog total | 17.4 MB |
-| Items over 300 KB | 27 |
-| Heaviest | `project-6.webp` 1729×647, **1.14 MB** |
-| Narrowest | `project-50.webp` 263×468 |
+| Measure           | Value                                  |
+| ----------------- | -------------------------------------- |
+| Catalog total     | 17.4 MB                                |
+| Items over 300 KB | 27                                     |
+| Heaviest          | `project-6.webp` 1729×647, **1.14 MB** |
+| Narrowest         | `project-50.webp` 263×468              |
 
 Masters are served whole only in the lightbox — the tiles go through the resizer — so weight here
 is a lightbox cost, not a grid cost. The narrow ones are the real defect: they cannot fill a
@@ -109,15 +109,15 @@ customer or a job.
 
 ## 3. What is missing — the actual gap
 
-| Route | Photographs today |
-|---|---|
-| `/` | 12 gallery tiles, below the fold. The hero is a **CSS gradient** ([Hero.tsx](../components/marketing/Hero.tsx)) |
-| `/service/[slug]/` ×6 | **none** |
-| `/locations/[city]/` ×16 | **none** |
-| `/guides/[topic]/` | **none** |
-| `/about/`, `/services/`, `/locations/` | **none** |
-| `/gallery/` | all 55 |
-| `/contact/`, legal pages | none, correctly |
+| Route                                  | Photographs today                                                                                               |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `/`                                    | 12 gallery tiles, below the fold. The hero is a **CSS gradient** ([Hero.tsx](../components/marketing/Hero.tsx)) |
+| `/service/[slug]/` ×6                  | **none**                                                                                                        |
+| `/locations/[city]/` ×16               | **none**                                                                                                        |
+| `/guides/[topic]/`                     | **none**                                                                                                        |
+| `/about/`, `/services/`, `/locations/` | **none**                                                                                                        |
+| `/gallery/`                            | all 55                                                                                                          |
+| `/contact/`, legal pages               | none, correctly                                                                                                 |
 
 `PageHeader` is a flat `bg-primary` band on every inner page. **The six money pages sell a visual
 product with no picture of it.** That is the largest imagery finding on the site, and it is the one
@@ -137,13 +137,13 @@ Two constraints on closing it:
 
 ## 4. Where imagery is produced
 
-| Piece | Path |
-|---|---|
-| Prompt files (the approval unit, committed) | `Media Studio/prompts/skyshade/*.md` |
-| Reference photographs (**gitignored, never uploaded**) | `Media Studio/refs/skyshade/` |
-| Generator | `Media Studio/scripts/generate-image.mjs` — refuses to run while `approved: null` |
-| Upload / publish | `Media Studio/scripts/studio-api.ps1` — `-DryRun` first, always |
-| Delivery | `https://imgquarry.com/cdn-cgi/image/width=W,quality=80,format=auto,fit=cover/<key>` |
+| Piece                                                  | Path                                                                                 |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| Prompt files (the approval unit, committed)            | `Media Studio/prompts/skyshade/*.md`                                                 |
+| Reference photographs (**gitignored, never uploaded**) | `Media Studio/refs/skyshade/`                                                        |
+| Generator                                              | `Media Studio/scripts/generate-image.mjs` — refuses to run while `approved: null`    |
+| Upload / publish                                       | `Media Studio/scripts/studio-api.ps1` — `-DryRun` first, always                      |
+| Delivery                                               | `https://imgquarry.com/cdn-cgi/image/width=W,quality=80,format=auto,fit=cover/<key>` |
 
 The object key is **immutable** — `skyshade/gallery/project-12.webp` is baked into deployed HTML.
 Replacing a photo is an overwrite at the same key. Media Studio's upload route refuses a

@@ -60,13 +60,13 @@ Record the **cluster**, not one string — the page owns the whole intent, inclu
 
 ## Intent tiers for this business
 
-| Tier | Shape | Owns | Converts |
-|---|---|---|---|
-| Transactional | `{מוצר} {חומר}`, `{מוצר} ב{עיר}` | service + city pages | high |
-| Commercial | `מחיר`, `כמה עולה`, `X או Y`, `מומלץ` | `/guides/` | medium — the biggest untapped cluster |
-| Informational | `היתר`, `חוק`, `איך`, `כמה זמן` | `/guides/` | low direct, high AI-citation value |
-| Navigational | brand, `סקיי שייד` | `/` | must not be lost to competitors — see `geo-ai-visibility` |
-| Proof | `{מוצר} ב{עיר}` long-tail | `/projects/[slug]/` | the anti-doorway substance |
+| Tier          | Shape                                 | Owns                 | Converts                                                  |
+| ------------- | ------------------------------------- | -------------------- | --------------------------------------------------------- |
+| Transactional | `{מוצר} {חומר}`, `{מוצר} ב{עיר}`      | service + city pages | high                                                      |
+| Commercial    | `מחיר`, `כמה עולה`, `X או Y`, `מומלץ` | `/guides/`           | medium — the biggest untapped cluster                     |
+| Informational | `היתר`, `חוק`, `איך`, `כמה זמן`       | `/guides/`           | low direct, high AI-citation value                        |
+| Navigational  | brand, `סקיי שייד`                    | `/`                  | must not be lost to competitors — see `geo-ai-visibility` |
+| Proof         | `{מוצר} ב{עיר}` long-tail             | `/projects/[slug]/`  | the anti-doorway substance                                |
 
 The commercial tier is where this site currently has **zero** coverage and competitors are weakest.
 That is the highest-return keyword work available.

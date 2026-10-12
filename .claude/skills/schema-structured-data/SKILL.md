@@ -6,19 +6,19 @@ description: The JSON-LD entity graph for skyshade.co.il — which types are all
 # Structured data
 
 Schema is how machines resolve **the entity**, not a ranking trick. On this site it does double duty:
-Google rich results *and* the entity grounding that AI assistants use when they decide whether
+Google rich results _and_ the entity grounding that AI assistants use when they decide whether
 "סקיי שייד" is a real, locatable business (see `geo-ai-visibility`).
 
 ## Allowed, per route
 
-| Route | Types |
-|---|---|
-| `/` | `HomeAndConstructionBusiness` (from `manifest.schema.type`) + `WebSite` + `FAQPage` |
-| `/service/[slug]/` | `Service` + `BreadcrumbList` + `FAQPage` |
-| `/locations/[city]/` | `BreadcrumbList` (+ `Service` with `areaServed` **only** if the page passes the evidence gate) |
-| `/gallery/`, `/projects/[slug]/` | `ImageObject` / `CreativeWork` with real `contentLocation` + date |
-| `/guides/[slug]/` | `Article` + `FAQPage` + `BreadcrumbList` |
-| `/about/` | the `Organization` node with `founder` / `employee` — **only after the owner intake** |
+| Route                            | Types                                                                                          |
+| -------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `/`                              | `HomeAndConstructionBusiness` (from `manifest.schema.type`) + `WebSite` + `FAQPage`            |
+| `/service/[slug]/`               | `Service` + `BreadcrumbList` + `FAQPage`                                                       |
+| `/locations/[city]/`             | `BreadcrumbList` (+ `Service` with `areaServed` **only** if the page passes the evidence gate) |
+| `/gallery/`, `/projects/[slug]/` | `ImageObject` / `CreativeWork` with real `contentLocation` + date                              |
+| `/guides/[slug]/`                | `Article` + `FAQPage` + `BreadcrumbList`                                                       |
+| `/about/`                        | the `Organization` node with `founder` / `employee` — **only after the owner intake**          |
 
 Helpers (`@ishub/site-kit/seo`): `localBusinessJsonLd(manifest, {logo, image})`,
 `serviceJsonLd`, `breadcrumbJsonLd`, `faqJsonLd`, `jsonLdScript`. Emit an **array** in one
@@ -35,7 +35,7 @@ Helpers (`@ishub/site-kit/seo`): `localBusinessJsonLd(manifest, {logo, image})`,
 4. **`Person` nodes for invented staff.** No named human is confirmed yet.
 5. **`Offer` / `priceRange` beyond the manifest's `₪₪`** until real price bands are confirmed.
 6. **FAQ markup that does not match visible page text**, verbatim. The permit FAQ was wrong in copy
-   *and* schema simultaneously — fix both or neither.
+   _and_ schema simultaneously — fix both or neither.
 
 ## The @id convention
 

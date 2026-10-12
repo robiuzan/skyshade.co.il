@@ -28,7 +28,8 @@ export type JsonLd = Record<string, unknown>;
 const BASE = manifest.url;
 
 /** Absolute, trailing-slash URL — @ids must match the canonicals exactly. */
-export const abs = (path: string): string => `${BASE}${path.startsWith("/") ? path : `/${path}`}`;
+export const abs = (path: string): string =>
+  `${BASE}${path.startsWith("/") ? path : `/${path}`}`;
 
 export const BUSINESS_ID = `${BASE}/#business`;
 export const WEBSITE_ID = `${BASE}/#website`;
@@ -78,7 +79,12 @@ const HOURS = [
     opens: "08:00",
     closes: "18:00",
   },
-  { "@type": "OpeningHoursSpecification", dayOfWeek: "Friday", opens: "08:00", closes: "13:00" },
+  {
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: "Friday",
+    opens: "08:00",
+    closes: "13:00",
+  },
 ];
 
 /** Service area, not branches. There is exactly one business node and it has no per-city clone. */
@@ -272,7 +278,10 @@ export function cityServiceNode(city: { slug: string; name: string }): JsonLd {
  * FAQPage. Every answer here MUST appear verbatim on the rendered page — the building-permit
  * defect shipped in copy and schema at once, and parity is what prevents a repeat.
  */
-export function faqNode(path: string, items: readonly { q: string; a: string }[]): JsonLd {
+export function faqNode(
+  path: string,
+  items: readonly { q: string; a: string }[],
+): JsonLd {
   return {
     "@type": "FAQPage",
     "@id": `${abs(path)}#faq`,

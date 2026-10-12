@@ -57,15 +57,15 @@ looks: it routes the visitor to the exit that will actually get answered.
 
 ## 3. Where conversion surfaces exist today
 
-| Surface | Coverage | Notes |
-|---|---|---|
-| `MobileCtaBar` | every page, mobile | sticky, call + WhatsApp, bottom band |
-| Header call | every page | |
-| `Hero` call + WhatsApp | home | `hero-call`, `hero-whatsapp` |
-| `FinalCta` | most templates | `finalcta-call`, `finalcta-whatsapp` |
-| Service-page aside | 6 service pages | `service-aside-*` |
-| `LeadForm` | **24 of 36 pages** — home hero, contact, 6 service, 16 city | service pages pre-select their service; city pages use a compact variant with no free-text field |
-| Footer call | every page | |
+| Surface                | Coverage                                                    | Notes                                                                                            |
+| ---------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `MobileCtaBar`         | every page, mobile                                          | sticky, call + WhatsApp, bottom band                                                             |
+| Header call            | every page                                                  |                                                                                                  |
+| `Hero` call + WhatsApp | home                                                        | `hero-call`, `hero-whatsapp`                                                                     |
+| `FinalCta`             | most templates                                              | `finalcta-call`, `finalcta-whatsapp`                                                             |
+| Service-page aside     | 6 service pages                                             | `service-aside-*`                                                                                |
+| `LeadForm`             | **24 of 36 pages** — home hero, contact, 6 service, 16 city | service pages pre-select their service; city pages use a compact variant with no free-text field |
+| Footer call            | every page                                                  |                                                                                                  |
 
 Coverage is not the gap. **Measurement is the gap**, and after that, substance.
 
@@ -73,14 +73,14 @@ Coverage is not the gap. **Measurement is the gap**, and after that, substance.
 
 Ranked by expected effect. Each is a hypothesis until §1 is resolved.
 
-| # | Friction | Where | Why it costs leads | Blocked on |
-|---|---|---|---|---|
-| 1 | **No price expectation anywhere on the site** | all templates | The first question every pergola buyer has is "roughly what does this cost". A site that never engages with it loses the visitor to one that does — and the price cluster is simultaneously the largest keyword gap | 🔶 owner price bands → the `/guides/…-cost/` cluster |
-| 2 | **No corroborated trust** — no reviews, no address, no ח.פ., no named human, no warranty terms | all templates | An unknown contractor asking for a phone number, with nothing a homeowner can verify. `trustStats` and `testimonials` exist in `lib/content.ts` but are 🔶 and deliberately unrendered | 🔶 owner intake + GBP |
-| 3 | **"What happens after I call?"** is unanswered near the CTAs | service, city | Removes the fear of the ambush sales call. `Process` exists as a section but is not adjacent to the conversion points | — buildable now, but the copy must not promise a response time (🔶) |
-| 4 | ~~No `autocomplete` attributes~~ | `LeadForm` | ✅ **not a finding — already present**, verified 2026-09-01 (`name` at :207, `tel` at :226). Listed here only so it is not "discovered" again | — |
-| 5 | **Form success is not announced** to assistive tech | `LeadForm` | On success the whole `<form>` is replaced by a `<div>` with no `role="status"`, destroying focus. The **error** path is already announced (`role="alert"` at :299). WCAG 2.1 SC 4.1.3 | — free, ship it |
-| 6 | **Sticky-bar copy is generic** (`חייגו עכשיו`) | `MobileCtaBar` | Untested. Deliberately last: it is the most-seen element on the site, so it is the worst thing to change while unmeasured | W1 + a read window |
+| #   | Friction                                                                                       | Where          | Why it costs leads                                                                                                                                                                                                  | Blocked on                                                          |
+| --- | ---------------------------------------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| 1   | **No price expectation anywhere on the site**                                                  | all templates  | The first question every pergola buyer has is "roughly what does this cost". A site that never engages with it loses the visitor to one that does — and the price cluster is simultaneously the largest keyword gap | 🔶 owner price bands → the `/guides/…-cost/` cluster                |
+| 2   | **No corroborated trust** — no reviews, no address, no ח.פ., no named human, no warranty terms | all templates  | An unknown contractor asking for a phone number, with nothing a homeowner can verify. `trustStats` and `testimonials` exist in `lib/content.ts` but are 🔶 and deliberately unrendered                              | 🔶 owner intake + GBP                                               |
+| 3   | **"What happens after I call?"** is unanswered near the CTAs                                   | service, city  | Removes the fear of the ambush sales call. `Process` exists as a section but is not adjacent to the conversion points                                                                                               | — buildable now, but the copy must not promise a response time (🔶) |
+| 4   | ~~No `autocomplete` attributes~~                                                               | `LeadForm`     | ✅ **not a finding — already present**, verified 2026-09-01 (`name` at :207, `tel` at :226). Listed here only so it is not "discovered" again                                                                       | —                                                                   |
+| 5   | **Form success is not announced** to assistive tech                                            | `LeadForm`     | On success the whole `<form>` is replaced by a `<div>` with no `role="status"`, destroying focus. The **error** path is already announced (`role="alert"` at :299). WCAG 2.1 SC 4.1.3                               | — free, ship it                                                     |
+| 6   | **Sticky-bar copy is generic** (`חייגו עכשיו`)                                                 | `MobileCtaBar` | Untested. Deliberately last: it is the most-seen element on the site, so it is the worst thing to change while unmeasured                                                                                           | W1 + a read window                                                  |
 
 **Not on this list, on purpose:** shortening the form. It is already name + phone required, service
 optional, message optional, consent unchecked. There is nothing left to remove that would not also
@@ -90,7 +90,7 @@ remove the routing value of `service`.
 
 These are audit fixes with scar tissue. Re-verify; do not "simplify".
 
-- **Silent lead loss is fixed.** A Web3Forms delivery failure renders a visible error *plus*
+- **Silent lead loss is fixed.** A Web3Forms delivery failure renders a visible error _plus_
   recovery links — WhatsApp pre-filled with the form contents, and a `tel:` link. The
   `window.open()` is best-effort only: after an `await` it sits outside the user-gesture window
   and is routinely popup-blocked, so the **rendered** links are the real fallback
@@ -110,7 +110,7 @@ These are audit fixes with scar tissue. Re-verify; do not "simplify".
 ## 6. How a conversion change ships
 
 1. Name the metric and write its **baseline** into [measurement-plan.md](measurement-plan.md)
-   *first*. No baseline, no change.
+   _first_. No baseline, no change.
 2. Ship it **alone** within its read window — 4 weeks or 200 sessions, whichever is later.
    Content additions are additive and exempt; anything touching a CTA, form or layout is not.
 3. A/B testing is not viable at this traffic volume. Changes are sequential and read against the
@@ -123,7 +123,7 @@ These are audit fixes with scar tissue. Re-verify; do not "simplify".
 
 ## 7. Order of work
 
-Fix 5 is free and unblocked, and it ships in **Sprint 1 — deliberately *before* the GTM tags go
+Fix 5 is free and unblocked, and it ships in **Sprint 1 — deliberately _before_ the GTM tags go
 live**. A form change landing mid-baseline confounds the baseline; the same change landing before
 the measurement window opens costs nothing and means the baseline is measured against the final
 form. See [sprint-roadmap.md](sprint-roadmap.md) Sprint 1. Fix 4 turned out not to exist.

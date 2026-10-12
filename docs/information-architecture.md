@@ -50,29 +50,29 @@ English slugs only. `trailingSlash: true` — every URL ends in `/`, and canonic
 
 ## Gates (nothing here ships without passing `new-page-gate`)
 
-| URL type | Gate |
-|---|---|
-| Guide | 500+ unique words · an answer block per `aeo-answer-content` · every fact ✅ in the evidence register · the money link to its service page |
-| Service spoke | 500+ unique words · own photos · own FAQs. Otherwise it stays an H2 on the parent |
-| City page (keep) | 3 of the 5 evidence items in `local-seo-il` · passes the token test |
-| Service×city | real delivered work in that city · max ~18–24 of 96, ever |
-| Project page | real photos + city + year + product + the constraint solved |
-| `/warranty/` | blocked — needs confirmed warranty terms from Yossi |
+| URL type         | Gate                                                                                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Guide            | 500+ unique words · an answer block per `aeo-answer-content` · every fact ✅ in the evidence register · the money link to its service page |
+| Service spoke    | 500+ unique words · own photos · own FAQs. Otherwise it stays an H2 on the parent                                                          |
+| City page (keep) | 3 of the 5 evidence items in `local-seo-il` · passes the token test                                                                        |
+| Service×city     | real delivered work in that city · max ~18–24 of 96, ever                                                                                  |
+| Project page     | real photos + city + year + product + the constraint solved                                                                                |
+| `/warranty/`     | blocked — needs confirmed warranty terms from Yossi                                                                                        |
 
 **Phase-2 hard cap: ~12 new or rewritten pages**, each individually evidence-gated. The ~80 unbuilt
 service×city combinations are never built. Never a 7th top-level service.
 
 ## Link flow
 
-| From | To |
-|---|---|
-| `/` | 6 services · gallery · locations hub · contact |
-| `/services/` | 6 services, with its own framing text |
-| `/service/{slug}/` | 2–3 siblings · its guides · gallery filtered to its category · 1–2 cities with real work · contact |
-| `/guides/{slug}/` | **its service page, above the fold** · 1–2 related guides |
-| `/locations/{city}/` | parent hub · the services actually delivered there · projects in that city |
-| `/projects/{slug}/` | its service · its city · gallery |
-| footer | services · cities (plain names, never keyword-stuffed) · legal |
+| From                 | To                                                                                                 |
+| -------------------- | -------------------------------------------------------------------------------------------------- |
+| `/`                  | 6 services · gallery · locations hub · contact                                                     |
+| `/services/`         | 6 services, with its own framing text                                                              |
+| `/service/{slug}/`   | 2–3 siblings · its guides · gallery filtered to its category · 1–2 cities with real work · contact |
+| `/guides/{slug}/`    | **its service page, above the fold** · 1–2 related guides                                          |
+| `/locations/{city}/` | parent hub · the services actually delivered there · projects in that city                         |
+| `/projects/{slug}/`  | its service · its city · gallery                                                                   |
+| footer               | services · cities (plain names, never keyword-stuffed) · legal                                     |
 
 Every page within **3 clicks** of `/`. No orphans. In-body contextual links beat footer links.
 Breadcrumbs below the first level, matching `breadcrumbJsonLd` exactly.

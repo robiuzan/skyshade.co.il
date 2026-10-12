@@ -7,7 +7,7 @@ description: Answer-engine optimization for skyshade — question-form headings 
 
 The question is not "does this rank" but **"can a machine reach this page, parse it, and prefer to
 quote it over a competitor?"** Reachability is `geo-ai-visibility`'s job. This skill is about
-whether the *content* is quotable.
+whether the _content_ is quotable.
 
 ## The answer block — the unit of AEO
 
@@ -29,14 +29,14 @@ only that paragraph aloud — if it needs the sentence above it, rewrite it.
 
 Assistants prefer answers that are **specific, conditional, and dated**. In this market that means:
 
-- **Numbers with units and conditions** — `עד 50 מ״ר` and *under which exemption*, not "גדול".
+- **Numbers with units and conditions** — `עד 50 מ״ר` and _under which exemption_, not "גדול".
 - **The condition, not just the conclusion** — "פטור מהיתר **בתנאים מסוימים**: …" beats "לא צריך היתר",
   and it is also the only legally defensible phrasing (see below).
 - **A stated scope** — who this applies to, where, and when it was last checked.
 - **Comparison tables** for X-or-Y queries (`אלומיניום או עץ`, `דק סינטטי או דק עץ`) — a table with
   4–6 real criteria is the single most-quoted structure in this category.
 - **Real project facts** — city, year, size, material, constraint solved. Templated copy is
-  unquotable *because* every competitor has the same sentence.
+  unquotable _because_ every competitor has the same sentence.
 
 ## Hard content lines (these are legal, not stylistic)
 
@@ -71,4 +71,4 @@ Assistants prefer answers that are **specific, conditional, and dated**. In this
 3. Could a competitor publish this paragraph verbatim? (If yes, it is not quotable — it is filler.)
 4. Does the page contain one fact no competitor has?
 5. Does the schema FAQ match the visible text exactly?
-6. Is the page reachable by AI crawlers *today* (`geo-ai-visibility` gate 1)?
+6. Is the page reachable by AI crawlers _today_ (`geo-ai-visibility` gate 1)?

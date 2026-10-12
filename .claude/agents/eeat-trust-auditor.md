@@ -19,11 +19,11 @@ grep -rn "מאז\|שנים\|אחריות\|מוסמך\|מבוטח\|תקן\|ת״י
 
 For every hit, classify:
 
-| | Meaning | Action |
-|---|---|---|
-| ✅ | confirmed in the register, with a source and a date | fine |
-| 🔶 | assumed, derived, or developer-written | **must not be live** — report with file:line |
-| ⛔ | previously retracted, reappearing | P0 |
+|     | Meaning                                             | Action                                       |
+| --- | --------------------------------------------------- | -------------------------------------------- |
+| ✅  | confirmed in the register, with a source and a date | fine                                         |
+| 🔶  | assumed, derived, or developer-written              | **must not be live** — report with file:line |
+| ⛔  | previously retracted, reappearing                   | P0                                           |
 
 A claim with no register row is 🔶 by default. Report it as a missing register row, not as a
 judgement call.

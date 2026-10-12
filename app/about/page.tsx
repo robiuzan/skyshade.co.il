@@ -53,11 +53,13 @@ export default function AboutPage() {
           </p>
           <p className="mt-4 text-gray-700">
             האמונה שלנו פשוטה: לחוץ מגיע אותו יחס כמו לפנים. לכן כל פרויקט מתוכנן ומיוצר
-            בהתאמה אישית, מהחומרים המשובחים בשוק — אלומיניום שאינו מחליד, עמיד ב-UV ובכל מזג
-            אוויר — ומותקן בצוות מקצועי משלנו, עם אחריות מלאה על העבודה ועל המוצר.
+            בהתאמה אישית, מהחומרים המשובחים בשוק — אלומיניום שאינו מחליד, עמיד ב-UV ובכל
+            מזג אוויר — ומותקן בצוות מקצועי משלנו, עם אחריות מלאה על העבודה ועל המוצר.
           </p>
 
-          <h2 className="mt-10 font-heading text-xl font-bold text-primary">הערכים שלנו</h2>
+          <h2 className="mt-10 font-heading text-xl font-bold text-primary">
+            הערכים שלנו
+          </h2>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
             {aboutValues.map((v) => (
               <li key={v} className="flex items-start gap-2 text-gray-700">

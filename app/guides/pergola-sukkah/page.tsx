@@ -132,10 +132,10 @@ export default function PergolaSukkahGuide() {
           <p className="text-sm text-gray-500">עודכן: אוגוסט 2026</p>
 
           <p className="mt-6 text-lg leading-relaxed text-gray-800">
-            בקצרה: פרגולת אלומיניום אינה סוכה ולהבי אלומיניום אינם סכך. מה שפרגולה נאספת כן
-            נותנת היא פתח פתוח לחלוטין לשמיים, שמאפשר להקים סוכה תחתיה ולפרק אותה בתום החג.
-            ההחלטות שקובעות אם זה יעבוד — מנגנון הפתיחה, כיוון הקיפול והגובה — מתקבלות בשלב
-            התכנון, לא אחריו.
+            בקצרה: פרגולת אלומיניום אינה סוכה ולהבי אלומיניום אינם סכך. מה שפרגולה נאספת
+            כן נותנת היא פתח פתוח לחלוטין לשמיים, שמאפשר להקים סוכה תחתיה ולפרק אותה בתום
+            החג. ההחלטות שקובעות אם זה יעבוד — מנגנון הפתיחה, כיוון הקיפול והגובה —
+            מתקבלות בשלב התכנון, לא אחריו.
           </p>
 
           {/* Set the boundary once, up front, in a visually distinct block — so a reader
@@ -144,8 +144,9 @@ export default function PergolaSukkahGuide() {
             <p className="font-heading font-bold text-primary">מה המדריך הזה כן ולא</p>
             <p className="mt-2 leading-relaxed text-gray-700">
               אנחנו יצרני אלומיניום, לא פוסקי הלכה. המדריך מסביר מה המבנה מאפשר מבחינה
-              הנדסית ואילו שאלות כדאי להביא לרב — ואינו קובע מה כשר. אנחנו לא מצהירים על אף
-              מוצר שהוא &quot;כשר לסוכה&quot;; ההכרעה היא של הרב שלכם, ורצוי לפני ההזמנה.
+              הנדסית ואילו שאלות כדאי להביא לרב — ואינו קובע מה כשר. אנחנו לא מצהירים על
+              אף מוצר שהוא &quot;כשר לסוכה&quot;; ההכרעה היא של הרב שלכם, ורצוי לפני
+              ההזמנה.
             </p>
           </div>
 
@@ -156,9 +157,12 @@ export default function PergolaSukkahGuide() {
 
               {i === 4 && (
                 <p className="mt-3 leading-relaxed text-gray-700">
-                  הפירוט המלא של תנאי הפטור, כולל מה נחשב &quot;חומרים קלים&quot; ואיך נמדדים
-                  40% המרווחים, נמצא במדריך{" "}
-                  <Link href="/guides/pergola-permit/" className="text-secondary underline">
+                  הפירוט המלא של תנאי הפטור, כולל מה נחשב &quot;חומרים קלים&quot; ואיך
+                  נמדדים 40% המרווחים, נמצא במדריך{" "}
+                  <Link
+                    href="/guides/pergola-permit/"
+                    className="text-secondary underline"
+                  >
                     היתר בנייה לפרגולה
                   </Link>
                   .
@@ -170,13 +174,20 @@ export default function PergolaSukkahGuide() {
           <h2 className="mt-10 font-heading text-xl font-bold text-primary">
             מה לבקש כבר בשלב המדידה
           </h2>
+          {/* content/live/_campaigns.mjs quotes the last sentence verbatim, and
+              scripts/live/check-live-register.mjs looks for it on ONE line — a reflow fails
+              the build. Keep the wrapping as is. */}
+          {/* prettier-ignore */}
           <p className="mt-3 leading-relaxed text-gray-700">
             כל אחד מהסעיפים האלה נקבע לפני שהפרופילים נחתכים. אחרי הייצור, שינוי בהם אינו
             כוונון אלא הזמנה חדשה — ולכן שווה להעלות אותם בביקור המדידה, גם אם החג עוד רחוק.
           </p>
           <ul className="mt-5 space-y-3">
             {checklist.map((c) => (
-              <li key={c.title} className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
+              <li
+                key={c.title}
+                className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3"
+              >
                 <strong className="text-primary">{c.title}</strong>
                 <span className="text-gray-700"> — {c.body}</span>
               </li>
@@ -188,9 +199,9 @@ export default function PergolaSukkahGuide() {
           </h2>
           <p className="mt-3 leading-relaxed text-gray-700">
             פרגולה נאספת עובדת כל השנה כפתרון הצללה רגיל — צל בקיץ, שמש בחורף, מרפסת שמישה
-            בכל עונה. ההתאמה לסוכה אינה מוצר נפרד ואינה מייקרת את המבנה בפני עצמה; היא סדרה
-            של החלטות תכנון שנעשות ממילא, רק עם שיקול נוסף באוזן. מי שלא חשב על זה מראש
-            מגלה בדרך כלל בערב החג שהפתח נפתח מעל הצד הלא נכון של המרפסת.
+            בכל עונה. ההתאמה לסוכה אינה מוצר נפרד ואינה מייקרת את המבנה בפני עצמה; היא
+            סדרה של החלטות תכנון שנעשות ממילא, רק עם שיקול נוסף באוזן. מי שלא חשב על זה
+            מראש מגלה בדרך כלל בערב החג שהפתח נפתח מעל הצד הלא נכון של המרפסת.
           </p>
 
           <div className="mt-12 rounded-2xl border border-gray-100 bg-gray-50 p-6">
@@ -202,7 +213,10 @@ export default function PergolaSukkahGuide() {
               ואת הכנת המקומות לקורות. ייעוץ ומדידה בשטח, ללא עלות וללא התחייבות.
             </p>
             <p className="mt-3">
-              <Link href="/service/pergolas/" className="font-medium text-secondary underline">
+              <Link
+                href="/service/pergolas/"
+                className="font-medium text-secondary underline"
+              >
                 לעמוד הפרגולות ←
               </Link>
             </p>

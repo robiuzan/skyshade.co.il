@@ -7,6 +7,7 @@ description: Title, description, canonical, OG, robots and sitemap rules for sky
 
 ## The budget
 
+<!-- prettier-ignore -->
 | Field | Rule |
 |---|---|
 | `title` | **≤48 Hebrew chars** before the layout suffix `| סקיי שייד`. Hebrew renders wide — 60 chars truncates. |
@@ -53,9 +54,9 @@ keyword stuffing with `|` chains.
 
 ```tsx
 export const metadata: Metadata = {
-  title: "…",                                  // ≤48 chars, keyword-first
-  description: "…",                            // ≤160, keyword + differentiator + verb
-  alternates: { canonical: "/guides/pergola-cost/" },   // trailing slash
+  title: "…", // ≤48 chars, keyword-first
+  description: "…", // ≤160, keyword + differentiator + verb
+  alternates: { canonical: "/guides/pergola-cost/" }, // trailing slash
 };
 ```
 

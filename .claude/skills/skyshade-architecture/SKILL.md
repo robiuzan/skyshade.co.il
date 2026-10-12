@@ -11,18 +11,18 @@ no `next/image` optimizer, no runtime redirects or headers from Next.
 
 ## Where things live
 
-| You want to change | Edit |
-|---|---|
-| Phone, email, brand name, hours, schema type | the **hub roster**, then sync — never `site.config.json` |
-| Services or city lists | `lib/site-config.ts` (`services`, `locations`) |
-| Page copy, service detail, FAQs, process, differentiators | `lib/content.ts` |
-| Titles / descriptions / canonicals | the `metadata` export of the page file |
-| Site-wide title template + default description | `app/layout.tsx` |
-| JSON-LD | the page file, via `@ishub/site-kit/seo` helpers |
-| Response headers, CSP, cache | `public/_headers` |
-| Path redirects | `public/_redirects` (⚠️ cannot match hostname) |
-| Photos | the **Media Studio catalog**, not this repo |
-| Sitemap | `app/sitemap.ts` — and `staticPaths` must list every new static route |
+| You want to change                                        | Edit                                                                  |
+| --------------------------------------------------------- | --------------------------------------------------------------------- |
+| Phone, email, brand name, hours, schema type              | the **hub roster**, then sync — never `site.config.json`              |
+| Services or city lists                                    | `lib/site-config.ts` (`services`, `locations`)                        |
+| Page copy, service detail, FAQs, process, differentiators | `lib/content.ts`                                                      |
+| Titles / descriptions / canonicals                        | the `metadata` export of the page file                                |
+| Site-wide title template + default description            | `app/layout.tsx`                                                      |
+| JSON-LD                                                   | the page file, via `@ishub/site-kit/seo` helpers                      |
+| Response headers, CSP, cache                              | `public/_headers`                                                     |
+| Path redirects                                            | `public/_redirects` (⚠️ cannot match hostname)                        |
+| Photos                                                    | the **Media Studio catalog**, not this repo                           |
+| Sitemap                                                   | `app/sitemap.ts` — and `staticPaths` must list every new static route |
 
 ## The five things that surprise people
 

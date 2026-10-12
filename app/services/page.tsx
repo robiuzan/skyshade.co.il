@@ -53,10 +53,10 @@ export default function ServicesPage() {
             מה משותף לכל מה שאנחנו עושים
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-gray-700">
-            כל השישה נשענים על אותו חומר ואותה שיטה: פרופילי אלומיניום שאינם מחלידים, עמידים
-            ב-UV ובאוויר מלוח, נמדדים אצלכם בשטח ומיוצרים למידות שלכם — לא מוצר מדף שמתאימים
-            בדיעבד. אותו צוות שמתכנן הוא שמתקין, וזו הסיבה שאפשר לשלב בין התחומים בפרויקט
-            אחד בלי לתאם בין קבלנים.
+            כל השישה נשענים על אותו חומר ואותה שיטה: פרופילי אלומיניום שאינם מחלידים,
+            עמידים ב-UV ובאוויר מלוח, נמדדים אצלכם בשטח ומיוצרים למידות שלכם — לא מוצר מדף
+            שמתאימים בדיעבד. אותו צוות שמתכנן הוא שמתקין, וזו הסיבה שאפשר לשלב בין התחומים
+            בפרויקט אחד בלי לתאם בין קבלנים.
           </p>
 
           <h2 className="mt-10 font-heading text-2xl font-bold text-primary">
@@ -80,14 +80,19 @@ export default function ServicesPage() {
             <div>
               <dt className="font-semibold text-primary">רוצים לסגור מרפסת מרוח ומגשם</dt>
               <dd className="mt-1">
-                <Link href="/service/accordion-products/" className="text-secondary underline">
+                <Link
+                  href="/service/accordion-products/"
+                  className="text-secondary underline"
+                >
                   סגירת מרפסות ותריסי אקורדיון
                 </Link>{" "}
                 — פתרון גמיש שנפתח לגמרי בקיץ, להבדיל מסגירה קבועה.
               </dd>
             </div>
             <div>
-              <dt className="font-semibold text-primary">רוצים לתחום או לאבטח את הכניסה</dt>
+              <dt className="font-semibold text-primary">
+                רוצים לתחום או לאבטח את הכניסה
+              </dt>
               <dd className="mt-1">
                 <Link href="/service/fences-gates/" className="text-secondary underline">
                   גדרות ושערים
@@ -96,7 +101,9 @@ export default function ServicesPage() {
               </dd>
             </div>
             <div>
-              <dt className="font-semibold text-primary">רוצים לשנות את מראה החזית או הרצפה</dt>
+              <dt className="font-semibold text-primary">
+                רוצים לשנות את מראה החזית או הרצפה
+              </dt>
               <dd className="mt-1">
                 <Link href="/service/wall-cladding/" className="text-secondary underline">
                   חיפוי קירות חוץ
@@ -111,7 +118,10 @@ export default function ServicesPage() {
             <div>
               <dt className="font-semibold text-primary">רוצים לארח בחוץ כל השנה</dt>
               <dd className="mt-1">
-                <Link href="/service/outdoor-kitchen/" className="text-secondary underline">
+                <Link
+                  href="/service/outdoor-kitchen/"
+                  className="text-secondary underline"
+                >
                   מטבח חוץ
                 </Link>{" "}
                 מאלומיניום ואבן — לרוב משולב עם פרגולה שמצלה עליו.
