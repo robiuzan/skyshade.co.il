@@ -26,9 +26,11 @@ code responsibility. Heebo comes from `next/font/google` with `hebrew` + `latin`
 - Every image has `width`/`height` or an aspect-ratio box — missing dimensions is the #1 CLS source
   here.
 - `preconnect` to the media host present in `app/layout.tsx`.
-- JS weight: `< 120KB` gzip. ⚠️ **Measured 2026-09-01: 119.3KB — 0.7KB of headroom.** The budget is
-  effectively spent; any new client component or third-party script breaks it. `framer-motion` was
-  removed deliberately — flag any animation library reintroduction as P0.
+- JS weight: `≤ 130KB` gzip on the home page, `/assets/live.js` included — raised from 120KB by the
+  owner on 2026-10-12; `docs/performance-budgets.md` §2–§3 owns the number and the last
+  measurement. ⚠️ About 4KB of headroom is left: any new client component or third-party script
+  is a budget decision. `framer-motion` was removed deliberately — flag any animation library
+  reintroduction as P0.
 - `"use client"` only on `LeadForm`, `FilterableGallery`, the mobile menu.
 - `public/_headers`: `/_next/static/*` immutable, HTML short-lived.
 - **GTM is in `<head>` on purpose** (it was in `<body>`, delaying tags and undercounting bounces). Do

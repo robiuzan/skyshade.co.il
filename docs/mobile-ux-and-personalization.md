@@ -53,6 +53,10 @@ Consequences that are already shipped and must not be "tidied away":
   > days; never on `/contact/`, the legal pages or `/404/`; never over the open mobile menu, the
   > services dropdown or the gallery lightbox, never while a form field has focus. On a phone it
   > is a bottom sheet that stops above `MobileCtaBar`. The rule above stands for everything else.
+  >
+  > **2026-10-12, owner (fleet decision, wording sign-off page):** the card may show at any
+  > hour, not only inside the business hours in [evidence-register.md](evidence-register.md).
+  > The calendar still keeps it shut on Shabbat, chag and quiet days (`lib/live/resolve.mjs`).
 - **Forms**: the correct `inputMode`/`type` per field so the right keyboard opens (`type="tel"`
   on phone is already right); labels above fields, never placeholder-only; `autocomplete` on
   every field that maps to autofill data (also WCAG 2.1 SC 1.3.5 — see
@@ -133,6 +137,10 @@ Any Tier 1 or Tier 2 element ships only if all six hold:
    > 35 px bar after paint: measured CLS ≈0.04 per affected page view (review 2026-10-11, 390 px),
    > 0 while the switch answers normal. It also breaks §3's "nothing shifts after paint". Whether
    > that cost is accepted is the owner's call with the wording approval (CLAUDE.md §10).
+   >
+   > ✅ **Answered 2026-10-12 — the bar ships with this cost.** The owner approved the wording
+   > and said "ship all of them" (fleet wording sign-off page); no separate ruling on the CLS
+   > number itself is recorded. Re-open it if field data (CrUX) shows the shift.
 3. **It adds no network request** and no third-party script.
    > **Override — owner decision 2026-10-11, fleet live-kit.** The live surfaces make ONE read
    > per page view, after first paint: `https://imgquarry.com/status/fleet.json` (the fleet
@@ -150,6 +158,13 @@ Any Tier 1 or Tier 2 element ships only if all six hold:
    > that touches the call path; whether it may ship inside the current read window, and its
    > metric (`surface_view` → `phone_call_click` / `whatsapp_click` by `link_location` `topbar-*`
    > / `popup-*`), is the owner's call together with the wording approval (CLAUDE.md §10).
+   >
+   > ✅ **Answered 2026-10-12 — it ships now, inside the current window.** With the wording
+   > approval the owner said "ship all of them" (fleet wording sign-off page). Its metric and
+   > zero baseline are the 2026-10-12 row of [measurement-plan.md](measurement-plan.md). Not
+   > readable yet: the shared GTM trigger must admit this hostname
+   > ([gtm-tag-spec.md](gtm-tag-spec.md)), and the W1 click tags were unbuilt at the last check
+   > (CLAUDE.md §9, 2026-09-14).
 
 ## 6. Measurement
 

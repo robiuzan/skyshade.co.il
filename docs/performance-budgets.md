@@ -25,7 +25,7 @@ budget is spent in exactly four places:
 | LCP | **< 2.5s** (p75, mobile) | CrUX / GSC Core Web Vitals |
 | CLS | **< 0.05** (stricter than Google's 0.1 — a sticky CTA bar makes shifts expensive) | CrUX |
 | INP | **< 200ms** (p75) | CrUX |
-| First-load JS, per page | **≤ 120 KB gzip**, excluding the legacy polyfill chunk | build artifact |
+| First-load JS, per page | **≤ 130 KB gzip** (120 KB until 2026-10-12 — raised by the owner, §3), excluding the legacy polyfill chunk, **including** `/assets/live.js` | build artifact |
 | CSS | ≤ 15 KB gzip | build artifact |
 | HTML per page | ≤ 35 KB gzip | build artifact |
 | Hero image transfer | ≤ 150 KB | network panel |
@@ -55,6 +55,25 @@ to render one personalized line, and it is why `framer-motion` was removed rathe
 
 `components/ui/Reveal.tsx` is the pattern for anything that needs motion: ~30 lines, an
 `IntersectionObserver`, no dependency.
+
+### 2026-10-12 — the JS budget raised to 130 KB (owner decision)
+
+The fleet live-kit ([CLAUDE.md](../CLAUDE.md) §10) adds `/assets/live.js` to every page: 17.1 KB
+raw, 6.5 KB gzip, deferred. It is served from `/assets/`, not `/_next/static/chunks/`, so the §9
+command never saw it. Counted, the home page's first-load JS is **125.9 KB** — over the 120 KB
+budget. **The owner raised the home-page JS budget from 120 KB to 130 KB on 2026-10-12** (fleet
+wording sign-off), and §9 now counts `live.js`. The home page is the heaviest page, so its figure
+is the one the budget is judged on. About 4 KB of headroom is left: the next client component is
+still a budget decision.
+
+Measured on the production build of 2026-10-12 (kit `cf3a546`), with the §9 commands:
+
+| Item                                                       | Measured     | Budget | Verdict                                                                                       |
+| ---------------------------------------------------------- | ------------ | ------ | --------------------------------------------------------------------------------------------- |
+| Home first-load JS, gzip, excl. polyfills, incl. `live.js` | **125.9 KB** | 130 KB | ✅ ≈4 KB of headroom                                                                          |
+| The same without `live.js` (the old §9 command)            | 119.5 KB     | —      | for comparison with the table above                                                           |
+| CSS, gzip                                                  | 9.5 KB       | 15 KB  | ✅                                                                                            |
+| Home HTML, gzip                                            | 32.2 KB      | 35 KB  | ✅ the bar, the card and two inline scripts, printed in the HTML and again in the RSC payload |
 
 ## 4. The LCP path
 
@@ -123,11 +142,12 @@ Before shipping anything that adds weight:
 npm run build
 du -sh out
 
-# First-load JS for the home page, gzip, excluding the legacy polyfill chunk.
-# Compare against the 120 KB budget and the 119.3 KB measured on 2026-09-01.
-for f in $(grep -o '/_next/static/chunks/[^"]*\.js' out/index.html | sort -u | grep -v polyfills); do
-  cat "out$f"
-done | gzip -9 | wc -c
+# First-load JS for the home page, gzip, excluding the legacy polyfill chunk and INCLUDING
+# /assets/live.js (the fleet live-kit; not a _next/static chunk, so the grep alone misses it).
+# Compare against the 130 KB budget and the 125.9 KB measured on 2026-10-12.
+{ for f in $(grep -o '/_next/static/chunks/[^"]*\.js' out/index.html | sort -u | grep -v polyfills); do
+    cat "out$f"
+  done; cat out/assets/live.js; } | gzip -9 | wc -c
 
 # Any oversized individual chunk
 find out/_next/static -name '*.js' -size +50k -exec ls -lh {} \;

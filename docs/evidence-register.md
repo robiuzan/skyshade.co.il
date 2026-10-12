@@ -26,6 +26,7 @@ site does not currently make claims its competitors make freely.
 | Services offered | the 6 in `lib/site-config.ts` | live site | — | nav, hubs, schema `Service` |
 | Project photos | the Media Studio catalog | own work | 2026-08 | gallery — ⚠️ no city/date/size attached yet |
 | Permit position | conditional exemption, reviewed wording | legal review | 2026-08-17 | `lib/content.ts` FAQ + schema, verbatim |
+| Wartime operation | ״פועלים בכפוף להנחיות פיקוד העורף״ — Sky Shade keeps working within Home Front Command guidance | Robi (owner), fleet wording sign-off page | 2026-10-12 | the announcement bar's `reduced` line only (`content/live/_campaigns.mjs`), shown while the fleet status switch says `reduced` |
 
 ---
 

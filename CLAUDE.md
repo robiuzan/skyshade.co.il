@@ -191,7 +191,7 @@ topic somebody is about to create a second file for.
 | `mobile-ux-and-personalization.md` | thumb zones, the sticky CTA spec, what personalization is legal on a static export |
 | `conversion-funnel.md` | the funnel, the friction inventory, the one-change-per-window rule |
 | `image-inventory.md` | the four image slots, the 55-photo catalog as measured, and the pages with no photography |
-| `performance-budgets.md` | CWV budgets + the last measured values (⚠️ JS budget is at 119.5/120 KB) |
+| `performance-budgets.md` | CWV budgets + the last measured values (⚠️ home JS 125.9/130 KB with `/assets/live.js`; the budget was 120 KB until 2026-10-12) |
 | `data-tracking-infrastructure.md` | the PII boundary, server-side tagging decision, CRM wiring, consent |
 | `measurement-plan.md` | baseline, KPI set, and the dated change log |
 | `gtm-tag-spec.md` | the exact container build — triggers, tags, variables, verification |
@@ -298,16 +298,27 @@ item.
   days — nothing deploys until the next window is written or the calendar re-synced. For an
   urgent unrelated fix only, `LIVE_GATES=lapsed-ok` (as `env:` on deploy.yml's build step, for
   that one run) downgrades those two clock rules; every correctness rule still blocks.
-- **Weight (re-measured 2026-10-12, draft build after the second kit re-sync):** `/assets/live.js`
-  (17.1 KB, 6.5 KB gzip, deferred) is not a `_next/static/chunks` file, so the
-  `docs/performance-budgets.md` §9 command does not count it — by that command home JS went
-  119.4 → 119.5 KB; counted, it would be ≈126.0 KB against the 120 KB budget (an owner
-  decision). HTML grows ≈5.7 KB gzip per page (the markup ≈3 KB, repeated in the RSC payload):
-  home 26.4 → 32.2 KB of its 35 KB budget. CSS 8.3 → 9.5 KB of 15 KB.
+- **Weight (re-measured 2026-10-12 on the production build):** `/assets/live.js` (17.1 KB,
+  6.5 KB gzip, deferred) is not a `_next/static/chunks` file, so the old
+  `docs/performance-budgets.md` §9 command did not count it — by that command home JS went
+  119.4 → 119.5 KB; counted, it is 125.9 KB. **The owner raised the home-page JS budget from
+  120 KB to 130 KB on 2026-10-12**, and §9 now counts `live.js` (≈4 KB of headroom left). HTML
+  grows ≈5.7 KB gzip per page (the markup ≈3 KB, repeated in the RSC payload): home 26.4 →
+  32.2 KB of its 35 KB budget. CSS 8.3 → 9.5 KB of 15 KB.
 - **Popups and network:** `docs/mobile-ux-and-personalization.md` §3 (no modal) and §5 rule 3
   (no network request) carry the owner's dated override; the storage is disclosed in `/privacy/`.
-- **Before the first deploy** (owner, in order): approve the wording (`approved` in both
-  registers); commit the kit in 3locksmiths and re-sync (the lock must not say `+dirty`); add
-  skyshade's origins to the status switch's CORS list; widen the GTM trigger
-  `CE - popup events (3locksmiths)` to this hostname; `gh secret set NTFY_TOPIC` for
-  `.github/workflows/remind.yml` (it fails red without it). Then merging to `main` IS the deploy.
+- **Owner decisions 2026-10-12 (fleet wording sign-off page):** the wartime line
+  ״פועלים בכפוף להנחיות פיקוד העורף״ is confirmed for this business
+  (`docs/evidence-register.md`); the card may show at any hour — a fleet decision; the calendar
+  still keeps it shut on Shabbat, chag and quiet days; ONE shared GTM trigger for the whole fleet
+  (`docs/gtm-tag-spec.md`); the updates strip ships as is — no new item, and both items are past
+  45 days, so it stays hidden until a real one is added; the home-page JS budget is 130 KB
+  (`docs/performance-budgets.md`). The CLS cost and the read-window question
+  (`docs/mobile-ux-and-personalization.md` §5 rules 2 and 6) were answered by the go-ahead,
+  "ship all of them". Metric and baseline: `docs/measurement-plan.md`, row 2026-10-12.
+- **Before the first deploy** (owner, in order): ✅ approve the wording — done 2026-10-12, both
+  registers carry `approved`; ✅ commit the kit in 3locksmiths and re-sync — the lock names
+  `cf3a546`, no `+dirty`; add skyshade's origins to the status switch's CORS list; widen the
+  ONE shared fleet trigger `CE - popup events (3locksmiths)` to this hostname;
+  `gh secret set NTFY_TOPIC` for `.github/workflows/remind.yml` (it fails red without it). Then
+  merging to `main` IS the deploy.

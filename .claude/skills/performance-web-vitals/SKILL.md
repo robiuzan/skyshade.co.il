@@ -15,7 +15,7 @@ Static export on Cloudflare's edge — the network is not the problem. The costs
 | LCP (mobile, field) | < 2.5s | almost always the hero image |
 | CLS | < 0.05 | images without dimensions; the sticky CTA bar; font swap |
 | INP | < 200ms | little JS here — regressions come from added third-party tags |
-| JS transferred | < 120KB gzip | `framer-motion` was removed once; do not reintroduce an animation lib |
+| JS transferred | ≤ 130KB gzip on the home page, `/assets/live.js` included (120KB until the owner raised it 2026-10-12 — `docs/performance-budgets.md` owns it) | `framer-motion` was removed once; do not reintroduce an animation lib |
 | Hero image | < 150KB | via the CDN resizer at the right width |
 
 ## Images — the LCP path
